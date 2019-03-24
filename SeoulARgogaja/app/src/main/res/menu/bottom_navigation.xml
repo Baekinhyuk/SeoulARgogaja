@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_plan"
+        android:enabled="true"
+        android:icon="@drawable/ic_content_paste_black_24dp"
+        android:title="Plan"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Search"/>
+
+    <item
+        android:id="@+id/action_Wallet"
+        android:enabled="true"
+        android:icon="@drawable/ic_payment_black_24dp"
+        android:title="Wallet"/>
+
+    <item
+        android:id="@+id/action_Emergency"
+        android:enabled="true"
+        android:icon="@drawable/ic_error_outline_black_24dp"
+        android:title="Emergency"/>
+
+</menu>
