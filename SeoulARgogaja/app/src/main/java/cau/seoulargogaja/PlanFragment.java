@@ -18,22 +18,12 @@ public class PlanFragment extends Fragment{
 
     //TEST
     List<TravelLocation> list = Arrays.asList(
+            new TravelLocation("3월24일"),
             new TravelLocation("여행지1", "여행지정보1"),
             new TravelLocation("여행지2", "여행지정보2"),
-            new TravelLocation("여행지3", "여행지정보3"),
+            new TravelLocation("3월25일"),
             new TravelLocation("여행지5", "여행지정보5"),
-            new TravelLocation("여행지6", "여행지정보5"),
-            new TravelLocation("여행지7", "여행지정보5"),
-            new TravelLocation("여행지8", "여행지정보5"),
-            new TravelLocation("여행지9", "여행지정보5"),
-            new TravelLocation("여행지0", "여행지정보5"),
-            new TravelLocation("여행지10", "여행지정보5"),
-            new TravelLocation("여행지11", "여행지정보5"),
-            new TravelLocation("여행지12", "여행지정보5"),
-            new TravelLocation("여행지13", "여행지정보5"),
-            new TravelLocation("여행지14", "여행지정보5"),
-            new TravelLocation("여행지15", "여행지정보5"),
-            new TravelLocation("여행지4", "여행지정보4")
+            new TravelLocation("여행지6", "여행지정보6")
     );
 
 

@@ -1,6 +1,8 @@
 package cau.seoulargogaja;
 
 import android.content.Context;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.os.Build;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +40,31 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
         Context context = getContext();
         final TravelLocation data = getItem(position);
         if(null == view) {
-            view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
+            if(data.getType() == 1) {
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
+            }
+            else if(data.getType() == 0){
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
+            }
         }
+        try {
+            if (data.getType() == 1) {
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
+                TextView textView = (TextView) view.findViewById(R.id.nick_name);
+                textView.setText(data.getnick_name());
 
-        final RelativeLayout row = (RelativeLayout) view.findViewById(
-                R.id.item_list1);
-
-        TextView textView = (TextView)view.findViewById(R.id.nick_name);
-        textView.setText(data.getnick_name());
-
-        TextView timerange = (TextView)view.findViewById(R.id.nick_data);
-        timerange.setText(data.getnick_data());
-
+                TextView timerange = (TextView) view.findViewById(R.id.nick_data);
+                timerange.setText(data.getnick_data());
+            }
+            if (data.getType() == 0) {
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
+                TextView plandate = (TextView) view.findViewById(R.id.plan_date);
+                plandate.setText(data.getdate());
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        final RelativeLayout row = (RelativeLayout) view.findViewById(R.id.item_list1);
         view.findViewById(R.id.drag_image)
                 .setOnTouchListener(new View.OnTouchListener() {
                     @Override
@@ -67,6 +83,7 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
             return INVALID_ID;
         }
         TravelLocation item = getItem(position);
+
         return mIdMap.get(item);
     }
 

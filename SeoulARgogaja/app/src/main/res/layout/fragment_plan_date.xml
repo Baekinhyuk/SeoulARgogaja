@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_list1"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="#f9f9f9" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="16dp"
+        >
+
+        <TextView
+            android:id="@+id/plan_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start"
+            tools:text="여행 날짜"
+            />
+
+        <ImageView
+            android:id="@+id/drag_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="16dp"
+            android:gravity="end"
+            android:src="@drawable/ic_directions_run_black_24dp"
+            android:scaleType="centerCrop"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
