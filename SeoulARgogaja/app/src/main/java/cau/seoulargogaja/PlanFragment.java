@@ -9,12 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.design.widget.FloatingActionButton;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import java.util.Arrays;
 import java.util.List;
 
 public class PlanFragment extends Fragment{
+
+    private Animation fab_open, fab_close;
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab, fab1, fab2;
 
     //TEST
     List<TravelLocation> list = Arrays.asList(
@@ -25,7 +31,6 @@ public class PlanFragment extends Fragment{
             new TravelLocation("여행지5", "여행지정보5"),
             new TravelLocation("여행지6", "여행지정보6")
     );
-
 
 
     @Nullable
@@ -53,16 +58,57 @@ public class PlanFragment extends Fragment{
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+
+        fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
+
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) rootView.findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) rootView.findViewById(R.id.fab2);
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                anim();
             }
         });
 
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anim();
+            }
+        });
+
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anim();
+            }
+        });
+
+
         return rootView;
+    }
+
+    public void anim() {
+
+        if (isFabOpen) {
+            fab.setImageResource(R.drawable.ic_add_black_24dp);
+            fab1.startAnimation(fab_close);
+            fab2.startAnimation(fab_close);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            isFabOpen = false;
+        } else {
+            fab.setImageResource(R.drawable.ic_close_black_24dp);
+            fab1.startAnimation(fab_open);
+            fab2.startAnimation(fab_open);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            isFabOpen = true;
+        }
     }
 
 

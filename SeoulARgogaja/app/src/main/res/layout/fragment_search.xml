@@ -19,7 +19,7 @@
         android:layout_marginTop="70dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/searchbutton"
+        android:background="@drawable/searchtravel"
         />
 
     <Button
@@ -30,7 +30,7 @@
         android:layout_marginTop="70dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/searchbutton"
+        android:background="@drawable/searchtheme"
         />
 
     <Button
@@ -41,6 +41,6 @@
         android:layout_marginTop="70dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/searchbutton"
+        android:background="@drawable/searchwnqus"
         />
 </LinearLayout>

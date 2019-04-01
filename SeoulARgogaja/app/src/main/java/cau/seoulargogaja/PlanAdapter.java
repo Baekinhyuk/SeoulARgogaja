@@ -47,6 +47,7 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
             }
         }
+
         try {
             if (data.getType() == 1) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
@@ -64,6 +65,7 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
         final RelativeLayout row = (RelativeLayout) view.findViewById(R.id.item_list1);
         view.findViewById(R.id.drag_image)
                 .setOnTouchListener(new View.OnTouchListener() {
