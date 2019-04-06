@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_list1"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="55dp"
     android:background="#f9f9f9" >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="55dp"
         android:padding="16dp"
         >
 
@@ -30,21 +30,11 @@
 
             <TextView
                 android:id="@+id/nick_name"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
                 android:gravity="bottom"
-                tools:text="여행지 이름"
-                />
-
-            <TextView
-                android:id="@+id/nick_data"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-
-                tools:text="여행지 관련 정보"
-                />
+                tools:text="여행지 이름" />
         </LinearLayout>
 
         <ImageView

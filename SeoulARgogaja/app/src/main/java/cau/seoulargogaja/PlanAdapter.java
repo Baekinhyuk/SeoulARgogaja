@@ -53,9 +53,6 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
                 TextView textView = (TextView) view.findViewById(R.id.nick_name);
                 textView.setText(data.getnick_name());
-
-                TextView timerange = (TextView) view.findViewById(R.id.nick_data);
-                timerange.setText(data.getnick_data());
             }
             if (data.getType() == 0) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);

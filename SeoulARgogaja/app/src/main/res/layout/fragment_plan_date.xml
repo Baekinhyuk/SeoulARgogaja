@@ -2,14 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_list1"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="50dp"
     android:background="#f9f9f9" >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:padding="16dp"
+        android:background="@color/background_date"
         >
 
         <TextView
@@ -18,13 +19,15 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="start"
+            android:textStyle="bold"
+            android:textSize="17sp"
             tools:text="여행 날짜"
             />
 
         <ImageView
             android:id="@+id/drag_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_marginRight="16dp"
             android:gravity="end"
             android:src="@drawable/ic_directions_run_black_24dp"
