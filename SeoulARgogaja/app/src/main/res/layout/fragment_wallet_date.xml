@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_list1"
+    android:id="@+id/item_list2"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:background="#f9f9f9" >
@@ -14,7 +14,7 @@
         >
 
         <TextView
-            android:id="@+id/plan_date"
+            android:id="@+id/wallet_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -24,13 +24,13 @@
             tools:text="여행 날짜"
             />
 
-        <ImageView
-            android:id="@+id/drag_image"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+        <TextView
+            android:id="@+id/wallet_all"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_marginRight="16dp"
             android:gravity="end"
-            android:src="@drawable/ic_directions_run_black_24dp"
+            tools:text="총액"
             android:scaleType="centerCrop"
             />
 

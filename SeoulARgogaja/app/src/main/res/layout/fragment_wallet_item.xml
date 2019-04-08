@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_list1"
+    android:id="@+id/item_list2"
     android:layout_width="match_parent"
     android:layout_height="55dp"
     android:background="#f9f9f9" >
@@ -13,7 +13,7 @@
         >
 
         <ImageView
-            android:id="@+id/leader_image"
+            android:id="@+id/wallet_leader_image"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginRight="36dp"
@@ -29,30 +29,21 @@
             >
 
             <TextView
-                android:id="@+id/nick_name"
+                android:id="@+id/wallet_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:gravity="bottom"
-                tools:text="여행지 이름" />
+                tools:text="지출 내용" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/vote_image"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_map_black_24dp"
-            android:scaleType="centerCrop"
-            />
-        <ImageView
-            android:id="@+id/drag_image"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_import_export_black_24dp"
-            android:scaleType="centerCrop"
-            />
+        <TextView
+            android:id="@+id/wallet_expend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:gravity="end"
+            tools:text="지출 내역" />
 
     </LinearLayout>
 
