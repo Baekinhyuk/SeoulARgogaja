@@ -21,6 +21,7 @@ import java.util.List;
 import cau.seoulargogaja.adapter.SearchListAdapter;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
+import cau.seoulargogaja.data.SpotParser;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -61,22 +62,22 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             editor.putBoolean("isFirst", true);
             editor.commit();
 
-            SpotDAO dao = new SpotDAO(this);
-            dao.createTable();
+            SpotParser parser = new SpotParser();
+            try {
+                parser.start();
+                parser.join(); // 서버 xml파일 파서
 
-            // 서버에서 데이터 불러올 부분.. 임시로
-            list = new ArrayList<SpotDTO>();
-            list.add(new SpotDTO("1","명동","번화가","중구","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("2","중앙대","대학교","동작구","37.123","128.123","서울시 동작구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("3","한강","공원","종로구","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("4","명동삼거리","공원","종로구","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("5","명동사거리","공원","종로구","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("6","중앙대병원","병원","ㅇㅅㅇ","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("7","중앙대중문","대학교","ㅇㅅㅇ","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("8","중앙대후문","대학교","ㅇㅅㅇ","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
-            list.add(new SpotDTO("9","중앙대정문","대학교","ㅇㅅㅇ","37.123","128.123","서울시 중구 ..","010-2222-2222","naver.com","명동 외국인 많아"));
+                SpotDAO dao = new SpotDAO(this); // db 생성
+                dao.createTable();
 
-            dao.setData(list);
+                list = parser.getList();
+                dao.setData(list);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
+
+
 
         }
         imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
