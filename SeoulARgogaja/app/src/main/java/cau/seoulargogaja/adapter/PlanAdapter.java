@@ -1,4 +1,4 @@
-package cau.seoulargogaja;
+package cau.seoulargogaja.adapter;
 
 import android.content.Context;
 import android.os.Handler;
@@ -17,7 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlanAdapter extends ArrayAdapter<TravelLocation> {
+import cau.seoulargogaja.R;
+import cau.seoulargogaja.data.PlanDTO;
+
+public class PlanAdapter extends ArrayAdapter<PlanDTO> {
 
     final int INVALID_ID = -1;
     public interface Listener {
@@ -25,9 +28,9 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
     }
 
     final Listener listener;
-    final Map<TravelLocation, Integer> mIdMap = new HashMap<>();
+    final Map<PlanDTO, Integer> mIdMap = new HashMap<>();
 
-    public PlanAdapter(Context context, List<TravelLocation> list, Listener listener) {
+    public PlanAdapter(Context context, List<PlanDTO> list, Listener listener) {
         super(context, 0, list);
         this.listener = listener;
         for (int i = 0; i < list.size(); ++i) {
@@ -38,23 +41,23 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         Context context = getContext();
-        final TravelLocation data = getItem(position);
+        final PlanDTO data = getItem(position);
         if(null == view) {
-            if(data.getType() == 1) {
+            if(data.getdatatype() == 1) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
             }
-            else if(data.getType() == 0){
+            else if(data.getdatatype() == 0){
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
             }
         }
 
         try {
-            if (data.getType() == 1) {
+            if (data.getdatatype() == 1) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
                 TextView textView = (TextView) view.findViewById(R.id.nick_name);
-                textView.setText(data.getnick_name());
+                textView.setText(data.getContent());
             }
-            if (data.getType() == 0) {
+            if (data.getdatatype() == 0) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
                 TextView plandate = (TextView) view.findViewById(R.id.plan_date);
                 plandate.setText(data.getdate());
@@ -81,7 +84,7 @@ public class PlanAdapter extends ArrayAdapter<TravelLocation> {
         if (position < 0 || position >= mIdMap.size()) {
             return INVALID_ID;
         }
-        TravelLocation item = getItem(position);
+        PlanDTO item = getItem(position);
 
         return mIdMap.get(item);
     }

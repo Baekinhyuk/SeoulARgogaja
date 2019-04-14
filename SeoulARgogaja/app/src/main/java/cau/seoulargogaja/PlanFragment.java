@@ -4,9 +4,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +22,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import cau.seoulargogaja.adapter.PlanAdapter;
+import cau.seoulargogaja.data.PlanDTO;
 
 import static android.app.AlertDialog.THEME_HOLO_LIGHT;
 
@@ -41,16 +41,13 @@ public class PlanFragment extends Fragment{
     private DatePickerDialog dialog,dialog2;
 
     //TEST
-    List<TravelLocation> list = Arrays.asList(
-            new TravelLocation("3월24일"),
-            new TravelLocation("여행지1", "여행지정보1"),
-            new TravelLocation("여행지2", "여행지정보2"),
-            new TravelLocation("3월25일"),
-            new TravelLocation("여행지5", "여행지정보5"),
-            new TravelLocation("여행지6", "여행지정보6"),
-            new TravelLocation("3월26일"),
-            new TravelLocation("여행지10", "여행지정보10"),
-            new TravelLocation("여행지20", "여행지정보20")
+    List<PlanDTO> list = Arrays.asList(
+            new PlanDTO(1,"3월24일",0),
+            new PlanDTO(2,"중앙대","3월24일",0,0, "중앙대학교",0,0),
+            new PlanDTO(3,"중앙대2","3월24일",0,0, "중앙대학교2",0,0),
+            new PlanDTO(4,"3월25일",0),
+            new PlanDTO(5,"중앙대","3월25일",0,0, "중앙대학교",0,0),
+            new PlanDTO(6,"중앙대2","3월25일",0,0, "중앙대학교2",0,0)
     );
 
 
@@ -72,7 +69,7 @@ public class PlanFragment extends Fragment{
         listView.setListener(new CustomListView.Listener() {
             @Override
             public void swapElements(int indexOne, int indexTwo) {
-                TravelLocation temp = list.get(indexOne);
+                PlanDTO temp = list.get(indexOne);
                 list.set(indexOne, list.get(indexTwo));
                 list.set(indexTwo, temp);
             }
