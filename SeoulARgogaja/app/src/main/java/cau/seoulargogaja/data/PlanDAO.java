@@ -36,7 +36,7 @@ public class PlanDAO {
                         + "spotID integer, "  // spotID
                         + "customID integer, "  // customID
                         + "memo text, " // 메모
-                        + "order integer, "  // 순서
+                        + "order_ integer autoincrement, "  // 순서
                         + "datatype integer, " //데이터타입구별
                         + "planlistid integer "// 리스트ID
                         + ")");
@@ -59,7 +59,7 @@ public class PlanDAO {
 
                     PlanDTO dto = list.get(i);
 
-                    database.execSQL("INSERT INTO " + tableName + "(ID,content,date,spotID,customID,memo,order,datatype,planlistid) VALUES "
+                    database.execSQL("INSERT INTO " + tableName + "(ID,content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
                             + "("
                             + "'" + dto.getId() + "',"
                             + "'" + dto.getContent() + "',"
@@ -153,6 +153,74 @@ public class PlanDAO {
 
     private void println(String data) {
         Log.d("tour", "[dao db] " + data);
+    }
+
+    public void insert_plan(PlanDTO dto) {  //데이터 삽입하기
+        try {
+            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,datatype,planlistid) VALUES "
+                    + "("
+                    + "'" + dto.getContent() + "',"
+                    + "'" + dto.getdate() + "',"
+                    + "'" + dto.getspotID() + "',"
+                    + "'" + dto.getcustomID() + "',"
+                    + "'" + dto.getmemo() + "',"
+                    + "'" + dto.getdatatype() + "',"
+                    + "'" + dto.getplanlistid() + "'"
+                    + ")");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("plan", "[dao db] : 값이 안들어가짐 ", e);
+        }
+    }
+
+    public ArrayList<PlanDTO> select_planlistid(int planlist_id) {  //planlistid에 해당하는 내용만 조회하기
+        ArrayList<PlanDTO> list = new ArrayList<PlanDTO>();
+        try {
+
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+planlist_id +" ORDER BY "+tableName+".order_ ASC", null);
+
+                int count = cursor.getCount();
+                println("결과 레코드의 갯수 : " + count);
+
+                /*startManagingCursor(cursor);
+                String[] columns = new String[] {"_id", "age", "mobile"};
+                int[] to = new int[] {R.id.editText3, R.id.editText4, R.id.editText5};
+                SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.customer_item, cursor, columns, to);
+                listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged(); //리스트뷰가 업데이트 되는거.*/
+
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    int id = cursor.getInt(0);
+                    String content = cursor.getString(1);
+                    String date = cursor.getString(2);
+                    int spotID = cursor.getInt(3);
+                    int customID = cursor.getInt(4);
+                    String memo = cursor.getString(5);
+                    int order = cursor.getInt(6);
+                    int datatype = cursor.getInt(7);
+                    int planlistid = cursor.getInt(8);
+
+                    PlanDTO dto = new PlanDTO(id,content,date,spotID,customID,memo,order,planlistid);
+                    list.add(dto);
+                }
+
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+
+                println("데이터를 조회했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Plan","[PlanDAO] ",e);
+        }
+
+
+        return list;
     }
 
 }

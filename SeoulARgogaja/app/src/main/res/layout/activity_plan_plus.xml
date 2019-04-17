@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:id="@+id/plan_add_Layout">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/edit_plan_cancel"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_check_circle_black_24dp"
+                android:scaleType="centerCrop"
+                />
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_plan_date"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:hint="0월 00일"
+                android:backgroundTint="#bfe2f8"
+                android:textSize="15dp"/>
+
+            <ImageView
+                android:id="@+id/edit_plan_add"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_check_circle_black_24dp"
+                android:scaleType="centerCrop"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_plan_content"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:hint="장소명"
+                android:backgroundTint="#bfe2f8"
+                android:textSize="15dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_plan_location"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:hint="위치"
+                android:backgroundTint="#bfe2f8"
+                android:textSize="15dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_plan_memo"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:hint="메모"
+                android:backgroundTint="#bfe2f8"
+                android:textSize="15dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

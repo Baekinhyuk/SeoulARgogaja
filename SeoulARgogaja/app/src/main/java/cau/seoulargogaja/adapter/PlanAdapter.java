@@ -9,9 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.os.Build;
@@ -46,7 +43,6 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         final Context context = getContext();
-
         final PlanDTO data = getItem(position);
         if(null == view) {
             if(data.getdatatype() == 1) {
@@ -62,8 +58,6 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
                 TextView textView = (TextView) view.findViewById(R.id.nick_name);
                 textView.setText(data.getContent());
-
-                final RelativeLayout row = (RelativeLayout) view.findViewById(R.id.item_list1);
                 view.findViewById(R.id.vote_image)
                         .setOnTouchListener(new View.OnTouchListener() {
                             @Override
@@ -94,7 +88,6 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
 
         return view;
     }
-
 
     @Override
     public long getItemId(int position) {
