@@ -70,7 +70,6 @@ public class PlanFragment extends Fragment {
         dao = new PlanDAO(this.getActivity());
         //앱 최초 실행 시 db 생성
         SharedPreferences pref = this.getActivity().getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
-        Log.d("tour", "[first] 첫 실행.......");
         boolean first = pref.getBoolean("isFirst", false);
         Log.d("tour~", Boolean.toString(first));
         if(first==false) {
@@ -88,7 +87,9 @@ public class PlanFragment extends Fragment {
         PlanAdapter adapter = new PlanAdapter(getActivity(), list, new PlanAdapter.Listener() {
             @Override
             public void onGrab(int position, RelativeLayout row) {
+                Log.d("Grab", "[first] 첫 그랩...");
                 listView.onGrab(position, row);
+                Log.d("Grab", "[first] 두 그랩...");
             }
         });
 
@@ -96,9 +97,33 @@ public class PlanFragment extends Fragment {
         listView.setListener(new CustomListView.Listener() {
             @Override
             public void swapElements(int indexOne, int indexTwo) {
+                /*
+                Log.d("Grab_element", "IndexOne : "+ Integer.toString(indexOne));
+                Log.d("Grab_element", "IndexTwo : "+ Integer.toString(indexTwo));
+                */
+                PlanDTO temp1 = list.get(indexOne);
+                PlanDTO temp2 = list.get(indexTwo);
+                /*
+                Log.d("Grab_element_order_num", "_order_num_one : "+ Integer.toString(temp1.getOrder()));
+                Log.d("Grab_element_order_num", "_order_num_one : "+ temp1.getContent());
+                Log.d("Grab_element_order_num", "_order_num_one : "+ Integer.toString(temp1.getId()));
+
+                Log.d("Grab_element_order_num", "_order_num_two : "+ Integer.toString(temp2.getOrder()));
+                Log.d("Grab_element_order_num", "_order_num_two : "+ temp2.getContent());
+                Log.d("Grab_element_order_num", "_order_num_one : "+ Integer.toString(temp2.getId()));
+                */
+                dao.Change_two_order(temp1,temp2);
+                /*
+                Log.d("Grab_element_order_num", "_order_num_one : "+ Integer.toString(temp1.getOrder()));
+                Log.d("Grab_element_order_num", "_order_num_two : "+ Integer.toString(temp2.getOrder()));
+                */
                 PlanDTO temp = list.get(indexOne);
                 list.set(indexOne, list.get(indexTwo));
                 list.set(indexTwo, temp);
+                /*
+                Log.d("Grab_element_order_num", "_order_num_one : "+ Integer.toString(temp1.getOrder()));
+                Log.d("Grab_element_order_num", "_order_num_two : "+ Integer.toString(temp2.getOrder()));
+                */
             }
         });
 

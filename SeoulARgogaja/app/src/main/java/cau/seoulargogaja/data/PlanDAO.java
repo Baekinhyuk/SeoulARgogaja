@@ -36,7 +36,7 @@ public class PlanDAO {
                         + "spotID integer, "  // spotID
                         + "customID integer, "  // customID
                         + "memo text, " // 메모
-                        + "order_ integer autoincrement, "  // 순서
+                        + "order_ integer,"  // 순서
                         + "datatype integer, " //데이터타입구별
                         + "planlistid integer "// 리스트ID
                         + ")");
@@ -157,13 +157,28 @@ public class PlanDAO {
 
     public void insert_plan(PlanDTO dto) {  //데이터 삽입하기
         try {
-            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,datatype,planlistid) VALUES "
+            int order = 0;
+            try {
+                //Cursor cursor = database.rawQuery("SELECT Max("+tableName+".order_) FROM " + tableName, null);
+                Cursor cursor = database.query(tableName, null, "order_=(SELECT MAX(order_) FROM "+ tableName + ")", null, null, null, null);
+                int count = cursor.getCount();
+                if (count != 0) {
+                    order = cursor.getColumnIndex("order_");
+                    order += 1;
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+                Log.e("plan", "[dao db] : 값이 안들어가짐 ", e);
+            }
+
+            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
                     + "("
                     + "'" + dto.getContent() + "',"
                     + "'" + dto.getdate() + "',"
                     + "'" + dto.getspotID() + "',"
                     + "'" + dto.getcustomID() + "',"
                     + "'" + dto.getmemo() + "',"
+                    + "'" + order + "',"
                     + "'" + dto.getdatatype() + "',"
                     + "'" + dto.getplanlistid() + "'"
                     + ")");
@@ -223,4 +238,17 @@ public class PlanDAO {
         return list;
     }
 
+    public void Change_two_order(PlanDTO dto1,PlanDTO dto2) {  //데이터 두개 변경하기
+        try {
+            int temp_id1 = dto1.getId();
+            int temp_id2 = dto2.getId();
+            int temp_order1 = dto1.getOrder();
+            int temp_order2 = dto2.getOrder();
+            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 +" WHERE ID="+temp_id1 );
+            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 +" WHERE ID="+temp_id2 );
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
+        }
+    }
 }
