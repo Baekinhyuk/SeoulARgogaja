@@ -33,10 +33,14 @@ import java.util.Locale;
 import cau.seoulargogaja.adapter.PlanAdapter;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
+import cau.seoulargogaja.data.SpotDAO;
+import cau.seoulargogaja.data.SpotDTO;
+import cau.seoulargogaja.data.SpotParser;
 
 import static android.app.AlertDialog.THEME_HOLO_LIGHT;
 
 public class PlanFragment extends Fragment {
+
 
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
@@ -78,6 +82,20 @@ public class PlanFragment extends Fragment {
             editor.putBoolean("isFirst", true);
             editor.commit();
             dao.createTable();
+
+            SpotParser parser = new SpotParser();
+            try {
+                parser.start();
+                parser.join(); // 서버 xml파일 파서
+
+                SpotDAO dao = new SpotDAO(this.getActivity()); // db 생성
+                dao.createTable();
+                ArrayList<SpotDTO> spotlist;
+                spotlist = parser.getList();
+                dao.setData(spotlist);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
         }
         imm = (InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 

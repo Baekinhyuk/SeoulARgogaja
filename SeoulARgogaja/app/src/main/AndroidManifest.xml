@@ -32,6 +32,12 @@
             android:name=".SearchActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
+            android:name=".DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".WebActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".SimpleDirectionActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity

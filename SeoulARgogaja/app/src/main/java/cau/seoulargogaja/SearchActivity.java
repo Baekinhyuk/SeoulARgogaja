@@ -25,7 +25,7 @@ import cau.seoulargogaja.data.SpotParser;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener{
 
-    public static ArrayList<SpotDTO> list = null;
+
 
     Button keywordSearchBtn;
     SearchView searchView;
@@ -62,19 +62,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             editor.putBoolean("isFirst", true);
             editor.commit();
 
-            SpotParser parser = new SpotParser();
-            try {
-                parser.start();
-                parser.join(); // 서버 xml파일 파서
 
-                SpotDAO dao = new SpotDAO(this); // db 생성
-                dao.createTable();
-
-                list = parser.getList();
-                dao.setData(list);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
 
 
 
@@ -117,7 +105,17 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     SpotDTO tour = searchedList.get(position);
                     /*Utils.toast(getApplication(), "Show Detail : " + tour.getName());*/
                     Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                    intent.putExtra("id", tour.getId());
                     intent.putExtra("name", tour.getName());
+                    intent.putExtra("theme", tour.getTheme());
+                    intent.putExtra("area", tour.getArea());
+                    intent.putExtra("latitude", tour.getLatitude());
+                    intent.putExtra("longitude", tour.getLongitude());
+                    intent.putExtra("address", tour.getAddress());
+                    intent.putExtra("phone", tour.getPhone());
+                    intent.putExtra("web", tour.getWeb());
+                    intent.putExtra("description", tour.getDescription());
+
                     startActivity(intent);
                 }
             });
