@@ -160,17 +160,42 @@ public class PlanDAO {
             int order = 0;
             try {
                 //Cursor cursor = database.rawQuery("SELECT Max("+tableName+".order_) FROM " + tableName, null);
-                Cursor cursor = database.query(tableName, null, "order_=(SELECT MAX(order_) FROM "+ tableName + ")", null, null, null, null);
+                //Cursor cursor = database.query(tableName, null, "order_=(SELECT MAX(order_) FROM "+ tableName + ")", null, null, null, null);
+                /*
+                Cursor cursor = database.rawQuery("SELECT (Max(order_)) as order_ FROM " + tableName, null);
                 int count = cursor.getCount();
+                println("Insert 부분 결과 레코드의 갯수 : " + count);
                 if (count != 0) {
                     order = cursor.getColumnIndex("order_");
+                    println("Insert 부분 결과 레코드의 order : " + order);
+                    Log.d("Insert_plan", "Insert_plan1 : "+ Integer.toString(order));
                     order += 1;
-                }
+                    Log.d("Insert_plan", "Insert_plan2 : "+ Integer.toString(order));
+                }*/
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ DESC", null);
+
+                int count = cursor.getCount();
+                println("insert 결과 레코드의 갯수 : " + count);
+                cursor.moveToFirst();
+                //int id = cursor.getInt(0);
+                //String content = cursor.getString(1);
+                //String date = cursor.getString(2);
+                //int spotID = cursor.getInt(3);
+                //int customID = cursor.getInt(4);
+                //String memo = cursor.getString(5);
+                int order2 = cursor.getInt(6);
+                println("insert 결과 레코드의 order2 : " + order2);
+
+                //int datatype = cursor.getInt(7);
+                //int planlistid = cursor.getInt(8);
+                order = order2+1;
+                println("insert 결과 레코드의 order1 : " + order);
+
             }catch (Exception e) {
                 e.printStackTrace();
                 Log.e("plan", "[dao db] : 값이 안들어가짐 ", e);
             }
-
+            Log.d("Insert_plan", "Insert_plan3 : "+ Integer.toString(order));
             database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
                     + "("
                     + "'" + dto.getContent() + "',"
@@ -239,16 +264,19 @@ public class PlanDAO {
     }
 
     public void Change_two_order(PlanDTO dto1,PlanDTO dto2) {  //데이터 두개 변경하기
+
         try {
             int temp_id1 = dto1.getId();
             int temp_id2 = dto2.getId();
             int temp_order1 = dto1.getOrder();
             int temp_order2 = dto2.getOrder();
-            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 +" WHERE ID="+temp_id1 );
-            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 +" WHERE ID="+temp_id2 );
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
+
+            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
+            }
         }
-    }
 }
