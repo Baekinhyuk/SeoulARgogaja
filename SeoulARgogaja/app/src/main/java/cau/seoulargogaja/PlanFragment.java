@@ -1,6 +1,7 @@
 package cau.seoulargogaja;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,7 +57,6 @@ public class PlanFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_plan, container, false);
 
-
         final CustomListView listView = (CustomListView)rootView.findViewById(R.id.listView1);
         PlanAdapter adapter = new PlanAdapter(getActivity(), list, new PlanAdapter.Listener() {
             @Override
@@ -74,7 +74,6 @@ public class PlanFragment extends Fragment{
                 list.set(indexTwo, temp);
             }
         });
-
 
 
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
@@ -150,8 +149,6 @@ public class PlanFragment extends Fragment{
             }
         });
 
-
-
         return rootView;
     }
 
@@ -173,6 +170,4 @@ public class PlanFragment extends Fragment{
             isFabOpen = true;
         }
     }
-
-
 }
