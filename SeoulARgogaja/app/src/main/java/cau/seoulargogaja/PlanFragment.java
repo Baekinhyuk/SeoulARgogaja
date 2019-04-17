@@ -1,64 +1,88 @@
 package cau.seoulargogaja;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.design.widget.FloatingActionButton;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import cau.seoulargogaja.adapter.PlanAdapter;
+import cau.seoulargogaja.data.PlanDAO;
+import cau.seoulargogaja.data.PlanDTO;
+
 import static android.app.AlertDialog.THEME_HOLO_LIGHT;
 
-public class PlanFragment extends Fragment{
+public class PlanFragment extends Fragment {
 
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
     private FloatingActionButton fab, fab1, fab2;
     private EditText editTitle;
     private TextView startDate,endDate;
-    private ImageView startImage,endImage;
+    private ImageView startImage,endImage,addImage;
     // datePicker 사용
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog dialog,dialog2;
 
+    PlanDAO dao;
+    InputMethodManager imm;
+    ArrayList<PlanDTO> list;
     //TEST
-    List<TravelLocation> list = Arrays.asList(
-            new TravelLocation("3월24일"),
-            new TravelLocation("여행지1", "여행지정보1"),
-            new TravelLocation("여행지2", "여행지정보2"),
-            new TravelLocation("3월25일"),
-            new TravelLocation("여행지5", "여행지정보5"),
-            new TravelLocation("여행지6", "여행지정보6"),
-            new TravelLocation("3월26일"),
-            new TravelLocation("여행지10", "여행지정보10"),
-            new TravelLocation("여행지20", "여행지정보20")
-    );
-
+    /*
+    List<PlanDTO> list = Arrays.asList(
+            new PlanDTO(1,"3월24일",0),
+            new PlanDTO(2,"중앙대","3월24일",0,0, "중앙대학교",0,0),
+            new PlanDTO(3,"중앙대2","3월24일",0,0, "중앙대학교2",0,0),
+            new PlanDTO(4,"3월25일",0),
+            new PlanDTO(5,"중앙대","3월25일",0,0, "중앙대학교",0,0),
+            new PlanDTO(6,"중앙대2","3월25일",0,0, "중앙대학교2",0,0)
+    );*/
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_plan, container, false);
 
+        dao = new PlanDAO(this.getActivity());
+        //앱 최초 실행 시 db 생성
+        SharedPreferences pref = this.getActivity().getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
+        Log.d("tour", "[first] 첫 실행.......");
+        boolean first = pref.getBoolean("isFirst", false);
+        Log.d("tour~", Boolean.toString(first));
+        if(first==false) {
+            Log.d("tour", "[first] 첫 실행...");
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFirst", true);
+            editor.commit();
+            dao.createTable();
+        }
+        imm = (InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        list = dao.select_planlistid(0);
 
         final CustomListView listView = (CustomListView)rootView.findViewById(R.id.listView1);
         PlanAdapter adapter = new PlanAdapter(getActivity(), list, new PlanAdapter.Listener() {
@@ -72,12 +96,11 @@ public class PlanFragment extends Fragment{
         listView.setListener(new CustomListView.Listener() {
             @Override
             public void swapElements(int indexOne, int indexTwo) {
-                TravelLocation temp = list.get(indexOne);
+                PlanDTO temp = list.get(indexOne);
                 list.set(indexOne, list.get(indexTwo));
                 list.set(indexTwo, temp);
             }
         });
-
 
 
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
@@ -108,6 +131,18 @@ public class PlanFragment extends Fragment{
                 anim();
             }
         });
+
+
+        addImage = (ImageView) rootView.findViewById(R.id.add_plan_image);
+        // add 버튼 누르면 plan 추가 화면으로 돌아감
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PlanAdd.class);
+                startActivity(intent);
+            }
+        });
+
 
         editTitle = (EditText) rootView.findViewById(R.id.plan_title);
 
@@ -143,6 +178,7 @@ public class PlanFragment extends Fragment{
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate2 = Calendar.getInstance();
                 newDate2.set(year, monthOfYear, dayOfMonth);
+
                 endDate.setText(dateFormatter.format(newDate2.getTime()));
             }
         }, newCalendar2.get(Calendar.YEAR), newCalendar2.get(Calendar.MONTH), newCalendar2.get(Calendar.DAY_OF_MONTH));
@@ -176,6 +212,6 @@ public class PlanFragment extends Fragment{
             isFabOpen = true;
         }
     }
-
-
 }
+
+

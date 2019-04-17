@@ -23,6 +23,8 @@ import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.util.DisplayMetrics;
 
+import cau.seoulargogaja.adapter.PlanAdapter;
+
 
 public class CustomListView extends ListView {
     private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;

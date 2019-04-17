@@ -86,6 +86,15 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="끝날짜" />
+
+            <ImageView
+                android:id="@+id/add_plan_image"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_add_black_24dp"
+                android:scaleType="centerCrop"
+                />
         </LinearLayout>
 
     </LinearLayout>
