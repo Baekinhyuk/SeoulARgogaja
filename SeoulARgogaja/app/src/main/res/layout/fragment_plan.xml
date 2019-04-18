@@ -13,91 +13,105 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="100dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/Travel"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_title_black_24dp"
-                android:padding="13dp"
-                android:layout_centerVertical="true" />
 
-            <EditText
-                android:id="@+id/plan_title"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="제목"/>
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/Travel"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_title_black_24dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/plan_title"
+                    android:text="제목"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:backgroundTint="#bfe2f8"
+                    android:textSize="30dp" />
+
+                <ImageView
+                    android:id="@+id/menu_list"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_menu_black_24dp" />
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:background="@color/background2">
+
+                <ImageView
+                    android:id="@+id/btn_calender"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:padding="13dp"
+                    android:src="@drawable/ic_event_note_black_24dp" />
+
+                <TextView
+                    android:id="@+id/txt_calender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="시작날짜" />
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="~" />
+
+                <ImageView
+                    android:id="@+id/btn_calender2"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:padding="13dp"
+                    android:src="@drawable/ic_event_note_black_24dp" />
+
+                <TextView
+                    android:id="@+id/txt_calender2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="끝날짜" />
+
+                <ImageView
+                    android:id="@+id/add_plan_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_add_black_24dp"
+                    />
+            </LinearLayout>
 
         </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:background="@color/background2">
-
-            <ImageView
-                android:id="@+id/btn_calender"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:padding="13dp"
-                android:src="@drawable/ic_event_note_black_24dp" />
-
-            <TextView
-                android:id="@+id/txt_calender"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="시작날짜" />
-
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="~" />
-
-            <ImageView
-                android:id="@+id/btn_calender2"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:padding="13dp"
-                android:src="@drawable/ic_event_note_black_24dp" />
-
-            <TextView
-                android:id="@+id/txt_calender2"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="끝날짜" />
-
-            <ImageView
-                android:id="@+id/add_plan_image"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/ic_add_black_24dp"
-                android:scaleType="centerCrop"
-                />
-        </LinearLayout>
-
-    </LinearLayout>
 
         <cau.seoulargogaja.CustomListView
             xmlns:android="http://schemas.android.com/apk/res/android"
