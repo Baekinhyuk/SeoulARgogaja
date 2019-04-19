@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ComplexColorCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,8 @@ import java.util.Locale;
 import cau.seoulargogaja.adapter.PlanAdapter;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
+import cau.seoulargogaja.data.PlanListDAO;
+import cau.seoulargogaja.data.PlanListDTO;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
 import cau.seoulargogaja.data.SpotParser;
@@ -63,6 +66,7 @@ public class PlanFragment extends Fragment {
     private int Date_diff_date;
 
     PlanDAO dao;
+    PlanListDAO listdao;
     InputMethodManager imm;
     ArrayList<PlanDTO> list;
 
@@ -72,6 +76,7 @@ public class PlanFragment extends Fragment {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_plan, container, false);
 
         dao = new PlanDAO(this.getActivity());
+        listdao = new PlanListDAO(this.getActivity());
         //앱 최초 실행 시 db 생성
         SharedPreferences pref = this.getActivity().getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
         boolean first = pref.getBoolean("isFirst", false);
@@ -82,6 +87,8 @@ public class PlanFragment extends Fragment {
             editor.putBoolean("isFirst", true);
             editor.commit();
             dao.createTable();
+            listdao.createTable();
+            listdao.insert(new PlanListDTO());
 
             SpotParser parser = new SpotParser();
             try {
@@ -97,6 +104,31 @@ public class PlanFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+        /* PlanList test 코드임 삭제해도됨
+        ArrayList<PlanListDTO> a = listdao.selectAll();
+        try {
+            PlanListDTO pldto = a.get(0);
+            Log.d("과연 최초 생성 id", pldto.getId()+"");
+            listdao.insert(new PlanListDTO());
+            pldto = a.get(1);
+            Log.d("과연 두번째 id", pldto.getId()+"");
+            listdao.delete(pldto.getId());
+            listdao.insert(new PlanListDTO());
+            a = listdao.selectAll();
+            pldto = a.get(1);
+            Log.d("삭제하고 생성한 두번째 id", pldto.getId()+"");
+            pldto.setBudget(10000);
+            listdao.update(pldto);
+            a = listdao.selectAll();
+            pldto = a.get(1);
+            Log.d("제대로 update?", pldto.getBudget()+" id = "+pldto.getId());
+
+        }catch(Exception e){
+            Log.d("planlist", "추가안됫는데??");
+        }*/
+
+
+
         imm = (InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         list = dao.select_planlistid(0);
