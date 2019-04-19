@@ -33,7 +33,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     SearchListAdapter searchListAdapter;
     ListView searchListView;
     List<SpotDTO> searchedList = new ArrayList<>();
-
+    List<SpotDTO> tourList;
     InputMethodManager imm;
 
 
@@ -53,21 +53,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_search);
 
 
-        //앱 최초 실행 시 db 생성
-        SharedPreferences pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
-        boolean first = pref.getBoolean("isFirst", false);
-        if(first==false) {
-            Log.d("tour", "[first] 첫 실행...");
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("isFirst", true);
-            editor.commit();
-
-
-
-
-
-
-        }
+        tourList  = getTourList();
         imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 
         keywordSearchBtn = (Button) findViewById(R.id.keyword_search_btn);
@@ -140,7 +126,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     public List<SpotDTO> searchByKeyword(String query) {
         List<SpotDTO> result = new ArrayList<>();
-        List<SpotDTO> tourList = getTourList();
+
 
 //        Utils.log("# SEARCH BY KEYWORD: " + query + " in " + tourList.size());
         for (SpotDTO tour : tourList) {

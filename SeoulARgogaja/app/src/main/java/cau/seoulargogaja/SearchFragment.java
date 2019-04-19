@@ -29,10 +29,10 @@ public class SearchFragment extends Fragment {
         });
         Button btn2 = (Button)rootView.findViewById(R.id.button2);
         //이벤트
-        btn1.setOnClickListener(new View.OnClickListener(){
+        btn2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                Intent intent = new Intent(getActivity(), ThemeActivity.class);
                 startActivity(intent);
             }
         });

@@ -50,7 +50,6 @@ public class SearchListAdapter extends BaseAdapter {
             rowView = inflater.inflate(R.layout.search_list_row, parent, false);
 
             holder.title = (TextView) rowView.findViewById(R.id.search_item_title);
-            holder.subTitle = (TextView) rowView.findViewById(R.id.search_item_sub_title);
 
             rowView.setTag(holder);
         } else {
@@ -58,9 +57,7 @@ public class SearchListAdapter extends BaseAdapter {
         }
 
         holder.title.setText(tour.getName().trim());
-        holder.subTitle.setText(tour.getTheme().trim());
-
-
+       
 
         return rowView;
     }

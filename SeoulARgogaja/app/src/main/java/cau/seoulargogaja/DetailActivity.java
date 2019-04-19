@@ -97,7 +97,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-
+    // 여기에 일정 추가하는 코드 작성해야함
     public void onAddButtonClick(View view) {   //추가
 
         Toast.makeText(this, "추가한 관광지에 추가되었습니다.", Toast.LENGTH_SHORT).show();
