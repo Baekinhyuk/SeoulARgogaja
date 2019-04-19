@@ -1,137 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@drawable/main_background"
     android:id="@+id/plan_add_Layout">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/edit_plan_cancel"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_keyboard_backspace_black_24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_centerInParent="true"
+            android:id="@+id/edit_plan_date"
+            android:hint="0월 00일"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
+            android:backgroundTint="#bfe2f8"
+            android:textSize="30dp" />
+
+        <ImageView
+            android:id="@+id/edit_plan_add"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_check_circle_black_24dp"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="20dp"
+        android:background="#E0E0F8" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="100dp">
+        android:layout_marginLeft="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
-        <LinearLayout
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_title_black_24dp" />
+
+        <EditText
+            android:id="@+id/edit_plan_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-
-            <ImageView
-                android:id="@+id/edit_plan_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_keyboard_backspace_black_24dp"
-                android:layout_gravity="right"
-                android:layout_marginLeft="37dp"
-                android:layout_marginRight="8dp"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/edit_plan_date"
-                android:singleLine="true"
-                android:imeOptions="actionNext"
-                android:hint="0월 00일"
-                android:backgroundTint="#bfe2f8"
-                android:textSize="20dp"/>
-
-            <ImageView
-                android:id="@+id/edit_plan_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_check_circle_black_24dp"
-                android:layout_gravity="left"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="37dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_title_black_24dp"
-                android:scaleType="centerCrop"
-                />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/edit_plan_content"
-                android:singleLine="true"
-                android:imeOptions="actionNext"
-                android:hint="장소명"
-                android:backgroundTint="#bfe2f8"
-                android:textSize="15dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_location_on_black_24dp"
-                android:scaleType="centerCrop"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/edit_plan_location"
-                android:singleLine="true"
-                android:imeOptions="actionNext"
-                android:hint="위치"
-                android:backgroundTint="#bfe2f8"
-                android:textSize="15dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_create_black_24dp"
-                android:scaleType="centerCrop"
-                />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="600dp"
-                android:id="@+id/edit_plan_memo"
-                android:singleLine="true"
-                android:imeOptions="actionNext"
-                android:hint="메모"
-                android:backgroundTint="#bfe2f8"
-                android:textSize="15dp"/>
-
-        </LinearLayout>
+            android:layout_gravity="center_vertical"
+            android:hint="여행 장소 이름"
+            android:textColorHint="#33000000"
+            android:textSize="16dp"
+            android:inputType="textPersonName" />
 
     </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_location_on_black_24dp" />
+
+        <EditText
+            android:id="@+id/edit_plan_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:hint="여행 장소 위치"
+            android:textColorHint="#33000000"
+            android:textSize="16dp"
+            android:inputType="textPersonName" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_create_black_24dp" />
+
+        <EditText
+            android:id="@+id/edit_plan_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:hint="메모"
+            android:textColorHint="#33000000"
+            android:textSize="16dp"
+            android:lines="4"
+            android:minLines="2"
+            android:maxLines="6"
+            android:scrollbars="vertical"
+            android:inputType="textMultiLine" />
+
+    </LinearLayout>
+
+</LinearLayout>
