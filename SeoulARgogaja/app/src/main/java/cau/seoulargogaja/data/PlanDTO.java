@@ -8,16 +8,24 @@ public class PlanDTO {
     private int customID; // customID
     private String memo; // 메모
     private int order; // 순서
-    private int datatype; //날짜 , 내용 구별 0 = 날짜 , 1 = 내용
+    private int datatype; //날짜 , 내용 구별 0 = 날짜 , 1 = 내용, 2 = + 모양
     private int planlistid;    // 리스트 ID
 
+    //ListView 날짜에 대해 + 모양 (datatype = 2)
     public PlanDTO() {
-
+        datatype = 2;
     }
 
     //ListView 날짜에 대해 저장 (datatype = 0)
     public PlanDTO(int id, String date, int planlistid) {
         this.id = id;
+        this.date = date;
+        this.planlistid = planlistid;
+        datatype = 0;
+    }
+
+    //ListView 날짜에 대해 저장 (datatype = 0)
+    public PlanDTO(String date, int planlistid) {
         this.date = date;
         this.planlistid = planlistid;
         datatype = 0;

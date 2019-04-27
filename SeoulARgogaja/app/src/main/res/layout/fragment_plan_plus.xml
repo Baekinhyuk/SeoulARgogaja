@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_list1"
+    android:id="@+id/item_list3"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="#f9f9f9" >
+    android:layout_height="55dp">
 
 
     <ImageView
-        android:id="@+id/drag_image"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:id="@+id/plus_plan_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_playlist_add_black_24dp" />
 

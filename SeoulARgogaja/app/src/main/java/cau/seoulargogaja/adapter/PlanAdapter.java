@@ -9,15 +9,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.os.Build;
 
 import java.net.MalformedURLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import cau.seoulargogaja.PlanAdd;
 import cau.seoulargogaja.R;
 import cau.seoulargogaja.SimpleDirectionActivity;
 import cau.seoulargogaja.data.PlanDTO;
@@ -44,12 +51,16 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
     public View getView(final int position, View view, ViewGroup parent) {
         final Context context = getContext();
         final PlanDTO data = getItem(position);
+
         if(null == view) {
             if(data.getdatatype() == 1) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
             }
             else if(data.getdatatype() == 0){
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
+            }
+            else if(data.getdatatype() == 2){
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_plus, null);
             }
         }
 
@@ -66,25 +77,83 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                                 return false;
                             }
                         });
+                final RelativeLayout row = (RelativeLayout) view.findViewById(R.id.item_list1);
+                view.findViewById(R.id.drag_image)
+                        .setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                listener.onGrab(position, row);
+                                return false;
+                            }
+                        });
             }
-            if (data.getdatatype() == 0) {
+            else if (data.getdatatype() == 0) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
                 TextView plandate = (TextView) view.findViewById(R.id.plan_date);
-                plandate.setText(data.getdate());
+
+                String day = data.getdate();
+                String a_year = day.substring(0,4);
+                String b_month = day.substring(5,7);
+                String c_day = day.substring(8,10);
+                String sum_day = a_year + b_month + c_day;
+
+                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
+                Date date = null;
+                try {
+                    date = dateFormatter.parse(sum_day);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+
+                String day_kr = "요일";
+                switch(calendar.get(Calendar.DAY_OF_WEEK)){
+                    case 1:
+                        day_kr = "일";
+                        break;
+                    case 2:
+                        day_kr = "월";
+                        break;
+                    case 3 :
+                        day_kr = "화";
+                        break;
+                    case 4 :
+                        day_kr = "수";
+                        break;
+                    case 5 :
+                        day_kr = "목";
+                        break;
+                    case 6 :
+                        day_kr = "금";
+                        break;
+                    case 7 :
+                        day_kr = "토";
+                        break;
+                    default :
+                        System.out.println("그 외의 숫자");
+                }
+                if(b_month.substring(0,1).equals("0")){
+                    b_month = b_month.substring(1,2);
+                }
+                String last = b_month +"월"+ c_day +"일("+ day_kr+")";
+                plandate.setText(last);
+            }
+            else if(data.getdatatype() == 2){
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_plus, null);
+                ImageView addImage = (ImageView) view.findViewById(R.id.plus_plan_image);
+                // add 버튼 누르면 plan 추가 화면으로 돌아감
+                addImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, PlanAdd.class);
+                        context.startActivity(intent);
+                    }
+                });
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
-        final RelativeLayout row = (RelativeLayout) view.findViewById(R.id.item_list1);
-        view.findViewById(R.id.drag_image)
-                .setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        listener.onGrab(position, row);
-                        return false;
-                    }
-                });
 
         return view;
     }

@@ -103,12 +103,6 @@
                     android:gravity="center"
                     android:text="끝날짜" />
 
-                <ImageView
-                    android:id="@+id/add_plan_image"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/ic_add_black_24dp"
-                    />
             </LinearLayout>
 
         </LinearLayout>
@@ -116,7 +110,6 @@
         <cau.seoulargogaja.CustomListView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/listView1"
-            android:background="#EEE"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

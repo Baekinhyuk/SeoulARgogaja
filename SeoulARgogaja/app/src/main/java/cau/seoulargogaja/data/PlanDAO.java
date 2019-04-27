@@ -20,6 +20,7 @@ public class PlanDAO {
         try {
             database = activity.openOrCreateDatabase(databaseName, Context.MODE_PRIVATE, null);
             println("데이터베이스를 열었습니다. : " + databaseName);
+            println("데이터베이스를 열었습니다. 테이블 이름 : " + tableName);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("tour", "[dao db] : 데이터베이스가 안열림 ", e);
@@ -27,6 +28,7 @@ public class PlanDAO {
     }
 
     public void createTable() {      //테이블만들기
+        println("PlanDAO 만들기.");
         try {
             if (database != null) {
                 database.execSQL("CREATE TABLE if not exists " + tableName + "("    //if not exists 은 이미 있으면 만들지 않는다.
@@ -156,40 +158,41 @@ public class PlanDAO {
     }
 
     public void insert_plan(PlanDTO dto) {  //데이터 삽입하기
+        Log.d("InSertPlan : ","지금시작합니다");
         try {
             int order = 0;
+            int order2 = 0;
             try {
-                //Cursor cursor = database.rawQuery("SELECT Max("+tableName+".order_) FROM " + tableName, null);
-                //Cursor cursor = database.query(tableName, null, "order_=(SELECT MAX(order_) FROM "+ tableName + ")", null, null, null, null);
-                /*
-                Cursor cursor = database.rawQuery("SELECT (Max(order_)) as order_ FROM " + tableName, null);
-                int count = cursor.getCount();
-                println("Insert 부분 결과 레코드의 갯수 : " + count);
-                if (count != 0) {
-                    order = cursor.getColumnIndex("order_");
-                    println("Insert 부분 결과 레코드의 order : " + order);
-                    Log.d("Insert_plan", "Insert_plan1 : "+ Integer.toString(order));
-                    order += 1;
-                    Log.d("Insert_plan", "Insert_plan2 : "+ Integer.toString(order));
-                }*/
-                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ DESC", null);
+                //Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ DESC", null);
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid()+" ORDER BY "+tableName+".order_ ASC", null);
 
                 int count = cursor.getCount();
-                println("insert 결과 레코드의 갯수 : " + count);
-                cursor.moveToFirst();
-                //int id = cursor.getInt(0);
-                //String content = cursor.getString(1);
-                //String date = cursor.getString(2);
-                //int spotID = cursor.getInt(3);
-                //int customID = cursor.getInt(4);
-                //String memo = cursor.getString(5);
-                int order2 = cursor.getInt(6);
-                println("insert 결과 레코드의 order2 : " + order2);
+                println("결과 레코드의 갯수 : " + count);
+                Log.d("InSertPlan : 처음 dto Date",dto.getdate());
 
-                //int datatype = cursor.getInt(7);
-                //int planlistid = cursor.getInt(8);
-                order = order2+1;
-                println("insert 결과 레코드의 order1 : " + order);
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    String date = cursor.getString(2);
+                    Log.d("InSertPlan : 처음 dto Date ",date);
+                    Log.d("InSertPlan : 처음 dto Date 비교결과",Boolean.toString(date.equals(dto.getdate())));
+                    if(date.equals(dto.getdate())){
+                        Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid() +" ORDER BY "+tableName+".order_ DESC", null);
+                        int cursor2_count = cursor2.getCount();
+                        Log.d("InSertPlan : cursor2_count",Integer.toString(cursor2_count));
+                        for (int j = 0; j < cursor2_count; j++) {
+                            cursor2.moveToNext();
+                            String date2 = cursor2.getString(2);
+                            if(date2.equals(dto.getdate())) {
+                                order2 = cursor2.getInt(6);
+                            }
+                        }
+                        Log.d("InSertPlan : Order",Integer.toString(order2));
+                        database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >"+order2);
+                        test_sql_order(0);
+                        order = order2+1;
+                        break;
+                    }
+                }
 
             }catch (Exception e) {
                 e.printStackTrace();
@@ -213,12 +216,104 @@ public class PlanDAO {
         }
     }
 
+    public void insert_date(ArrayList<String> dates,int planlistid) {  //날짜 데이터 삽입하기(변경시)
+        try {
+            int date_order = 0;
+            for(String date : dates){
+                PlanDTO dto = new PlanDTO(date,planlistid);
+                Log.d("all_date 읽어온 날짜: ",date);
+                Log.d("새로만든 dto의 DataType : ",Integer.toString(dto.getdatatype()));
+                try {
+
+                    Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ ASC", null);
+
+                    int count = cursor.getCount();
+                    Log.d("결과 레코드의 갯수 : ",Integer.toString(count));
+
+                    if(count == 0){
+                        database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+                                + "("
+                                + "'" + dto.getContent() + "',"
+                                + "'" + dto.getdate() + "',"
+                                + "'" + dto.getspotID() + "',"
+                                + "'" + dto.getcustomID() + "',"
+                                + "'" + dto.getmemo() + "',"
+                                + "'" + date_order + "',"
+                                + "'" + dto.getdatatype() + "',"
+                                + "'" + dto.getplanlistid() + "'"
+                                + ")");
+                    }
+
+                    for (int i = 0; i < count; i++) {
+                        Log.d("all_date : ",Integer.toString(i));
+                        cursor.moveToNext();
+                        String c_date = cursor.getString(2);
+                        date_order = cursor.getInt(6);
+
+                        /*
+                        System.out.println(c_date);
+                        System.out.println(date_order);
+                        System.out.println("비교결과....."+dto.getdate().compareTo(c_date));
+                        */
+
+                        if(dto.getdate().compareTo(c_date)==0){
+                            break;
+                        }
+                        else if(dto.getdate().compareTo(c_date) < 0){
+                            database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >="+date_order);
+                            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+                                    + "("
+                                    + "'" + dto.getContent() + "',"
+                                    + "'" + dto.getdate() + "',"
+                                    + "'" + dto.getspotID() + "',"
+                                    + "'" + dto.getcustomID() + "',"
+                                    + "'" + dto.getmemo() + "',"
+                                    + "'" + date_order + "',"
+                                    + "'" + dto.getdatatype() + "',"
+                                    + "'" + dto.getplanlistid() + "'"
+                                    + ")");
+                            break;
+                        }
+                        else{
+                            if(i == count-1) {
+                                Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ tableName +".planlistid ORDER BY "+tableName+".order_ DESC", null);
+                                cursor2.moveToFirst();
+                                date_order= cursor2.getInt(6);
+                                date_order +=1;
+                                database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+                                        + "("
+                                        + "'" + dto.getContent() + "',"
+                                        + "'" + dto.getdate() + "',"
+                                        + "'" + dto.getspotID() + "',"
+                                        + "'" + dto.getcustomID() + "',"
+                                        + "'" + dto.getmemo() + "',"
+                                        + "'" + date_order + "',"
+                                        + "'" + dto.getdatatype() + "',"
+                                        + "'" + dto.getplanlistid() + "'"
+                                        + ")");
+                            }
+                        }
+
+                    }
+
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("plan", "[dao db] : 값이 안들어가짐 ", e);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("plan", "[dao db] : 값이 안들어가짐 ", e);
+        }
+    }
+
     public ArrayList<PlanDTO> select_planlistid(int planlist_id) {  //planlistid에 해당하는 내용만 조회하기
         ArrayList<PlanDTO> list = new ArrayList<PlanDTO>();
         try {
 
             if (database != null) {
-                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+planlist_id +" ORDER BY "+tableName+".order_ ASC", null);
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ planlist_id +" ORDER BY "+tableName+".order_ ASC", null);
 
                 int count = cursor.getCount();
                 println("결과 레코드의 갯수 : " + count);
@@ -243,8 +338,14 @@ public class PlanDAO {
                     int datatype = cursor.getInt(7);
                     int planlistid = cursor.getInt(8);
 
-                    PlanDTO dto = new PlanDTO(id,content,date,spotID,customID,memo,order,planlistid);
-                    list.add(dto);
+                    if(datatype == 1) {
+                        PlanDTO dto = new PlanDTO(id, content, date, spotID, customID, memo, order, planlistid);
+                        list.add(dto);
+                    }
+                    else if(datatype == 0){
+                        PlanDTO dto = new PlanDTO(id, date, planlistid);
+                        list.add(dto);
+                    }
                 }
 
                 cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
@@ -270,13 +371,72 @@ public class PlanDAO {
             int temp_id2 = dto2.getId();
             int temp_order1 = dto1.getOrder();
             int temp_order2 = dto2.getOrder();
+            int temp_datatype1 = dto1.getdatatype();
+            int temp_datatype2 = dto2.getdatatype();
+            String temp_date1 = dto1.getdate();
+            String temp_date2 = dto2.getdate();
 
-            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
-            database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+
+            if(temp_datatype1 == temp_datatype2) {
+                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+                test_sql_order(0);
+            }
+            /*날짜에따른 date변경다시해야함..... Date 적용 오류....
+            else if(temp_datatype1 != temp_datatype2){
+                if(temp_datatype1 == 0){
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET date ="+temp_date1+" WHERE ID=" + temp_id2);
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 +" WHERE ID=" + temp_id2);
+                    test_sql_order(0);
+                }
+                else if(temp_datatype2 == 0){
+                    database.execSQL("UPDATE " + tableName + " SET date ="+temp_date2+" WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 +" WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+                    test_sql_order(0);
+                }
+            }*/
 
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
             }
         }
+
+    public void test_sql_order(int planlist_id) {  //planlistid에 해당하는 내용 test용
+        ArrayList<PlanDTO> list = new ArrayList<PlanDTO>();
+        try {
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ planlist_id +" ORDER BY "+tableName+".order_ ASC", null);
+
+                int count = cursor.getCount();
+                println("결과 레코드의 갯수 : " + count);
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    int id = cursor.getInt(0);
+                    String content = cursor.getString(1);
+                    String date = cursor.getString(2);
+                    int spotID = cursor.getInt(3);
+                    int customID = cursor.getInt(4);
+                    String memo = cursor.getString(5);
+                    int order = cursor.getInt(6);
+                    int datatype = cursor.getInt(7);
+                    int planlistid = cursor.getInt(8);
+                    Log.d("TEST_SQL_RESULT","CONTENT = "+content+" DATE = "+date+" Order = "+order);
+                }
+
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+
+                println("데이터를 조회했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Plan","[PlanDAO] ",e);
+        }
+    }
 }

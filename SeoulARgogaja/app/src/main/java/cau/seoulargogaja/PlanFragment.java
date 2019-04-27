@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import cau.seoulargogaja.adapter.PlanAdapter;
+import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
 import cau.seoulargogaja.data.PlanListDAO;
@@ -69,12 +71,22 @@ public class PlanFragment extends Fragment {
     PlanListDAO listdao;
     InputMethodManager imm;
     ArrayList<PlanDTO> list;
+    ViewGroup rootView;
+    MainState mainState;
+    private int row_count;
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        set_plan_list(rootView);
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_plan, container, false);
 
+        rootView = (ViewGroup)inflater.inflate(R.layout.fragment_plan, container, false);
         dao = new PlanDAO(this.getActivity());
         listdao = new PlanListDAO(this.getActivity());
         //앱 최초 실행 시 db 생성
@@ -127,11 +139,41 @@ public class PlanFragment extends Fragment {
             Log.d("planlist", "추가안됫는데??");
         }*/
 
-
+        set_plan_list(rootView);
 
         imm = (InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        return rootView;
+    }
 
-        list = dao.select_planlistid(0);
+    private void set_plan_list(ViewGroup rootView){
+        //임시로 MainState만듬 0으로 planlistid set 해놓음 Splash추가후 거기서 DB에서 읽어오는것으로 해야할듯
+        mainState = new MainState();
+        mainState.setplanlistId(0);
+        mainState.setStartDate("2019-04-15");
+        mainState.setEnddate("2019-04-20");
+
+        try {
+            String from = mainState.getStartDate();
+            sDate = new SimpleDateFormat("yyyy-MM-dd").parse(from);
+            from = mainState.getEndDate();
+            eDate = new SimpleDateFormat("yyyy-MM-dd").parse(from);
+            all_Date(sDate,eDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        startDate = (TextView) rootView.findViewById(R.id.txt_calender);
+        endDate = (TextView) rootView.findViewById(R.id.txt_calender2);
+
+        startDate.setText(mainState.getStartDate());
+        endDate.setText(mainState.getEndDate());
+
+        list = dao.select_planlistid(mainState.getplanlistId());
+
+        PlanDTO plus_plan = new PlanDTO();
+        list.add(plus_plan);
+        row_count = list.size()-1;//0부터 시작하니 마지막위치는 -1
 
         final CustomListView listView = (CustomListView)rootView.findViewById(R.id.listView1);
         PlanAdapter adapter = new PlanAdapter(getActivity(), list, new PlanAdapter.Listener() {
@@ -146,25 +188,23 @@ public class PlanFragment extends Fragment {
             @Override
             public void swapElements(int indexOne, int indexTwo) {
 
-                PlanDTO temp1 = list.get(indexOne);
-                PlanDTO temp2 = list.get(indexTwo);
+                if(indexOne != row_count && indexTwo != row_count){
+                    PlanDTO temp1 = list.get(indexOne);
+                    PlanDTO temp2 = list.get(indexTwo);
 
-                dao.Change_two_order(temp1,temp2);
+                    dao.Change_two_order(temp1,temp2);
 
-                int temp_order1 = temp1.getOrder();
-                int temp_order2 = temp2.getOrder();
-                temp1.setOrder(temp_order2);
-                temp2.setOrder(temp_order1);
+                    int temp_order1 = temp1.getOrder();
+                    int temp_order2 = temp2.getOrder();
+                    temp1.setOrder(temp_order2);
+                    temp2.setOrder(temp_order1);
 
-                /*
-                list.set(indexOne, list.get(indexTwo));
-                list.set(indexTwo, temp);*/
-                list.set(indexOne, temp2);
-                list.set(indexTwo, temp1);
+                    list.set(indexOne, temp2);
+                    list.set(indexTwo, temp1);
 
+                }
             }
         });
-
 
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
@@ -196,6 +236,7 @@ public class PlanFragment extends Fragment {
         });
 
 
+        /*
         addImage = (ImageView) rootView.findViewById(R.id.add_plan_image);
         // add 버튼 누르면 plan 추가 화면으로 돌아감
         addImage.setOnClickListener(new View.OnClickListener() {
@@ -205,7 +246,7 @@ public class PlanFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+        */
 
         editTitle = (TextView) rootView.findViewById(R.id.plan_title);
 
@@ -245,13 +286,8 @@ public class PlanFragment extends Fragment {
             }
         });
 
-
-
-
-
         // 달력모양 입력 시 입력되는 형태
         startImage = (ImageView) rootView.findViewById(R.id.btn_calender);
-        startDate = (TextView) rootView.findViewById(R.id.txt_calender);
         //startDate.setInputType(InputType.TYPE_NULL);
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd",Locale.KOREA);
         // 달력모양 눌렀을 때 datePicker 띄우기
@@ -264,6 +300,9 @@ public class PlanFragment extends Fragment {
                 sDate = newDate.getTime();
                 if(check_Date_diff(sDate,eDate)){
                     startDate.setText(dateFormatter.format(sDate));
+                    //MainState랑 PlanlistID DB변경할 필요있음
+                    mainState.setStartDate(dateFormatter.format(sDate));
+                    mainState.setEnddate(dateFormatter.format(eDate));
                 }
             }
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -276,7 +315,6 @@ public class PlanFragment extends Fragment {
 
         // 달력모양 입력 시 입력되는 형태
         endImage = (ImageView) rootView.findViewById(R.id.btn_calender2);
-        endDate = (TextView) rootView.findViewById(R.id.txt_calender2);
         //endDate.setInputType(InputType.TYPE_NULL);
         // 달력모양 눌렀을 때 datePicker 띄우기
         Calendar newCalendar2 = Calendar.getInstance();
@@ -288,6 +326,9 @@ public class PlanFragment extends Fragment {
                 eDate = newDate2.getTime();
                 if(check_Date_diff(sDate,eDate)){
                     endDate.setText(dateFormatter.format(eDate));
+                    //MainState랑 PlanlistID DB변경할 필요있음
+                    mainState.setStartDate(dateFormatter.format(sDate));
+                    mainState.setEnddate(dateFormatter.format(eDate));
                 }
             }
         }, newCalendar2.get(Calendar.YEAR), newCalendar2.get(Calendar.MONTH), newCalendar2.get(Calendar.DAY_OF_MONTH));
@@ -298,10 +339,6 @@ public class PlanFragment extends Fragment {
             }
         });
 
-
-
-
-        return rootView;
     }
 
     public boolean check_Date_diff(Date sDate,Date eDate){
@@ -313,7 +350,7 @@ public class PlanFragment extends Fragment {
             }
             Date_diff_all = Date_diff(sDate,eDate);
             Date_diff(sDate,Date_diff_all);
-
+            all_Date(sDate,eDate);
             return true;
         }
         return true;
@@ -358,6 +395,30 @@ public class PlanFragment extends Fragment {
         {
             // 예외 처리
         }
+    }
+
+    public void all_Date(Date sDate,Date eDate){
+        dao = new PlanDAO(this.getActivity());
+        listdao = new PlanListDAO(this.getActivity());
+        final String DATE_PATTERN = "yyyy-MM-dd";
+        ArrayList<String> dates = new ArrayList<String>();
+        Date currentDate = sDate;
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+        while (currentDate.compareTo(eDate) <= 0) {
+            dates.add(sdf.format(currentDate));
+            Calendar c = Calendar.getInstance();
+            c.setTime(currentDate);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            currentDate = c.getTime();
+        }
+        mainState.setdates(dates);
+        dao.insert_date(dates,mainState.getplanlistId());
+        dao.test_sql_order(mainState.getplanlistId());
+        /*
+        for (String date : dates) {
+            System.out.println(date);
+        }*/
+
     }
 
     public void anim() {
