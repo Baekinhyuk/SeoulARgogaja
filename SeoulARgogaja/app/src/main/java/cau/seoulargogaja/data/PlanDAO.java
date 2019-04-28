@@ -164,7 +164,7 @@ public class PlanDAO {
             int order2 = 0;
             try {
                 //Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ DESC", null);
-                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid()+" ORDER BY "+tableName+".order_ ASC", null);
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid()+" ORDER BY "+tableName+".order_ DESC", null);
 
                 int count = cursor.getCount();
                 println("결과 레코드의 갯수 : " + count);
@@ -173,26 +173,14 @@ public class PlanDAO {
                 for (int i = 0; i < count; i++) {
                     cursor.moveToNext();
                     String date = cursor.getString(2);
-                    Log.d("InSertPlan : 처음 dto Date ",date);
-                    Log.d("InSertPlan : 처음 dto Date 비교결과",Boolean.toString(date.equals(dto.getdate())));
                     if(date.equals(dto.getdate())){
-                        Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid() +" ORDER BY "+tableName+".order_ DESC", null);
-                        int cursor2_count = cursor2.getCount();
-                        Log.d("InSertPlan : cursor2_count",Integer.toString(cursor2_count));
-                        for (int j = 0; j < cursor2_count; j++) {
-                            cursor2.moveToNext();
-                            String date2 = cursor2.getString(2);
-                            if(date2.equals(dto.getdate())) {
-                                order2 = cursor2.getInt(6);
-                            }
-                        }
-                        Log.d("InSertPlan : Order",Integer.toString(order2));
-                        database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >"+order2);
-                        test_sql_order(0);
-                        order = order2+1;
+                        order2 = cursor.getInt(6);
                         break;
                     }
                 }
+                database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >"+order2);
+                test_sql_order(0);
+                order = order2+1;
 
             }catch (Exception e) {
                 e.printStackTrace();
@@ -291,6 +279,7 @@ public class PlanDAO {
                                         + "'" + dto.getdatatype() + "',"
                                         + "'" + dto.getplanlistid() + "'"
                                         + ")");
+                                cursor2.close();
                             }
                         }
 
@@ -343,7 +332,7 @@ public class PlanDAO {
                         list.add(dto);
                     }
                     else if(datatype == 0){
-                        PlanDTO dto = new PlanDTO(id, date, planlistid);
+                        PlanDTO dto = new PlanDTO(id, date, order,planlistid);
                         list.add(dto);
                     }
                 }
@@ -376,27 +365,21 @@ public class PlanDAO {
             String temp_date1 = dto1.getdate();
             String temp_date2 = dto2.getdate();
 
+            System.out.println("데이터 변경 dto1값 날짜 :"+temp_date1+" ID: "+Integer.toString(temp_id1)+" order: "+Integer.toString(temp_order1)+" datetype: "+Integer.toString(temp_datatype1));
+            System.out.println("데이터 변경 dto2값 날짜 :"+temp_date2+" ID: "+Integer.toString(temp_id2)+" order: "+Integer.toString(temp_order2)+" datetype: "+Integer.toString(temp_datatype2));
 
             if(temp_datatype1 == temp_datatype2) {
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
                 test_sql_order(0);
             }
-            /*날짜에따른 date변경다시해야함..... Date 적용 오류....
-            else if(temp_datatype1 != temp_datatype2){
-                if(temp_datatype1 == 0){
-                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
-                    database.execSQL("UPDATE " + tableName + " SET date ="+temp_date1+" WHERE ID=" + temp_id2);
-                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 +" WHERE ID=" + temp_id2);
-                    test_sql_order(0);
-                }
-                else if(temp_datatype2 == 0){
-                    database.execSQL("UPDATE " + tableName + " SET date ="+temp_date2+" WHERE ID=" + temp_id1);
-                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 +" WHERE ID=" + temp_id1);
-                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
-                    test_sql_order(0);
-                }
-            }*/
+            /*날짜에따른 date변경다시해야함..... Date 적용 오류.... 다른경우 dto1이 data고 dto2가 날짜인경우만 존재*/
+            else {
+                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                database.execSQL("UPDATE " + tableName + " SET date ="+temp_date2+" WHERE ID=" + temp_id1);
+                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 +" WHERE ID=" + temp_id2);
+                test_sql_order(0);
+            }
 
             } catch (Exception e) {
                 e.printStackTrace();

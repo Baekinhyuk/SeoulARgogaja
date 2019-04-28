@@ -17,9 +17,10 @@ public class PlanDTO {
     }
 
     //ListView 날짜에 대해 저장 (datatype = 0)
-    public PlanDTO(int id, String date, int planlistid) {
+    public PlanDTO(int id, String date, int order, int planlistid) {
         this.id = id;
         this.date = date;
+        this.order = order;
         this.planlistid = planlistid;
         datatype = 0;
     }
