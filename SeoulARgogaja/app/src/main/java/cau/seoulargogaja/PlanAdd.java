@@ -43,7 +43,7 @@ public class PlanAdd extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_plus);
 
-        MainState mainState = new MainState();
+        final MainState mainState = new MainState();
         dates = mainState.getdates();
 
         final PlanDAO dao = new PlanDAO(this);
@@ -105,7 +105,7 @@ public class PlanAdd extends AppCompatActivity {
                 dto.setdate(editdate.getText().toString());
                 dto.setcustomID(0);
                 dto.setSpotID(0);
-                dto.setplanlistid(0);
+                dto.setplanlistid(mainState.getplanlistId());
                 dto.setOrder(0);
                 dto.setmemo(String.valueOf(editmemo.getText()));
                 dao.insert_plan(dto);

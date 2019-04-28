@@ -297,7 +297,7 @@ public class PlanDAO {
         }
     }
 
-    public ArrayList<PlanDTO> select_planlistid(int planlist_id) {  //planlistid에 해당하는 내용만 조회하기
+    public ArrayList<PlanDTO> select_planlistid(int planlist_id,ArrayList<String> dates) {  //planlistid에 해당하는 내용만 조회하기
         ArrayList<PlanDTO> list = new ArrayList<PlanDTO>();
         try {
 
@@ -327,13 +327,19 @@ public class PlanDAO {
                     int datatype = cursor.getInt(7);
                     int planlistid = cursor.getInt(8);
 
-                    if(datatype == 1) {
-                        PlanDTO dto = new PlanDTO(id, content, date, spotID, customID, memo, order, planlistid);
-                        list.add(dto);
-                    }
-                    else if(datatype == 0){
-                        PlanDTO dto = new PlanDTO(id, date, order,planlistid);
-                        list.add(dto);
+                    //날짜변경할수도 있으니 해당하는 날짜에 대한 정보만 보여주기 위해 date가 dates변경된 것을 넘겨주는것안에있을시만 작동
+                    for(String date_ : dates) {
+                        if(date_.equals(date)) {
+                            if (datatype == 1) {
+                                PlanDTO dto = new PlanDTO(id, content, date, spotID, customID, memo, order, planlistid);
+                                list.add(dto);
+                                break;
+                            } else if (datatype == 0) {
+                                PlanDTO dto = new PlanDTO(id, date, order, planlistid);
+                                list.add(dto);
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -376,7 +382,7 @@ public class PlanDAO {
             /*날짜에따른 date변경다시해야함..... Date 적용 오류.... 다른경우 dto1이 data고 dto2가 날짜인경우만 존재*/
             else {
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
-                database.execSQL("UPDATE " + tableName + " SET date ="+temp_date2+" WHERE ID=" + temp_id1);
+                database.execSQL("UPDATE " + tableName + " SET date =\'"+temp_date2+"\' WHERE ID=" + temp_id1);
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 +" WHERE ID=" + temp_id2);
                 test_sql_order(0);
             }

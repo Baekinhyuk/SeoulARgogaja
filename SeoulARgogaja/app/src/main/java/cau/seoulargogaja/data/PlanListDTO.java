@@ -37,7 +37,7 @@ public class PlanListDTO {
         this.startdate = d;
     }
 
-    public String getEndDate() {return startdate;}
+    public String getEndDate() {return enddate;}
     public void setEnddate(String d){
         this.enddate = d;
     }

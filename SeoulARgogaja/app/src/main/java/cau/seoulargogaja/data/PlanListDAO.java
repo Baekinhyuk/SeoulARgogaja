@@ -141,8 +141,8 @@ public class PlanListDAO {
 
 
             database.execSQL("UPDATE " + tableName + " SET name = " + dto.getName()
-                    + ", startdate = " + dto.getStartDate()
-                    + ", enddate = " + dto.getEndDate()
+                    + ", startdate =\' " + dto.getStartDate() +"\'"
+                    + ", enddate = \'" + dto.getEndDate() +"\'"
                     + ", budget = " + dto.getBudget()
                     + ", code = " + dto.getCode()
                     + " WHERE ID = " + dto.getId());

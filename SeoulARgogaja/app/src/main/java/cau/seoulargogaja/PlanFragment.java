@@ -65,7 +65,7 @@ public class PlanFragment extends Fragment {
     ViewGroup rootView;
     MainState mainState;
     private int row_count;
-
+    ArrayList<String> dates;
     Activity activity;
 
     @Override
@@ -104,6 +104,7 @@ public class PlanFragment extends Fragment {
             sDate = new SimpleDateFormat("yyyy-MM-dd").parse(from);
             from = mainState.getEndDate();
             eDate = new SimpleDateFormat("yyyy-MM-dd").parse(from);
+            dates = new ArrayList<String>();
             all_Date(sDate,eDate);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -116,7 +117,7 @@ public class PlanFragment extends Fragment {
         startDate.setText(mainState.getStartDate());
         endDate.setText(mainState.getEndDate());
 
-        list = dao.select_planlistid(mainState.getplanlistId());
+        list = dao.select_planlistid(mainState.getplanlistId(),dates);
 
         PlanDTO plus_plan = new PlanDTO();
         list.add(plus_plan);
@@ -352,7 +353,6 @@ public class PlanFragment extends Fragment {
         dao = new PlanDAO(this.getActivity());
         listdao = new PlanListDAO(this.getActivity());
         final String DATE_PATTERN = "yyyy-MM-dd";
-        ArrayList<String> dates = new ArrayList<String>();
         Date currentDate = sDate;
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
         while (currentDate.compareTo(eDate) <= 0) {
