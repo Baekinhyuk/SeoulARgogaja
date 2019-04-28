@@ -92,10 +92,12 @@ public class PlanListDAO {
         return list;
     }
 
+    // 삭제하기전에 selectAll().size() == 1 이면 삭제 못하도록!!
     public void delete(int id) { // id 입력 받아 삭제
 
         try {
             if (database != null) {
+
                 database.execSQL("delete from " + tableName + " WHERE ID = " + id);
 
                 println(id+"번을 삭제했습니다.");
@@ -112,6 +114,7 @@ public class PlanListDAO {
     public void insert(PlanListDTO dto) {
         try {
             if (database != null) {
+
                 database.execSQL("INSERT INTO " + tableName + "(name,startdate,enddate,budget,code) VALUES "
                         + "("
                         + "'" + dto.getName() + "',"

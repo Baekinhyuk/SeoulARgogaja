@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".Intro"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="com.naver.maps.map.CLIENT_ID"
@@ -28,6 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -43,8 +47,10 @@
         <activity
             android:name=".PlanAdd"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".ThemeActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".ThemeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 
 </manifest>

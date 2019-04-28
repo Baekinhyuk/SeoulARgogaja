@@ -5,14 +5,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.res.ComplexColorCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +26,8 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import cau.seoulargogaja.adapter.PlanAdapter;
@@ -42,9 +36,6 @@ import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
 import cau.seoulargogaja.data.PlanListDAO;
 import cau.seoulargogaja.data.PlanListDTO;
-import cau.seoulargogaja.data.SpotDAO;
-import cau.seoulargogaja.data.SpotDTO;
-import cau.seoulargogaja.data.SpotParser;
 
 import static android.app.AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
 
@@ -75,11 +66,13 @@ public class PlanFragment extends Fragment {
     MainState mainState;
     private int row_count;
 
+    Activity activity;
+
     @Override
     public void onResume(){
         super.onResume();
         set_plan_list(rootView);
-
+        activity = getActivity();
     }
 
     @Nullable
@@ -89,55 +82,8 @@ public class PlanFragment extends Fragment {
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_plan, container, false);
         dao = new PlanDAO(this.getActivity());
         listdao = new PlanListDAO(this.getActivity());
-        //앱 최초 실행 시 db 생성
-        SharedPreferences pref = this.getActivity().getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
-        boolean first = pref.getBoolean("isFirst", false);
-        Log.d("tour~", Boolean.toString(first));
-        if(first==false) {
-            Log.d("tour", "[first] 첫 실행...");
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("isFirst", true);
-            editor.commit();
-            dao.createTable();
-            listdao.createTable();
-            listdao.insert(new PlanListDTO());
 
-            SpotParser parser = new SpotParser();
-            try {
-                parser.start();
-                parser.join(); // 서버 xml파일 파서
 
-                SpotDAO dao = new SpotDAO(this.getActivity()); // db 생성
-                dao.createTable();
-                ArrayList<SpotDTO> spotlist;
-                spotlist = parser.getList();
-                dao.setData(spotlist);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-        /* PlanList test 코드임 삭제해도됨
-        ArrayList<PlanListDTO> a = listdao.selectAll();
-        try {
-            PlanListDTO pldto = a.get(0);
-            Log.d("과연 최초 생성 id", pldto.getId()+"");
-            listdao.insert(new PlanListDTO());
-            pldto = a.get(1);
-            Log.d("과연 두번째 id", pldto.getId()+"");
-            listdao.delete(pldto.getId());
-            listdao.insert(new PlanListDTO());
-            a = listdao.selectAll();
-            pldto = a.get(1);
-            Log.d("삭제하고 생성한 두번째 id", pldto.getId()+"");
-            pldto.setBudget(10000);
-            listdao.update(pldto);
-            a = listdao.selectAll();
-            pldto = a.get(1);
-            Log.d("제대로 update?", pldto.getBudget()+" id = "+pldto.getId());
-
-        }catch(Exception e){
-            Log.d("planlist", "추가안됫는데??");
-        }*/
 
         set_plan_list(rootView);
 
@@ -147,10 +93,11 @@ public class PlanFragment extends Fragment {
 
     private void set_plan_list(ViewGroup rootView){
         //임시로 MainState만듬 0으로 planlistid set 해놓음 Splash추가후 거기서 DB에서 읽어오는것으로 해야할듯
-        mainState = new MainState();
-        mainState.setplanlistId(0);
-        mainState.setStartDate("2019-04-15");
-        mainState.setEnddate("2019-04-20");
+        ArrayList<PlanListDTO> planlist = getPlanList();
+        // PLANLIST DB에 첫번째를 mainstate로 설정
+        PlanListDTO mainPlan = planlist.get(0);
+
+        mainState = new MainState(mainPlan);
 
         try {
             String from = mainState.getStartDate();
@@ -302,7 +249,9 @@ public class PlanFragment extends Fragment {
                     startDate.setText(dateFormatter.format(sDate));
                     //MainState랑 PlanlistID DB변경할 필요있음
                     mainState.setStartDate(dateFormatter.format(sDate));
-                    mainState.setEnddate(dateFormatter.format(eDate));
+                    //mainState.setEnddate(dateFormatter.format(eDate));
+                    PlanListDAO dao = new PlanListDAO(activity);
+                    dao.update(mainState.getMainDto());
                 }
             }
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -327,8 +276,10 @@ public class PlanFragment extends Fragment {
                 if(check_Date_diff(sDate,eDate)){
                     endDate.setText(dateFormatter.format(eDate));
                     //MainState랑 PlanlistID DB변경할 필요있음
-                    mainState.setStartDate(dateFormatter.format(sDate));
+                    //mainState.setStartDate(dateFormatter.format(sDate));
                     mainState.setEnddate(dateFormatter.format(eDate));
+                    PlanListDAO dao = new PlanListDAO(activity);
+                    dao.update(mainState.getMainDto());
                 }
             }
         }, newCalendar2.get(Calendar.YEAR), newCalendar2.get(Calendar.MONTH), newCalendar2.get(Calendar.DAY_OF_MONTH));
@@ -438,6 +389,11 @@ public class PlanFragment extends Fragment {
             fab2.setClickable(true);
             isFabOpen = true;
         }
+    }
+
+    public ArrayList<PlanListDTO> getPlanList() {
+        PlanListDAO dao = new PlanListDAO(this.getActivity());
+        return dao.selectAll();
     }
 }
 
