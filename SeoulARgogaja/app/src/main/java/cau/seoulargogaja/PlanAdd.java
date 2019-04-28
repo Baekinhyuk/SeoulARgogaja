@@ -1,6 +1,7 @@
 package cau.seoulargogaja;
 
 import android.app.DatePickerDialog;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -29,7 +30,7 @@ public class PlanAdd extends AppCompatActivity {
 
     private ImageView btnAdd, btnCancel; // add, cancel 버튼
     private EditText editcontent, editmemo; // 장소명, 메모
-    private TextView editdate;
+    private TextView editdate, edittitle;
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog dialog;
     private Date sDate;
@@ -48,6 +49,10 @@ public class PlanAdd extends AppCompatActivity {
 
         final PlanDAO dao = new PlanDAO(this);
         dto = new PlanDTO();
+
+        edittitle = (TextView)findViewById(R.id.edit_plan_title);
+        edittitle.setText(edittitle.getText());
+        edittitle.setPaintFlags(edittitle.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
 
         btnAdd = (ImageView) findViewById(R.id.edit_plan_add);
         btnCancel = (ImageView) findViewById(R.id.edit_plan_cancel);

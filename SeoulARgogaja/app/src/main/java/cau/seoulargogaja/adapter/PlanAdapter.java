@@ -2,6 +2,7 @@ package cau.seoulargogaja.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,7 +69,12 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
             if (data.getdatatype() == 1) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
                 TextView textView = (TextView) view.findViewById(R.id.nick_name);
+                TextView textView_memo = (TextView) view.findViewById(R.id.item_memo);
+
                 textView.setText(data.getContent());
+                textView.setPaintFlags(textView.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
+
+                textView_memo.setText(data.getmemo());
                 view.findViewById(R.id.vote_image)
                         .setOnTouchListener(new View.OnTouchListener() {
                             @Override
