@@ -3,11 +3,14 @@
     android:id="@+id/item_list1"
     android:layout_width="match_parent"
     android:layout_height="55dp"
+    android:orientation="vertical"
     android:background="#f9f9f9" >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="horizontal" android:layout_width="match_parent"
+        android:id="@+id/ll"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="55dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
@@ -45,6 +48,7 @@
                 android:gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <ImageView
@@ -68,4 +72,9 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:layout_below="@id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f0f0f0" />
 </RelativeLayout>

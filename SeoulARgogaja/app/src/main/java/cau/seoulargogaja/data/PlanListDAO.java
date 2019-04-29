@@ -140,8 +140,8 @@ public class PlanListDAO {
         try {
 
 
-            database.execSQL("UPDATE " + tableName + " SET name = " + dto.getName()
-                    + ", startdate =\' " + dto.getStartDate() +"\'"
+            database.execSQL("UPDATE " + tableName + " SET name = \'" + dto.getName() +"\'"
+                    + ", startdate =\'" + dto.getStartDate() +"\'"
                     + ", enddate = \'" + dto.getEndDate() +"\'"
                     + ", budget = " + dto.getBudget()
                     + ", code = " + dto.getCode()
