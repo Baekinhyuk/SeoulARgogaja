@@ -10,7 +10,7 @@ public class PlanListDTO {
     private String code;
 
     public PlanListDTO() {
-
+        name = "제목을 입력해주세요";
     }
 
     public PlanListDTO(int id, String name, String startdate, String enddate, int budget, String code){

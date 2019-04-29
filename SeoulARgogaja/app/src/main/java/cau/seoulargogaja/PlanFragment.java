@@ -99,6 +99,9 @@ public class PlanFragment extends Fragment {
 
         mainState = new MainState(mainPlan);
 
+        editTitle = (TextView) rootView.findViewById(R.id.plan_title);
+        editTitle.setText(mainState.getMainDto().getName());
+
         try {
             String from = mainState.getStartDate();
             sDate = new SimpleDateFormat("yyyy-MM-dd").parse(from);
@@ -196,8 +199,6 @@ public class PlanFragment extends Fragment {
         });
         */
 
-        editTitle = (TextView) rootView.findViewById(R.id.plan_title);
-
         editTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,6 +217,9 @@ public class PlanFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String value = et.getText().toString();
                         editTitle.setText(value);
+                        mainState.getMainDto().setName(value);
+                        listdao = new PlanListDAO(activity);
+                        listdao.update_name(mainState.getMainDto());
                         dialog.dismiss();     //닫기
                         // Event
                     }
