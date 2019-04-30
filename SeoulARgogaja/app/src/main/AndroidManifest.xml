@@ -3,7 +3,6 @@
     package="cau.seoulargogaja">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,10 +17,6 @@
         <activity
             android:name=".Intro"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="com.naver.maps.map.CLIENT_ID"
-                android:value="a0etqel42j" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

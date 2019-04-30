@@ -7,5 +7,6 @@
     <!--메뉴-->
     <string name="tourinfo">관광안내소</string>
     <string name="info">출처</string>
+    <string name="access_token">pk.eyJ1IjoiY2tuY2tuMjAwNiIsImEiOiJjanYxc2Jqd2owZXBnM3pxY280bGN2bjZyIn0.YwgAxVf8SLbzu6V4Epi4KA</string>
 
 </resources>
