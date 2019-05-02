@@ -7,5 +7,6 @@
     <!--메뉴-->
     <string name="tourinfo">관광안내소</string>
     <string name="info">출처</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
