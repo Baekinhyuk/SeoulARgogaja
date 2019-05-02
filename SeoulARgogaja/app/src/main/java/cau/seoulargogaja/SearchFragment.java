@@ -46,6 +46,14 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        btn3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CurrentPositionActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
