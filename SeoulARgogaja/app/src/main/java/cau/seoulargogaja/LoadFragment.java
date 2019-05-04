@@ -49,6 +49,9 @@ import static com.mapbox.core.constants.Constants.PRECISION_6;
 import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 
 public class LoadFragment extends Fragment {
+
+
+
     // private MapView mapView;
     private static final String TAG = "DirectionsActivity";
     private MapView mapView;
@@ -57,12 +60,25 @@ public class LoadFragment extends Fragment {
     private MapboxDirections client;
     double destination_long; // longitude
     double destination_lati; // latitude
+    double start_latitude;
+    double start_longitude;
+    double end_latitude;
+    double end_longitude;
+
     LocationManager manager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = (View)inflater.inflate(R.layout.fragment_load, container, false);
+
+        if(getArguments() != null){
+            start_latitude = getArguments().getDouble("start_lati");
+            start_longitude = getArguments().getDouble("start_logi");
+            end_latitude = getArguments().getDouble("end_lati");
+            end_longitude = getArguments().getDouble("end_logi");
+        }
+
 
         // 맵박스 사용하기 위한 접근 토큰 지정
         Mapbox mapbox = Mapbox.getInstance(getActivity(), getString(R.string.access_token));
@@ -132,8 +148,9 @@ public class LoadFragment extends Fragment {
         public void onLocationChanged(Location location) {
             final double latitude = location.getLatitude();
             final double longitude = location.getLongitude();
-            final Point start = Point.fromLngLat(longitude, latitude);
-            final Point end = Point.fromLngLat(126.947721, 37.503200);
+
+            final Point start = Point.fromLngLat(start_longitude, start_latitude);
+            final Point end = Point.fromLngLat(end_longitude, end_latitude);
 
             Log.d("latitude"," : "+latitude);
             Log.d("longitude"," : "+longitude);
@@ -147,25 +164,24 @@ public class LoadFragment extends Fragment {
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(
                             // 카메라는 반대의 값으로 적어줄 것
                             // 뒤에 숫자 15은 카메라 확대 배수이다( 15가 적당 )
-                            new LatLng(latitude, longitude), 15));
+                            new LatLng(start_latitude, start_longitude), 15));
 
                     // Add origin and destination to the map
                     map.addMarker(new MarkerOptions()
-                            .position(new LatLng(latitude, longitude))
+                            .position(new LatLng(start_latitude, start_longitude))
                             // 타이틀은 상호명 건물명, snippet은 설명 그에 대한 설명이다
                             // 출발지
                             .title("출발지")
                             .snippet("소우2"));
                     map.addMarker(new MarkerOptions()
                             // 목적지
-                            .position(new LatLng(37.503200, 126.947721))
+                            .position(new LatLng(end_latitude, end_longitude))
                             .title("중간")
                             .snippet("가비2"));
                     // Get route from API
                     getRoute(start, end);
                 }
             });
-            stopLocationService();
         }
 
         @Override
@@ -184,10 +200,6 @@ public class LoadFragment extends Fragment {
             Log.d("error","3");
         }
     };
-
-    public void stopLocationService(){
-        manager.removeUpdates(gpsListener);
-    }
 
     private void getRoute(Point origin, Point destination) {
         client = MapboxDirections.builder()
