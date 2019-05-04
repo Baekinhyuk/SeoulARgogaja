@@ -1,11 +1,13 @@
 package cau.seoulargogaja.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
@@ -46,6 +48,9 @@ public interface Listener {
             else if(data.getdatatype() == 0){
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_wallet_date, null);
             }
+            else if(data.getdatatype() == 2){
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_plus, null);
+            }
         }
 
         try {
@@ -53,10 +58,23 @@ public interface Listener {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_wallet_item, null);
                 TextView textView = (TextView) view.findViewById(R.id.wallet_detail);
                 textView.setText(data.getdetail());
+                textView.setPaintFlags(textView.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
                 TextView textView2 = (TextView) view.findViewById(R.id.wallet_expend);
                 textView2.setText(Integer.toString(data.getexpend()));
+                TextView textView3 = (TextView) view.findViewById(R.id.wallet_memo);
+                textView3.setText(data.getmemo());
+
+                final RelativeLayout row2 = (RelativeLayout) view.findViewById(R.id.wallet_item_list1);
+                view.findViewById(R.id.drag_image_wallet)
+                        .setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                listener.onGrab(position, row2);
+                                return false;
+                            }
+                        });
             }
-            if (data.getdatatype() == 0) {
+            else if (data.getdatatype() == 0) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_wallet_date, null);
                 TextView walletdate = (TextView) view.findViewById(R.id.wallet_date);
                 walletdate.setText(data.getdate());
@@ -65,20 +83,21 @@ public interface Listener {
                 walletall.setText("총액");
 
             }
+            else if(data.getdatatype() == 2){
+                view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_plus, null);
+                ImageView addImage = (ImageView) view.findViewById(R.id.plus_plan_image);
+                // add 버튼 누르면 plan 추가 화면으로 돌아감
+                addImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Intent intent = new Intent(context, PlanAdd.class);
+                        //context.startActivity(intent);
+                    }
+                });
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        /*
-        final RelativeLayout row2 = (RelativeLayout) view.findViewById(R.id.item_list2);
-        view.findViewById(R.id.drag_image_wallet)
-                .setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        listener.onGrab(position, row2);
-                        return false;
-                    }
-                });
-                */
         return view;
     }
 

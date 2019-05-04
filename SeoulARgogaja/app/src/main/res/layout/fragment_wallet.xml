@@ -62,10 +62,10 @@
         <cau.seoulargogaja.CustomListView2
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/listView2"
-            android:background="#EEE"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="#ffffff"
             />
 
     </LinearLayout>

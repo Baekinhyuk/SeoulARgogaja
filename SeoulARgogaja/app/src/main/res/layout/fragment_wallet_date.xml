@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_list2"
+    android:id="@+id/wallet_item_date"
     android:layout_width="match_parent"
     android:layout_height="50dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="5dp"
     android:background="#f9f9f9" >
+
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/ll_wallet_date"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="50dp"
         android:padding="16dp"
-        android:background="@color/background_date"
-        >
+        android:background="@color/background_date">
 
         <TextView
             android:id="@+id/wallet_date"
@@ -21,7 +24,7 @@
             android:gravity="start"
             android:textStyle="bold"
             android:textSize="15sp"
-            tools:text="여행 날짜"
+            tools:text="여행 준비"
             />
 
         <TextView

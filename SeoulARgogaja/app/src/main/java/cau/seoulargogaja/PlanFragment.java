@@ -159,7 +159,7 @@ public class PlanFragment extends Fragment {
             }
         });
 
-
+        /*
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
@@ -180,7 +180,7 @@ public class PlanFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
-
+        */
 
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
