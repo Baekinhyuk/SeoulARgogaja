@@ -104,9 +104,25 @@ public class WalletFragment extends Fragment {
         listView2.setListener(new CustomListView2.Listener() {
             @Override
             public void swapElements(int indexOne, int indexTwo) {
+                /*
                 WalletDTO temp = list.get(indexOne);
                 list.set(indexOne, list.get(indexTwo));
-                list.set(indexTwo, temp);
+                list.set(indexTwo, temp);*/
+                if(indexOne != row_count && indexTwo != row_count && indexOne != 0 && indexTwo != 0){
+                    WalletDTO temp1 = list.get(indexOne);
+                    WalletDTO temp2 = list.get(indexTwo);
+
+                    dao.Change_two_order(temp1,temp2);
+
+                    int temp_order1 = temp1.getOrder();
+                    int temp_order2 = temp2.getOrder();
+                    temp1.setOrder(temp_order2);
+                    temp2.setOrder(temp_order1);
+
+                    list.set(indexOne, temp2);
+                    list.set(indexTwo, temp1);
+
+                }
             }
         });
 

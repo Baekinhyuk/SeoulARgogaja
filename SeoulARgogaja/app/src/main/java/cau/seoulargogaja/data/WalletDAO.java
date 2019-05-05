@@ -183,7 +183,7 @@ public class WalletDAO {
                                 + "'" + dto.getmain_image() + "',"
                                 + "'" + dto.getsub_image() + "',"
                                 + "'" + dto.getcolor_type() + "',"
-                                + "'" + dto.getOrder() + "'"
+                                + "'" + date_order + "'"
                                 + ")");
                     }
 
@@ -209,7 +209,7 @@ public class WalletDAO {
                                     + "'" + dto.getmain_image() + "',"
                                     + "'" + dto.getsub_image() + "',"
                                     + "'" + dto.getcolor_type() + "',"
-                                    + "'" + dto.getOrder() + "'"
+                                    + "'" + date_order + "'"
                                     + ")");
                             break;
                         }
@@ -217,7 +217,7 @@ public class WalletDAO {
                             if(i == count-1) {
                                 Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ tableName +".planlistid ORDER BY "+tableName+".order_ DESC", null);
                                 cursor2.moveToFirst();
-                                date_order= cursor2.getInt(6);
+                                date_order= cursor2.getInt(10);
                                 date_order +=1;
                                 database.execSQL("INSERT INTO " + tableName + "(date,planlistid,detail,expend,memo,datatype,main_image,sub_image,color_type,order_) VALUES "
                                         + "("
@@ -230,7 +230,7 @@ public class WalletDAO {
                                         + "'" + dto.getmain_image() + "',"
                                         + "'" + dto.getsub_image() + "',"
                                         + "'" + dto.getcolor_type() + "',"
-                                        + "'" + dto.getOrder() + "'"
+                                        + "'" + date_order + "'"
                                         + ")");
                                 cursor2.close();
                             }
@@ -305,5 +305,146 @@ public class WalletDAO {
         return list;
     }
 
+    public void insert_wallet_item(WalletDTO dto) {  //데이터 삽입하기
+        Log.d("Wallet_Plan : ","지금시작합니다");
+        try {
+            int order = 0;
+            int order2 = 0;
+            try {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid()+" ORDER BY "+tableName+".order_ DESC", null);
 
+                int count = cursor.getCount();
+                println("Wallet_Plan 결과 레코드의 갯수 : " + count);
+                Log.d("Wallet_Plan : 처음 dto Date",dto.getdate());
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    String date = cursor.getString(1);
+                    Log.d("Wallet_Plan : 검색중 dto Date",date);
+                    if(date.equals(dto.getdate())){
+                        order2 = cursor.getInt(10);
+                        Log.d("Wallet_Plan : 검색중 dto order2",Integer.toString(order2));
+
+                        break;
+                    }
+                }
+                database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >"+order2);
+                order = order2+1;
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            database.execSQL("INSERT INTO " + tableName + "(date,planlistid,detail,expend,memo,datatype,main_image,sub_image,color_type,order_) VALUES "
+                    + "("
+                    + "'" + dto.getdate() + "',"
+                    + "'" + dto.getplanlistid() + "',"
+                    + "'" + dto.getdetail() + "',"
+                    + "'" + dto.getexpend() + "',"
+                    + "'" + dto.getmemo() + "',"
+                    + "'" + dto.getdatatype() + "',"
+                    + "'" + dto.getmain_image() + "',"
+                    + "'" + dto.getsub_image() + "',"
+                    + "'" + dto.getcolor_type() + "',"
+                    + "'" + order + "'"
+                    + ")");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("plan", "[dao db] : 값이 안들어가짐 ", e);
+        }
+    }
+
+    public void test_sql_order(int planlist_id) {  //planlistid에 해당하는 내용 test용
+        ArrayList<WalletDTO> list = new ArrayList<WalletDTO>();
+        try {
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ planlist_id +" ORDER BY "+tableName+".order_ ASC", null);
+
+                int count = cursor.getCount();
+                println("결과 레코드의 갯수 : " + count);
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    int id = cursor.getInt(0);
+                    String date = cursor.getString(1);
+                    int planlistid = cursor.getInt(2);
+                    String detail = cursor.getString(3);
+                    int expend = cursor.getInt(4);
+                    String memo = cursor.getString(5);
+                    int datatype = cursor.getInt(6);
+                    int main_image = cursor.getInt(7);
+                    int sub_image = cursor.getInt(8);
+                    int color_type = cursor.getInt(9);
+                    int order = cursor.getInt(10);
+                    Log.d("Wallet_Plan TEST_SQL_RESULT : ","detail = "+detail+" DATE = "+date+" Order = "+order);
+                }
+
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+
+                println("데이터를 조회했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Plan","[PlanDAO] ",e);
+        }
+    }
+
+    public void Change_two_order(WalletDTO dto1,WalletDTO dto2) {  //데이터 두개 변경하기
+
+        try {
+            int temp_id1 = dto1.getId();
+            int temp_id2 = dto2.getId();
+            int temp_order1 = dto1.getOrder();
+            int temp_order2 = dto2.getOrder();
+            int temp_datatype1 = dto1.getdatatype();
+            int temp_datatype2 = dto2.getdatatype();
+            String temp_date1 = dto1.getdate();
+            String temp_date2 = dto2.getdate();
+
+            System.out.println("데이터 변경 dto1값 날짜 :"+temp_date1+" ID: "+Integer.toString(temp_id1)+" order: "+Integer.toString(temp_order1)+" datetype: "+Integer.toString(temp_datatype1));
+            System.out.println("데이터 변경 dto2값 날짜 :"+temp_date2+" ID: "+Integer.toString(temp_id2)+" order: "+Integer.toString(temp_order2)+" datetype: "+Integer.toString(temp_datatype2));
+
+            if(temp_datatype1 == temp_datatype2) {
+                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+                test_sql_order(dto1.getplanlistid());
+            }
+            /*날짜에따른 date변경다시해야함..... Date 적용 오류.... 다른경우 dto1이 data고 dto2가 날짜인경우만 존재*/
+            else{
+                if(temp_order1 < temp_order2) {
+                    //아래로가는상황
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET date =\'" + temp_date2 + "\' WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+                    test_sql_order(dto1.getplanlistid());
+                }
+                else{
+                    //위로가는상황
+                    Cursor cursor_change = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto1.getplanlistid()+" ORDER BY "+tableName+".order_ DESC", null);
+
+                    int count = cursor_change.getCount();
+                    System.out.println("데이터 변경 ---------------"+Integer.toString(count));
+                    String temp_date3 = temp_date2;
+                    for (int i = 0; i < count; i++) {
+                        cursor_change.moveToNext();
+                        String temp_date = cursor_change.getString(1);
+                        int temp_order = cursor_change.getInt(10);
+                        if(temp_order2 > temp_order){
+                            temp_date3 = temp_date;
+                            break;
+                        }
+                    }
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET date =\'" + temp_date3 + "\' WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+                    test_sql_order(dto1.getplanlistid());
+                    cursor_change.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
+        }
+    }
 }
