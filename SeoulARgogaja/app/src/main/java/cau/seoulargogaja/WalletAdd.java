@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,7 +35,8 @@ public class WalletAdd extends AppCompatActivity {
     private ImageView btnAdd, btnCancel; // add, cancel 버튼
     private EditText wallet_add_detail, editmemo, wallet_add_expend; // 장소명, 메모
     private TextView wallet_add_date, wallet_add_title;
-    private ImageView wallet_add_money, wallet_add_card; // add, cancel 버튼
+    private ImageView wallet_add_money; //money
+    private ImageView wallet_add_card; //card
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog dialog;
     private Date sDate;
@@ -133,21 +135,26 @@ public class WalletAdd extends AppCompatActivity {
         wallet_add_money = (ImageView) findViewById(R.id.wallet_add_money);
         wallet_add_card = (ImageView) findViewById(R.id.wallet_add_card);
         dto.setsub_image(0);
-        wallet_add_money.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wallet_add_money.setImageResource(R.drawable.ic_monetization_on_red_24dp);
-                wallet_add_card.setImageResource(R.drawable.ic_payment_black_24dp);
-                dto.setsub_image(1);
-            }
-        });
 
         wallet_add_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wallet_add_money.setImageResource(R.drawable.ic_monetization_on_black_24dp);
                 wallet_add_card.setImageResource(R.drawable.ic_payment_red_24dp);
+                //wallet_add_money.invalidate();
+                //wallet_add_card.invalidate();
                 dto.setsub_image(0);
+            }
+        });
+
+        wallet_add_money.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wallet_add_card.setImageResource(R.drawable.ic_payment_black_24dp);
+                wallet_add_money.setImageResource(R.drawable.ic_monetization_on_red_24dp);
+                //wallet_add_money.invalidate();
+                //wallet_add_card.invalidate();
+                dto.setsub_image(1);
             }
         });
 

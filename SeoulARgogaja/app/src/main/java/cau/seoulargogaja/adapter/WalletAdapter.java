@@ -3,6 +3,7 @@ package cau.seoulargogaja.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.media.Image;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -67,9 +68,18 @@ public interface Listener {
                 textView.setText(data.getdetail());
                 textView.setPaintFlags(textView.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
                 TextView textView2 = (TextView) view.findViewById(R.id.wallet_expend);
-                textView2.setText(Integer.toString(data.getexpend()));
+                String a = Integer.toString(data.getexpend())+"원";
+                textView2.setText(a);
                 TextView textView3 = (TextView) view.findViewById(R.id.wallet_memo);
                 textView3.setText(data.getmemo());
+
+                ImageView wallet_memo_image = (ImageView) view.findViewById(R.id.wallet_memo_image);
+                if(data.getsub_image() ==0){
+                    wallet_memo_image.setImageResource(R.drawable.ic_payment_black_24dp);
+                }
+                else{
+                    wallet_memo_image.setImageResource(R.drawable.ic_monetization_on_black_24dp);
+                }
 
                 final RelativeLayout row2 = (RelativeLayout) view.findViewById(R.id.wallet_item_list1);
                 view.findViewById(R.id.drag_image_wallet)
