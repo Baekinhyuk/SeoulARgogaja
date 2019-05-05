@@ -12,7 +12,8 @@ public class WalletDTO {
 
     private int main_image; //0 : 식사, 1 : 쇼핑, 2 : 교통, 3 : 관광, 4 : 숙박, 5: 기타
     private int sub_image; //0 : 카드, 1 : 현금
-    private int color_type; //0 : 식사, 1 : 쇼핑, 2 : 교통, 3 : 관광, 4 : 숙박
+    private int color_type; //0. 노랑 #FFFF33 1. 주황 #FF9933 2. 초록 #66FF66 3. 파랑 #66CCFF 4. 분홍 #FF99FF
+
     private int order;
 
     //ListView 날짜에 대해 + 모양 (datatype = 2)

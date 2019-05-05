@@ -81,6 +81,26 @@ public interface Listener {
                     wallet_memo_image.setImageResource(R.drawable.ic_monetization_on_black_24dp);
                 }
 
+                ImageView wallet_main_image = (ImageView) view.findViewById(R.id.wallet_main_image);
+                if(data.getmain_image() ==0){
+                    wallet_main_image.setImageResource(R.drawable.ic_local_dining_black_24dp);
+                }
+                else if(data.getmain_image() ==1){
+                    wallet_main_image.setImageResource(R.drawable.ic_shopping_cart_black_24dp);
+                }
+                else if(data.getmain_image() ==2){
+                    wallet_main_image.setImageResource(R.drawable.ic_directions_car_black_24dp);
+                }
+                else if(data.getmain_image() ==3){
+                    wallet_main_image.setImageResource(R.drawable.ic_crop_original_black_24dp);
+                }
+                else if(data.getmain_image() ==4){
+                    wallet_main_image.setImageResource(R.drawable.ic_home_black_24dp);
+                }
+                else if(data.getmain_image() ==5){
+                    wallet_main_image.setImageResource(R.mipmap.ic_etc_black);
+                }
+
                 final RelativeLayout row2 = (RelativeLayout) view.findViewById(R.id.wallet_item_list1);
                 view.findViewById(R.id.drag_image_wallet)
                         .setOnTouchListener(new View.OnTouchListener() {

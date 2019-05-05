@@ -37,6 +37,7 @@ public class WalletAdd extends AppCompatActivity {
     private TextView wallet_add_date, wallet_add_title;
     private ImageView wallet_add_money; //money
     private ImageView wallet_add_card; //card
+    private ImageView wallet_add_dining,wallet_add_shopping,wallet_add_traffic,wallet_add_place,wallet_add_homw,wallet_add_etc; //main Image
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog dialog;
     private Date sDate;
@@ -134,6 +135,7 @@ public class WalletAdd extends AppCompatActivity {
 
         wallet_add_money = (ImageView) findViewById(R.id.wallet_add_money);
         wallet_add_card = (ImageView) findViewById(R.id.wallet_add_card);
+        //기본 card로 설정
         dto.setsub_image(0);
 
         wallet_add_card.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +160,93 @@ public class WalletAdd extends AppCompatActivity {
             }
         });
 
+        //기본 etc로 설정
+        dto.setmain_image(5);
+
+        wallet_add_dining = (ImageView) findViewById(R.id.wallet_add_dining);
+        wallet_add_shopping = (ImageView) findViewById(R.id.wallet_add_shopping);
+        wallet_add_traffic =(ImageView) findViewById(R.id.wallet_add_traffic);
+        wallet_add_place = (ImageView) findViewById(R.id.wallet_add_place);
+        wallet_add_homw = (ImageView) findViewById(R.id.wallet_add_homw);
+        wallet_add_etc = (ImageView) findViewById(R.id.wallet_add_etc);
+
+        wallet_add_dining.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wallet_add_dining.setImageResource(R.drawable.ic_local_dining_red_24dp);
+                wallet_add_shopping.setImageResource(R.drawable.ic_shopping_cart_black_24dp);
+                wallet_add_traffic.setImageResource(R.drawable.ic_directions_car_black_24dp);
+                wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
+                wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
+                wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
+                dto.setsub_image(0);
+            }
+        });
+
+        wallet_add_shopping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wallet_add_dining.setImageResource(R.drawable.ic_local_dining_black_24dp);
+                wallet_add_shopping.setImageResource(R.drawable.ic_shopping_cart_red_24dp);
+                wallet_add_traffic.setImageResource(R.drawable.ic_directions_car_black_24dp);
+                wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
+                wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
+                wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
+                dto.setsub_image(1);
+            }
+        });
+
+        wallet_add_traffic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wallet_add_dining.setImageResource(R.drawable.ic_local_dining_black_24dp);
+                wallet_add_shopping.setImageResource(R.drawable.ic_shopping_cart_black_24dp);
+                wallet_add_traffic.setImageResource(R.drawable.ic_directions_car_red_24dp);
+                wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
+                wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
+                wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
+                dto.setsub_image(2);
+            }
+        });
+
+        wallet_add_place.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wallet_add_dining.setImageResource(R.drawable.ic_local_dining_black_24dp);
+                wallet_add_shopping.setImageResource(R.drawable.ic_shopping_cart_black_24dp);
+                wallet_add_traffic.setImageResource(R.drawable.ic_directions_car_black_24dp);
+                wallet_add_place.setImageResource(R.drawable.ic_crop_original_red_24dp);
+                wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
+                wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
+                dto.setsub_image(3);
+            }
+        });
+
+        wallet_add_homw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wallet_add_dining.setImageResource(R.drawable.ic_local_dining_black_24dp);
+                wallet_add_shopping.setImageResource(R.drawable.ic_shopping_cart_black_24dp);
+                wallet_add_traffic.setImageResource(R.drawable.ic_directions_car_black_24dp);
+                wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
+                wallet_add_homw.setImageResource(R.drawable.ic_home_red_24dp);
+                wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
+                dto.setsub_image(4);
+            }
+        });
+
+        wallet_add_etc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wallet_add_dining.setImageResource(R.drawable.ic_local_dining_black_24dp);
+                wallet_add_shopping.setImageResource(R.drawable.ic_shopping_cart_black_24dp);
+                wallet_add_traffic.setImageResource(R.drawable.ic_directions_car_black_24dp);
+                wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
+                wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
+                wallet_add_etc.setImageResource(R.mipmap.ic_etc_red);
+                dto.setsub_image(5);
+            }
+        });
 
 
 
@@ -187,14 +276,12 @@ public class WalletAdd extends AppCompatActivity {
                 dto.setexpend(finalValue);
                 dto.setmemo(String.valueOf(editmemo.getText()));
                 dto.setdatatype(1);
-                dto.setmain_image(0);
+                //dto.setmain_image(0); 는 이미 위에서 자동으로 정의
                 //dto.setsub_image(); 는 이미 위에서 자동으로 정의
                 dto.setcolor_type(0);
                 //자동으로 order가 변경이 되므로 임의로 0으로 입력
                 dto.setOrder(0);
-                dao.test_sql_order(mainState.getplanlistId());
                 dao.insert_wallet_item(dto);
-                dao.test_sql_order(mainState.getplanlistId());
                 finish();
             }
         });
