@@ -179,7 +179,7 @@ public class WalletAdd extends AppCompatActivity {
                 wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
                 wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
                 wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
-                dto.setsub_image(0);
+                dto.setmain_image(0);
             }
         });
 
@@ -192,7 +192,7 @@ public class WalletAdd extends AppCompatActivity {
                 wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
                 wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
                 wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
-                dto.setsub_image(1);
+                dto.setmain_image(1);
             }
         });
 
@@ -205,7 +205,7 @@ public class WalletAdd extends AppCompatActivity {
                 wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
                 wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
                 wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
-                dto.setsub_image(2);
+                dto.setmain_image(2);
             }
         });
 
@@ -218,7 +218,7 @@ public class WalletAdd extends AppCompatActivity {
                 wallet_add_place.setImageResource(R.drawable.ic_crop_original_red_24dp);
                 wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
                 wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
-                dto.setsub_image(3);
+                dto.setmain_image(3);
             }
         });
 
@@ -231,7 +231,7 @@ public class WalletAdd extends AppCompatActivity {
                 wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
                 wallet_add_homw.setImageResource(R.drawable.ic_home_red_24dp);
                 wallet_add_etc.setImageResource(R.mipmap.ic_etc_black);
-                dto.setsub_image(4);
+                dto.setmain_image(4);
             }
         });
 
@@ -244,7 +244,7 @@ public class WalletAdd extends AppCompatActivity {
                 wallet_add_place.setImageResource(R.drawable.ic_crop_original_black_24dp);
                 wallet_add_homw.setImageResource(R.drawable.ic_home_black_24dp);
                 wallet_add_etc.setImageResource(R.mipmap.ic_etc_red);
-                dto.setsub_image(5);
+                dto.setmain_image(5);
             }
         });
 
