@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +60,20 @@ public class WalletFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_wallet, container, false);
+
+        ViewPager viewPager = (ViewPager)rootView.findViewById(R.id.viewpager);
+
+        WalletPageAdapter adapter = new WalletPageAdapter(getActivity(), getActivity().getSupportFragmentManager());
+
+        viewPager.setAdapter(adapter);
+
+        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
+
+        tabLayout.setupWithViewPager(viewPager);
+
+
+
+
 
         dao = new WalletDAO(this.getActivity());
         listdao = new PlanListDAO(this.getActivity());

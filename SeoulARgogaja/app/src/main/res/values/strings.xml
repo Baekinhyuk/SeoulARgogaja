@@ -14,4 +14,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="tab_page1">여행 기간</string>
+    <string name="tab_page2">예산</string>
+    <string name="tab_page3">총 지출</string>
+
 </resources>

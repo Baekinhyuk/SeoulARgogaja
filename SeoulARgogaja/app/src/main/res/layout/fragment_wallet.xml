@@ -12,51 +12,26 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/background2"
+            >
 
-
-            <LinearLayout
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:background="@color/background2">
+                android:layout_height="wrap_content"
+                style="@style/CategoryTab"/>
 
-                <TextView
-                    android:id="@+id/wallet_expend_w"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="예산" />
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_below="@id/tabs" />
 
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="~" />
-
-                <TextView
-                    android:id="@+id/wallet_all_expend"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="총액" />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="~" />
-
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <cau.seoulargogaja.CustomListView2
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -64,6 +39,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="30dp"
             android:divider="#ffffff"
             />
 
