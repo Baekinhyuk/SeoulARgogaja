@@ -86,24 +86,6 @@ public class LoadFragment extends Fragment {
         // 아래 함수로 통해 목적지 주소값을 위도 경도 값으로 변경
         //getPointFromGeoCoder("서울특별시 송파구 방이동 112-1");
 
-        Button btn = (Button) view.findViewById(R.id.btn);
-
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //거리
-                //Toast.makeText(MainActivity.this, "Distance"+currentRoute.distance(), Toast.LENGTH_SHORT).show();
-                if ( Build.VERSION.SDK_INT >= 23 &&
-                        ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                    ActivityCompat.requestPermissions( getActivity(), new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                            0 );
-                }
-                else {
-                    startLocationService();
-                }
-            }
-        };
-
         // Setup the MapView
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -119,7 +101,16 @@ public class LoadFragment extends Fragment {
                         new LatLng(37.500342, 126.867769), 15));
             }
         });
-        btn.setOnClickListener(listener);
+
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( getActivity(), new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                    0 );
+        }
+        else {
+            startLocationService();
+        }
+
         return view;
     }
 
