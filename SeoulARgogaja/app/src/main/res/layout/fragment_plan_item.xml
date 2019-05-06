@@ -28,6 +28,7 @@
             android:src="@mipmap/ic_circle_ar" />
 
         <LinearLayout
+            android:id="@+id/plan_item_linear"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

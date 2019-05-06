@@ -30,11 +30,13 @@ import cau.seoulargogaja.data.PoliceParser;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
 import cau.seoulargogaja.data.SpotParser;
+import cau.seoulargogaja.data.WalletDAO;
 
 public class Intro extends AppCompatActivity{
 
     PlanDAO dao;
     PlanListDAO listdao;
+    WalletDAO walletDAO;
     Activity activity = this;
     long mNow;
     Date mDate;
@@ -47,6 +49,7 @@ public class Intro extends AppCompatActivity{
         Handler h= new Handler();
         dao = new PlanDAO(activity);
         listdao = new PlanListDAO(activity);
+        walletDAO = new WalletDAO(activity);
         h.postDelayed(new Runnable(){
             public void run(){
                 //앱 최초 실행 시 db 생성
@@ -60,6 +63,7 @@ public class Intro extends AppCompatActivity{
                     editor.commit();
                     dao.createTable();
                     listdao.createTable();
+                    walletDAO.createTable();
                     PlanListDTO plddto = new PlanListDTO();
 
                     // 주의!! planlist insert시에는 오늘 날짜 입력하도록

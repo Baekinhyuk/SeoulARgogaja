@@ -377,21 +377,45 @@ public class PlanDAO {
             if(temp_datatype1 == temp_datatype2) {
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
-                test_sql_order(0);
+                test_sql_order(dto1.getplanlistid());
             }
             /*날짜에따른 date변경다시해야함..... Date 적용 오류.... 다른경우 dto1이 data고 dto2가 날짜인경우만 존재*/
-            else {
-                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
-                database.execSQL("UPDATE " + tableName + " SET date =\'"+temp_date2+"\' WHERE ID=" + temp_id1);
-                database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 +" WHERE ID=" + temp_id2);
-                test_sql_order(0);
-            }
+            else{
+                if(temp_order1 < temp_order2) {
+                    //아래로가는상황
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET date =\'" + temp_date2 + "\' WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+                    test_sql_order(dto1.getplanlistid());
+                }
+                else{
+                    //위로가는상황
+                    Cursor cursor_change = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto1.getplanlistid()+" ORDER BY "+tableName+".order_ DESC", null);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
+                    int count = cursor_change.getCount();
+                    System.out.println("데이터 변경 ---------------"+Integer.toString(count));
+                    String temp_date3 = temp_date2;
+                    for (int i = 0; i < count; i++) {
+                        cursor_change.moveToNext();
+                        String temp_date = cursor_change.getString(2);
+                        int temp_order = cursor_change.getInt(6);
+                        if(temp_order2 > temp_order){
+                            temp_date3 = temp_date;
+                            break;
+                        }
+                    }
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET date =\'" + temp_date3 + "\' WHERE ID=" + temp_id1);
+                    database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
+                    test_sql_order(dto1.getplanlistid());
+                    cursor_change.close();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
         }
+    }
 
     public void test_sql_order(int planlist_id) {  //planlistid에 해당하는 내용 test용
         ArrayList<PlanDTO> list = new ArrayList<PlanDTO>();
@@ -427,5 +451,42 @@ public class PlanDAO {
             e.printStackTrace();
             Log.e("Plan","[PlanDAO] ",e);
         }
+    }
+
+    public void delete_plan(PlanDTO dto) {
+
+        try {
+            if (database != null) {
+                database.execSQL("delete from " + tableName + " where ID=" + dto.getId());
+
+                println("데이터를 모두삭제 했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Wallet", "[dao db] : 삭제 안됨. ", e);
+        }
+
+    }
+
+    public void update_plan(PlanDTO dto) {
+
+        try {
+            database.execSQL("UPDATE " + tableName + " SET content = \'" + dto.getContent() +"\'"
+                    + ", date = \'" + dto.getdate() +"\'"
+                    + ", spotID = " + dto.getspotID()
+                    + ", customID = " + dto.getcustomID()
+                    + ", memo = \'" + dto.getmemo() +"\'"
+                    + ", order_ = " + dto.getOrder()
+                    + ", datatype = " + dto.getdatatype()
+                    + ", planlistid = " + dto.getplanlistid()
+                    + " WHERE ID = " + dto.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("planlist", "[dao db] : planlist update 일어나지 않음", e);
+        }
+
     }
 }
