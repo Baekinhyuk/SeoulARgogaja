@@ -141,7 +141,7 @@ public class WalletAdd extends AppCompatActivity {
         wallet_add_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wallet_add_money.setImageResource(R.drawable.ic_monetization_on_black_24dp);
+                wallet_add_money.setImageResource(R.drawable.ic_money_black);
                 wallet_add_card.setImageResource(R.drawable.ic_payment_red_24dp);
                 //wallet_add_money.invalidate();
                 //wallet_add_card.invalidate();
@@ -153,7 +153,7 @@ public class WalletAdd extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 wallet_add_card.setImageResource(R.drawable.ic_payment_black_24dp);
-                wallet_add_money.setImageResource(R.drawable.ic_monetization_on_red_24dp);
+                wallet_add_money.setImageResource(R.drawable.ic_money_red);
                 //wallet_add_money.invalidate();
                 //wallet_add_card.invalidate();
                 dto.setsub_image(1);

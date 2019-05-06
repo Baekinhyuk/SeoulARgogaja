@@ -87,7 +87,7 @@ public interface Listener {
                     wallet_memo_image.setImageResource(R.drawable.ic_payment_black_24dp);
                 }
                 else{
-                    wallet_memo_image.setImageResource(R.drawable.ic_monetization_on_black_24dp);
+                    wallet_memo_image.setImageResource(R.drawable.ic_money_black);
                 }
 
                 ImageView wallet_main_image = (ImageView) view.findViewById(R.id.wallet_main_image);
