@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cau.seoulargogaja.adapter.SearchListAdapter;
+import cau.seoulargogaja.adapter.SearchPhotoAdapter;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
 
@@ -26,7 +27,7 @@ public class ThemeActivity extends AppCompatActivity {
     Button button5;
     Button button6;
 
-    SearchListAdapter searchListAdapter;
+    SearchPhotoAdapter searchPhotoAdapter;
     ListView searchListView;
     List<SpotDTO> searchedList = new ArrayList<>();
     List<SpotDTO> tourList;
@@ -39,6 +40,7 @@ public class ThemeActivity extends AppCompatActivity {
         tourList = getTourList();
         button1 = findViewById(R.id.shopping_btn);
         button2 = findViewById(R.id.hisotry_btn);
+        button3 = findViewById(R.id.cafe_btn);
         button4 = findViewById(R.id.food_btn);
         button5 = findViewById(R.id.road_btn);
         button6 = findViewById(R.id.landmark_btn);
@@ -59,6 +61,12 @@ public class ThemeActivity extends AppCompatActivity {
         });
 
 
+        button3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                submitQuery(3);
+            }
+        });
 
         button4.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -87,8 +95,8 @@ public class ThemeActivity extends AppCompatActivity {
         searchedList = search(i);
         Log.d("theme",searchedList.get(0).getName());
 
-        searchListAdapter = new SearchListAdapter(getApplicationContext(), searchedList);
-        searchListView.setAdapter(searchListAdapter);
+        searchPhotoAdapter = new SearchPhotoAdapter(getApplicationContext(), searchedList);
+        searchListView.setAdapter(searchPhotoAdapter);
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -130,7 +138,7 @@ public class ThemeActivity extends AppCompatActivity {
                 result.add(tour);
             }else if(i == 2 && tour.getTheme().equals("역사")){
                 result.add(tour);
-            }else if(i == 3 && tour.getTheme().equals("숙박")){
+            }else if(i == 3 && tour.getTheme().equals("카페")){
                 result.add(tour);
             }else if(i == 4 && tour.getTheme().equals("식당")){
                 result.add(tour);

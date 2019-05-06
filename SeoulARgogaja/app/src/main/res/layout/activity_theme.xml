@@ -64,6 +64,16 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center"
+                android:id="@+id/cafe_btn"
+                android:background="@drawable/baseline_local_cafe_black_18dp"
+                />
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center"
                 android:id="@+id/road_btn"
                 android:background="@drawable/baseline_location_city_black_18dp"
                 />

@@ -16,11 +16,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import cau.seoulargogaja.data.HospitalDAO;
+import cau.seoulargogaja.data.HospitalDTO;
+import cau.seoulargogaja.data.HospitalParser;
 import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
 import cau.seoulargogaja.data.PlanListDAO;
 import cau.seoulargogaja.data.PlanListDTO;
+import cau.seoulargogaja.data.PoliceDAO;
+import cau.seoulargogaja.data.PoliceDTO;
+import cau.seoulargogaja.data.PoliceParser;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
 import cau.seoulargogaja.data.SpotParser;
@@ -75,6 +81,34 @@ public class Intro extends AppCompatActivity{
                         ArrayList<SpotDTO> spotlist;
                         spotlist = parser.getList();
                         dao.setData(spotlist);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                    PoliceParser Pparser = new PoliceParser();
+                    try {
+                        Pparser.start();
+                        Pparser.join(); // 서버 xml파일 파서
+
+                        PoliceDAO dao = new PoliceDAO(activity); // db 생성
+                        dao.createTable();
+                        ArrayList<PoliceDTO> policelist;
+                        policelist = Pparser.getList();
+                        dao.setData(policelist);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                    HospitalParser Hparser = new HospitalParser();
+                    try {
+                        Hparser.start();
+                        Hparser.join(); // 서버 xml파일 파서
+
+                        HospitalDAO dao = new HospitalDAO(activity); // db 생성
+                        dao.createTable();
+                        ArrayList<HospitalDTO> hospitallist;
+                        hospitallist = Hparser.getList();
+                        dao.setData(hospitallist);
                     } catch (InterruptedException e){
                         e.printStackTrace();
                     }
