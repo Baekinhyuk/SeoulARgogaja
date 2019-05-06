@@ -80,7 +80,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".CurrentPositionActivity"></activity>
+        <activity android:name=".CurrentPositionActivity" />
     </application>
 
 </manifest>
