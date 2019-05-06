@@ -93,7 +93,7 @@ public class WalletFragment extends Fragment {
         row_count = list.size()-1;//0부터 시작하니 마지막위치는 -1
 
         final CustomListView2 listView2 = (CustomListView2)rootView.findViewById(R.id.listView2);
-        WalletAdapter adapter = new WalletAdapter(getActivity(), list, new WalletAdapter.Listener() {
+        WalletAdapter adapter = new WalletAdapter(getActivity(), list,dao,mainState.getplanlistId(), new WalletAdapter.Listener() {
             @Override
             public void onGrab(int position, RelativeLayout row) {
                 listView2.onGrab(position, row);

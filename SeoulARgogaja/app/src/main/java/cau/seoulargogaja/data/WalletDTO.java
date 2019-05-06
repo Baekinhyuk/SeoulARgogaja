@@ -25,6 +25,7 @@ public class WalletDTO {
     public WalletDTO(String date, int planlistid) {
         this.date = date;
         this.planlistid = planlistid;
+        expend = 0; //각 날짜별 금액합산하기위해 날짜정보들어간것은 0원으로 인식
         datatype = 0;
     }
 

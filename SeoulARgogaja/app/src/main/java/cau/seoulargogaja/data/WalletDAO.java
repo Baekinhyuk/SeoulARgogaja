@@ -447,4 +447,35 @@ public class WalletDAO {
             Log.e("plan", "[dao db] : 값이 안 변경됨 ㅡㅡ ", e);
         }
     }
+
+    public int sum_expend(int planlist_id, String day) {  //planlistid에 해당하는 내용 test용
+        ArrayList<WalletDTO> list = new ArrayList<WalletDTO>();
+        int sum = 0;
+        println("sum_expend 날짜 : " + day);
+        try {
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT expend FROM " + tableName + " WHERE planlistid = "+ planlist_id +" AND date = \'"+day+"\' ORDER BY "+tableName+".order_ ASC", null);
+
+                int count = cursor.getCount();
+                println("sum_expend 결과 레코드의 갯수 : " + count);
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    int expend = cursor.getInt(0);
+                    sum += expend;
+                    Log.d("Wallet_Plan sum_expend : ","expend = "+expend+" SUM = "+sum);
+                }
+
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+                println("데이터를 조회했습니다.");
+                return sum;
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+                return sum;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return sum;
+        }
+    }
 }

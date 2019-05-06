@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.media.Image;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,9 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.Map;
 
 import cau.seoulargogaja.R;
 import cau.seoulargogaja.WalletAdd;
+import cau.seoulargogaja.data.WalletDAO;
 import cau.seoulargogaja.data.WalletDTO;
 
 public class WalletAdapter  extends ArrayAdapter<WalletDTO> {
@@ -36,10 +40,14 @@ public interface Listener {
 
     final WalletAdapter.Listener listener;
     final Map<WalletDTO, Integer> mIdMap = new HashMap<>();
+    WalletDAO dao;
+    int planlistid;
 
-    public WalletAdapter(Context context, List<WalletDTO> list, WalletAdapter.Listener listener) {
+    public WalletAdapter(Context context, List<WalletDTO> list,WalletDAO dao,int planlistid, WalletAdapter.Listener listener) {
         super(context, 0, list);
         this.listener = listener;
+        this.dao = dao;
+        this.planlistid = planlistid;
         for (int i = 0; i < list.size(); ++i) {
             mIdMap.put(list.get(i), i);
         }
@@ -68,7 +76,8 @@ public interface Listener {
                 textView.setText(data.getdetail());
                 textView.setPaintFlags(textView.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
                 TextView textView2 = (TextView) view.findViewById(R.id.wallet_expend);
-                String a = Integer.toString(data.getexpend())+"원";
+                NumberFormat nFormat = NumberFormat.getCurrencyInstance();
+                String a = nFormat.format(data.getexpend());
                 textView2.setText(a);
                 TextView textView3 = (TextView) view.findViewById(R.id.wallet_memo);
                 textView3.setText(data.getmemo());
@@ -164,8 +173,13 @@ public interface Listener {
                 walletdate.setText(last);
 
                 TextView walletall = (TextView) view.findViewById(R.id.wallet_all);
-                walletall.setText("총액");
 
+                int sum_expend = dao.sum_expend(planlistid,day);
+                NumberFormat nFormat = NumberFormat.getCurrencyInstance();
+                String result = nFormat.format(sum_expend);
+                Log.d("Wallet_Plan sum_expend : ","result = "+result);
+                walletall.setText(result);
+                walletall.setPaintFlags(walletall.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
             }
             else if(data.getdatatype() == 2){
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_plus, null);
