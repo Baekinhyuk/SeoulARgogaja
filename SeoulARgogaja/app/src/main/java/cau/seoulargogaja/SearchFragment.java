@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment {
         btn2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ThemeActivity.class);
+                Intent intent = new Intent(getActivity(), TemaActivity.class);
                 startActivity(intent);
             }
         });
