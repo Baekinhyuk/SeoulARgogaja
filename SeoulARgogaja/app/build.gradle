@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.google.ar:core:1.8.0'
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.8.0'
-
+    implementation 'com.android.support:cardview-v7:28.0.0-rc01'
     implementation project(':SDK_release_v1.0')
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:3.1.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:6.1.3'
