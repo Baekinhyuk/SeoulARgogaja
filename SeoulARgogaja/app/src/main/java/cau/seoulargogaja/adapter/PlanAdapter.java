@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cau.seoulargogaja.ARActivity;
 import cau.seoulargogaja.PlanAdd;
 import cau.seoulargogaja.PlanEdit;
 import cau.seoulargogaja.R;
@@ -70,6 +71,18 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         try {
             if (data.getdatatype() == 1) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
+
+                ImageView ar_image = (ImageView) view.findViewById(R.id.ar_image);
+                ar_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent ar_intent = new Intent(context, ARActivity.class);
+                        context.startActivity(ar_intent);
+                    }
+                });
+
+
+
                 TextView textView = (TextView) view.findViewById(R.id.nick_name);
                 TextView textView_memo = (TextView) view.findViewById(R.id.item_memo);
 

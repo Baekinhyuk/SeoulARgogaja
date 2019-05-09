@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cau.seoulargogaja.adapter.Place_ExampleAdapter;
-import cau.seoulargogaja.adapter.SearchPhotoAdapter;
+//import cau.seoulargogaja.adapter.SearchPhotoAdapter;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
 
