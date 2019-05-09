@@ -47,12 +47,15 @@ public class WalletFragment extends Fragment {
     private int row_count;
     ViewGroup rootView;
     Activity activity;
+    WalletPageAdapter wallet_adapter;
+    TabLayout tabLayout;
 
     @Override
     public void onResume(){
         super.onResume();
         set_wallet(rootView);
         activity = getActivity();
+        wallet_adapter.notifyDataSetChanged();
     }
 
     @Nullable
@@ -60,21 +63,11 @@ public class WalletFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_wallet, container, false);
-
         ViewPager viewPager = (ViewPager)rootView.findViewById(R.id.viewpager);
-
-        WalletPageAdapter adapter = new WalletPageAdapter(getActivity(), getActivity().getSupportFragmentManager());
-
-        viewPager.setAdapter(adapter);
-
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
-
+        wallet_adapter = new WalletPageAdapter(getActivity(), getChildFragmentManager());
+        viewPager.setAdapter(wallet_adapter);
+        tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-
-
-
-
         dao = new WalletDAO(this.getActivity());
         listdao = new PlanListDAO(this.getActivity());
 

@@ -29,21 +29,22 @@ public class WalletPage1 extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        rootView = (ViewGroup)inflater.inflate(R.layout.wallet_page1, container, false);
-
+    public void onResume(){
+        super.onResume();
         ArrayList<PlanListDTO> planlist = getPlanList();
         // PLANLIST DB에 첫번째를 mainstate로 설정
         PlanListDTO mainPlan = planlist.get(0);
-
         mainState = new MainState(mainPlan);
-
         TextView textView = (TextView) rootView.findViewById(R.id.wallet_date_start);
         textView.setText(mainState.getStartDate());
-
         TextView textView2 = (TextView) rootView.findViewById(R.id.wallet_date_end);
         textView2.setText(mainState.getEndDate());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        rootView = (ViewGroup)inflater.inflate(R.layout.wallet_page1, container, false);
         return rootView;
     }
 

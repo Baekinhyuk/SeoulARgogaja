@@ -5,13 +5,70 @@
     android:orientation="vertical"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="20dp"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:text="두번째 페이지"/>
+    <LinearLayout
+        android:id="@+id/wallet_page2_ll1"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:id="@+id/progress" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wallet_page2_ll2"
+        android:layout_below="@+id/wallet_page2_ll1"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:id="@+id/wallet_page2_start"
+            android:text="0" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:id="@+id/wallet_page2_end"
+            android:text="0" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wallet_page2_ll3"
+        android:layout_below="@+id/wallet_page2_ll2"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="예산" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="잔고" />
+
+    </LinearLayout>
 
 </RelativeLayout>
