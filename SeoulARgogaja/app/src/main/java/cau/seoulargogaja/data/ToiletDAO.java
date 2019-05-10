@@ -8,24 +8,21 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-
-
-public class SpotDAO {
-
+public class ToiletDAO  {
     SQLiteDatabase database;
     String databaseName;
     String tableName;
 
-    public SpotDAO(Activity activity) {
+    public ToiletDAO(Activity activity) {
         databaseName = "seoul";
-        tableName = "spot";
+        tableName = "toilet";
 
         try {
             database = activity.openOrCreateDatabase(databaseName, Context.MODE_PRIVATE, null);
             println("데이터베이스를 열었습니다. : " + databaseName);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("tour", "[dao db] : 데이터베이스가 안열림 ", e);
+            Log.e("toilet", "[dao db] : 데이터베이스가 안열림 ", e);
         }
     }
 
@@ -35,14 +32,8 @@ public class SpotDAO {
                 database.execSQL("CREATE TABLE if not exists " + tableName + "("    //if not exists 은 이미 있으면 만들지 않는다.
                         + "ID integer PRIMARY KEY autoincrement,"
                         + "name text, " // 이름
-                        + "theme text, "// 테마
-                        + "area text, " // 이미지
                         + "latitude real, "  // 위도
-                        + "longitude real, " // 경도
-                        + "address text, " // 주소
-                        + "phone text, " // 전화번호
-                        + "web text," // 웹주소
-                        + "description text" // 설명
+                        + "longitude real" // 경도
                         + ")");
                 println("테이블을 만들었습니다. : " + tableName);
             } else {
@@ -51,30 +42,24 @@ public class SpotDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("tour", "[dao db] : 테이블생성이 안됨 ", e);
+            Log.e("toilet", "[dao db] : 테이블생성이 안됨 ", e);
         }
     }
 
-    public void setData(ArrayList<SpotDTO> list) {  //파싱한거 최초1회 실행
+    public void setData(ArrayList<ToiletDTO> list) {  //파싱한거 최초1회 실행
         try {
             if (database != null) {
 
                 for (int i = 0; i < list.size(); i++) {
 
-                    SpotDTO dto = list.get(i);
+                    ToiletDTO dto = list.get(i);
 
-                    database.execSQL("INSERT INTO " + tableName + "(ID,name,theme,area,latitude,longitude,address,phone,web,description) VALUES "
+                    database.execSQL("INSERT INTO " + tableName + "(ID,name,latitude,longitude) VALUES "
                             + "("
                             +  Integer.parseInt(dto.getId()) + ","
                             + "'" + dto.getName() + "',"
-                            + "'" + dto.getTheme() + "',"
-                            + "'" + dto.getArea() + "',"
                             + "'" + dto.getLatitude() + "',"
-                            + "'" + dto.getLongitude() + "',"
-                            + "'" + dto.getAddress() + "',"
-                            + "'" + dto.getPhone() + "',"
-                            + "'" + dto.getWeb() + "',"
-                            + "\"" + dto.getDescription() + "\""
+                            + "'" + dto.getLongitude() + "'"
                             + ")");
                 }
                 println("데이터를 추가했습니다.");
@@ -83,14 +68,14 @@ public class SpotDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("tour", "[dao db] : 초기값이 안들어가짐 ", e);
+            Log.e("toilet", "[dao db] : 초기값이 안들어가짐 ", e);
         }
     }
 
 
 
-    public ArrayList<SpotDTO> selectAll() {  //전부조회하기
-        ArrayList<SpotDTO> list = new ArrayList<SpotDTO>();
+    public ArrayList<ToiletDTO> selectAll() {  //전부조회하기
+        ArrayList<ToiletDTO> list = new ArrayList<ToiletDTO>();
         try {
 
             if (database != null) {
@@ -111,17 +96,12 @@ public class SpotDAO {
                     cursor.moveToNext();
                     int id = cursor.getInt(0);
                     String name = cursor.getString(1);
-                    String theme = cursor.getString(2);
-                    String area = cursor.getString(3);
-                    String latitude = cursor.getString(4);
-                    String longitude = cursor.getString(5);
-                    String address = cursor.getString(6);
-                    String phone = cursor.getString(7);
-                    String web = cursor.getString(8);
-                    String description = cursor.getString(9);
+                    String latitude = cursor.getString(2);
+                    String longitude = cursor.getString(3);
+
                     println("레코드 #" + i + " : " + id + ", " + name);
 
-                    SpotDTO dto = new SpotDTO(id+"",name,theme,area,latitude,longitude,address,phone,web,description);
+                    ToiletDTO dto = new ToiletDTO(id+"",name,latitude,longitude);
                     list.add(dto);
                 }
 
@@ -134,7 +114,7 @@ public class SpotDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Spot","[SpotDAO] ",e);
+            Log.e("Toilet","[ToiletDAO] ",e);
         }
 
 
@@ -154,14 +134,14 @@ public class SpotDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("spot", "[dao db] : 삭제 안됨. ", e);
+            Log.e("Toilet", "[dao db] : 삭제 안됨. ", e);
         }
     }
 
 
 
     private void println(String data) {
-        Log.d("tour", "[dao db] " + data);
+        Log.d("Toilet", "[dao db] " + data);
     }
 
 

@@ -47,6 +47,8 @@ import cau.seoulargogaja.data.PoliceDAO;
 import cau.seoulargogaja.data.PoliceDTO;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
+import cau.seoulargogaja.data.ToiletDAO;
+import cau.seoulargogaja.data.ToiletDTO;
 
 public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
 
@@ -59,19 +61,22 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
     MyLocationListener listener;
     ArrayList<DistSpot> ds = new ArrayList<DistSpot>();
     ArrayList<DistSpot> hds = new ArrayList<DistSpot>();
+    ArrayList<DistSpot> tds = new ArrayList<DistSpot>();
 
 
-    int option = 0; //0 = 처음 1 = 경찰서 2 = 응급실
+    int option = 0; //0 = 처음 1 = 경찰서 2 = 응급실 3 = 화장실
     boolean isShow;
     ListView listView;
     PoliceAdapter adapter;
     PoliceDAO dao;
     HospitalDAO hdao;
-    HospitalAdapter hadapter;
+    ToiletDAO tdao;
     ArrayList<PoliceDTO> list;
     ArrayList<PoliceDTO> smallList = new ArrayList<PoliceDTO>();
     ArrayList<HospitalDTO> hlist;
     ArrayList<HospitalDTO> hsmallList = new ArrayList<HospitalDTO>();
+    ArrayList<ToiletDTO> tlist;
+    ArrayList<ToiletDTO> tsmallList = new ArrayList<ToiletDTO>();
 
 
     private static final String[] LOCATION_PERMS = {
@@ -101,6 +106,8 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
         list = dao.selectAll();
         hdao = new HospitalDAO(this.getActivity());
         hlist = hdao.selectAll();
+        tdao = new ToiletDAO(this.getActivity());
+        tlist = tdao.selectAll();
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -108,6 +115,7 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
         listener = new MyLocationListener();
         listView = (ListView) myContext.findViewById(R.id.searchListView);   //리스트뷰는 껍데기
         adapter = new PoliceAdapter(myContext.getApplicationContext()); //어댑터 생성
+
         mapFragment.getMapAsync(this);
 
         Button btn1 = (Button)view.findViewById(R.id.police);
@@ -131,6 +139,19 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
                 if(option != 2) {
                     clearList();
                     option = 2;
+                    onMapReady(map);
+                }
+            }
+        });
+
+        Button btn3 = (Button)view.findViewById(R.id.toilet);
+
+        btn3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(option != 3) {
+                    clearList();
+                    option = 3;
                     onMapReady(map);
                 }
             }
@@ -260,7 +281,7 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
 
             //list = LoadActivity.list;   //데이터집합을 받음.
 
-            Log.d("police", "search 크기 : " + list.size());
+            Log.d("toilet", "search 크기 : " + tlist.size());
             //Log.d("hospital", "search 크기 : " + hlist.size());
 
 
@@ -286,13 +307,25 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
                 hds.add(new DistSpot(vector, i, dto));
             }
 
+            for (int i = 0, j = 0; i < tlist.size(); i++) {
+                ToiletDTO dto = tlist.get(i);
+                double x = Double.parseDouble(dto.getLatitude());
+                double y = Double.parseDouble(dto.getLongitude());
+
+
+                double vector = VectorCalc.distance(latitude, longitude, x, y, "k");
+                Log.d("hun", dto.getName() + "거리 : " + vector);
+                tds.add(new DistSpot(vector, i, dto));
+            }
+
             ds.sort(Comparator.naturalOrder());
             hds.sort(Comparator.naturalOrder());
+            tds.sort(Comparator.naturalOrder());
 
             for (int i = 0; i < 5; i++) { // 5개만
 
                 MarkerOptions marker = new MarkerOptions();
-                PoliceDTO dto = list.get(ds.get(i).getId());
+                ToiletDTO dto = tlist.get(tds.get(i).getId());
                 double x = Double.parseDouble(dto.getLatitude());
                 double y = Double.parseDouble(dto.getLongitude());
 
@@ -303,11 +336,11 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
                 //marker.icon(BitmapDescriptorFactory.fromResource(imageArray[j++]));
 
                 map.addMarker(marker);
-                adapter.addItem(ds.get(i));
-                smallList.add(dto);
+                adapter.addItem(tds.get(i));
+                tsmallList.add(dto);
 
             }
-            option = 1;
+            option = 3;
         }else if(option == 1) {
             for (int i = 0; i < 5; i++) { // 5개만
 
@@ -344,6 +377,26 @@ public class EmergencyFragment extends Fragment implements OnMapReadyCallback {
                 map.addMarker(marker);
                 adapter.addItem(hds.get(i));
                 hsmallList.add(dto);
+
+            }
+
+        }else if(option == 3){
+            for (int i = 0; i < 5; i++) { // 5개만
+
+                MarkerOptions marker = new MarkerOptions();
+                ToiletDTO dto = tlist.get(tds.get(i).getId());
+                double x = Double.parseDouble(dto.getLatitude());
+                double y = Double.parseDouble(dto.getLongitude());
+
+                marker.position(new LatLng(x, y));
+                //37.7958188,127.7760805
+                marker.title(dto.getName());    //이름
+                marker.draggable(true);
+                //marker.icon(BitmapDescriptorFactory.fromResource(imageArray[j++]));
+
+                map.addMarker(marker);
+                adapter.addItem(tds.get(i));
+                tsmallList.add(dto);
 
             }
 

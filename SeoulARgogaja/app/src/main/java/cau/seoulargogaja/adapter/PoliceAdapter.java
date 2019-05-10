@@ -58,10 +58,12 @@ public class PoliceAdapter extends BaseAdapter {   //자동으로 호촐되는 4
         }
 
         DistSpot curItem = items.get(position);
-        if(curItem.getDto() == null)
+        if(curItem.getHdto() != null )
             view.setName(curItem.getHdto().getName());
-        else
+        else if(curItem.getDto() != null)
             view.setName(curItem.getDto().getName());
+        else if(curItem.getTdto() != null)
+            view.setName(curItem.getTdto().getName());
         view.setAddr(""+Math.round((curItem.getDist()*1000))+"m");
 
         return view;

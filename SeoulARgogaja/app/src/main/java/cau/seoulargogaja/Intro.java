@@ -30,6 +30,9 @@ import cau.seoulargogaja.data.PoliceParser;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
 import cau.seoulargogaja.data.SpotParser;
+import cau.seoulargogaja.data.ToiletDAO;
+import cau.seoulargogaja.data.ToiletDTO;
+import cau.seoulargogaja.data.ToiletParser;
 import cau.seoulargogaja.data.WalletDAO;
 
 public class Intro extends AppCompatActivity{
@@ -112,6 +115,21 @@ public class Intro extends AppCompatActivity{
                     } catch (InterruptedException e){
                         e.printStackTrace();
                     }
+
+                    ToiletParser toiletParser = new ToiletParser();
+                    try {
+                        toiletParser.start();
+                        toiletParser.join(); // 서버 xml파일 파서
+
+                        ToiletDAO dao = new ToiletDAO(activity); // db 생성
+                        dao.createTable();
+                        ArrayList<ToiletDTO> toiletlist;
+                        toiletlist = toiletParser.getList();
+                        dao.setData(toiletlist);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
                 }
                 /* planlist test
                 ArrayList<PlanListDTO> a = listdao.selectAll();

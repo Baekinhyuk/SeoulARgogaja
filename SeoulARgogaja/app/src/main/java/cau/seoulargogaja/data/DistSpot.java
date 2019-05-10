@@ -6,6 +6,7 @@ public class DistSpot implements Comparable<DistSpot>{
     private int id;
     private PoliceDTO dto;
     private HospitalDTO hdto;
+    private ToiletDTO tdto;
     public DistSpot(double dist, int id, PoliceDTO dto){
         this.dist = dist;
         this.id = id;
@@ -16,6 +17,12 @@ public class DistSpot implements Comparable<DistSpot>{
         this.dist = dist;
         this.id = id;
         this.hdto = dto;
+    }
+
+    public DistSpot(double dist, int id, ToiletDTO dto){
+        this.dist = dist;
+        this.id = id;
+        this.tdto = dto;
     }
 
     public int compareTo(DistSpot other){
@@ -35,4 +42,6 @@ public class DistSpot implements Comparable<DistSpot>{
     public HospitalDTO getHdto() {
         return hdto;
     }
+
+    public ToiletDTO getTdto() { return tdto; }
 }
