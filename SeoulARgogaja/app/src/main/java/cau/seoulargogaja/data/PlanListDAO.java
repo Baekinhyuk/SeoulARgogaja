@@ -163,6 +163,14 @@ public class PlanListDAO {
             Log.e("planlist", "[dao db] : planlist update 일어나지 않음", e);
         }
     }
+    public void update_budget(PlanListDTO dto) {
+        try {
+            database.execSQL("UPDATE " + tableName + " SET budget = " + dto.getBudget() + " WHERE ID = " + dto.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("planlist", "[dao db] : planlist update 일어나지 않음", e);
+        }
+    }
 
     public int getMainID() {return mainId;}
     public void setMainID(int id){

@@ -282,6 +282,7 @@ public class PlanFragment extends Fragment {
                     //mainState.setEnddate(dateFormatter.format(eDate));
                     PlanListDAO dao = new PlanListDAO(activity);
                     dao.update(mainState.getMainDto());
+                    onResume();
                 }
             }
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -310,6 +311,7 @@ public class PlanFragment extends Fragment {
                     mainState.setEnddate(dateFormatter.format(eDate));
                     PlanListDAO dao = new PlanListDAO(activity);
                     dao.update(mainState.getMainDto());
+                    onResume();
                 }
             }
         }, newCalendar2.get(Calendar.YEAR), newCalendar2.get(Calendar.MONTH), newCalendar2.get(Calendar.DAY_OF_MONTH));
