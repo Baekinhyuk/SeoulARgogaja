@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -139,7 +141,7 @@ public class PlanFragment extends Fragment {
             @Override
             public void swapElements(int indexOne, int indexTwo) {
 
-                if(indexOne != row_count && indexTwo != row_count){
+                if(indexOne != row_count && indexTwo != row_count && indexOne != 0 && indexTwo != 0){
                     PlanDTO temp1 = list.get(indexOne);
                     PlanDTO temp2 = list.get(indexTwo);
 
@@ -156,6 +158,29 @@ public class PlanFragment extends Fragment {
                 }
             }
         });
+
+        /*
+        listView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        PlanDTO temp1 = list.get(position);
+                        Intent intent = new Intent(getActivity(), PlanEdit.class); // intent 되는 activty에 알맞은 data 출력
+
+                        intent.putExtra("id", temp1.getId());
+                        intent.putExtra("content", temp1.getContent());
+                        intent.putExtra("date", temp1.getdate());
+                        intent.putExtra("spotID", temp1.getspotID());
+                        intent.putExtra("customID", temp1.getcustomID());
+                        intent.putExtra("memo", temp1.getmemo());
+                        intent.putExtra("order", temp1.getOrder());
+                        intent.putExtra("datatype", temp1.getdatatype());
+                        intent.putExtra("planlistid", temp1.getplanlistid());
+
+                        startActivity(intent);
+                    }
+                });
+        */
 
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
@@ -257,6 +282,7 @@ public class PlanFragment extends Fragment {
                     //mainState.setEnddate(dateFormatter.format(eDate));
                     PlanListDAO dao = new PlanListDAO(activity);
                     dao.update(mainState.getMainDto());
+                    onResume();
                 }
             }
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -285,6 +311,7 @@ public class PlanFragment extends Fragment {
                     mainState.setEnddate(dateFormatter.format(eDate));
                     PlanListDAO dao = new PlanListDAO(activity);
                     dao.update(mainState.getMainDto());
+                    onResume();
                 }
             }
         }, newCalendar2.get(Calendar.YEAR), newCalendar2.get(Calendar.MONTH), newCalendar2.get(Calendar.DAY_OF_MONTH));

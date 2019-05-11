@@ -65,7 +65,6 @@ public class DetailActivity extends AppCompatActivity {
         web = intent.getStringExtra("web");
         description = intent.getStringExtra("description");
 
-
         String sid = intent.getStringExtra("id");
         id = Integer.parseInt(sid);
         Log.d("id", id+" detailactivity");
@@ -79,9 +78,9 @@ public class DetailActivity extends AppCompatActivity {
         y = Double.parseDouble(longitude);
 
 
-        String imageUrl = "https://cauteam202.com/image/"+id+".jpg";
+        // String imageUrl = "https://cauteam202.com/image/"+id+".jpg";
 
-        new ServerGetImage((ImageView)findViewById(R.id.detail)).execute(imageUrl);
+        new ServerGetImage((ImageView)findViewById(R.id.detail)).execute(area);
 
         }
 

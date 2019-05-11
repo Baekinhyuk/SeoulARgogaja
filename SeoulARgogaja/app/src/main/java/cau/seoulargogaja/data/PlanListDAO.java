@@ -140,8 +140,8 @@ public class PlanListDAO {
         try {
 
 
-            database.execSQL("UPDATE " + tableName + " SET name = " + dto.getName()
-                    + ", startdate =\' " + dto.getStartDate() +"\'"
+            database.execSQL("UPDATE " + tableName + " SET name = \'" + dto.getName() +"\'"
+                    + ", startdate =\'" + dto.getStartDate() +"\'"
                     + ", enddate = \'" + dto.getEndDate() +"\'"
                     + ", budget = " + dto.getBudget()
                     + ", code = " + dto.getCode()
@@ -158,6 +158,14 @@ public class PlanListDAO {
     public void update_name(PlanListDTO dto) {
         try {
             database.execSQL("UPDATE " + tableName + " SET name = \'" + dto.getName() + "\' WHERE ID = " + dto.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("planlist", "[dao db] : planlist update 일어나지 않음", e);
+        }
+    }
+    public void update_budget(PlanListDTO dto) {
+        try {
+            database.execSQL("UPDATE " + tableName + " SET budget = " + dto.getBudget() + " WHERE ID = " + dto.getId());
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("planlist", "[dao db] : planlist update 일어나지 않음", e);

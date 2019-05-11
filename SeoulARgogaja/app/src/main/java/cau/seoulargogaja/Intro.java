@@ -16,19 +16,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import cau.seoulargogaja.data.HospitalDAO;
+import cau.seoulargogaja.data.HospitalDTO;
+import cau.seoulargogaja.data.HospitalParser;
 import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
 import cau.seoulargogaja.data.PlanListDAO;
 import cau.seoulargogaja.data.PlanListDTO;
+import cau.seoulargogaja.data.PoliceDAO;
+import cau.seoulargogaja.data.PoliceDTO;
+import cau.seoulargogaja.data.PoliceParser;
 import cau.seoulargogaja.data.SpotDAO;
 import cau.seoulargogaja.data.SpotDTO;
 import cau.seoulargogaja.data.SpotParser;
+import cau.seoulargogaja.data.ToiletDAO;
+import cau.seoulargogaja.data.ToiletDTO;
+import cau.seoulargogaja.data.ToiletParser;
+import cau.seoulargogaja.data.WalletDAO;
 
 public class Intro extends AppCompatActivity{
 
     PlanDAO dao;
     PlanListDAO listdao;
+    WalletDAO walletDAO;
     Activity activity = this;
     long mNow;
     Date mDate;
@@ -41,6 +52,7 @@ public class Intro extends AppCompatActivity{
         Handler h= new Handler();
         dao = new PlanDAO(activity);
         listdao = new PlanListDAO(activity);
+        walletDAO = new WalletDAO(activity);
         h.postDelayed(new Runnable(){
             public void run(){
                 //앱 최초 실행 시 db 생성
@@ -54,6 +66,7 @@ public class Intro extends AppCompatActivity{
                     editor.commit();
                     dao.createTable();
                     listdao.createTable();
+                    walletDAO.createTable();
                     PlanListDTO plddto = new PlanListDTO();
 
                     // 주의!! planlist insert시에는 오늘 날짜 입력하도록
@@ -74,6 +87,49 @@ public class Intro extends AppCompatActivity{
                     } catch (InterruptedException e){
                         e.printStackTrace();
                     }
+
+                    PoliceParser Pparser = new PoliceParser();
+                    try {
+                        Pparser.start();
+                        Pparser.join(); // 서버 xml파일 파서
+
+                        PoliceDAO dao = new PoliceDAO(activity); // db 생성
+                        dao.createTable();
+                        ArrayList<PoliceDTO> policelist;
+                        policelist = Pparser.getList();
+                        dao.setData(policelist);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                    HospitalParser Hparser = new HospitalParser();
+                    try {
+                        Hparser.start();
+                        Hparser.join(); // 서버 xml파일 파서
+
+                        HospitalDAO dao = new HospitalDAO(activity); // db 생성
+                        dao.createTable();
+                        ArrayList<HospitalDTO> hospitallist;
+                        hospitallist = Hparser.getList();
+                        dao.setData(hospitallist);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                    ToiletParser toiletParser = new ToiletParser();
+                    try {
+                        toiletParser.start();
+                        toiletParser.join(); // 서버 xml파일 파서
+
+                        ToiletDAO dao = new ToiletDAO(activity); // db 생성
+                        dao.createTable();
+                        ArrayList<ToiletDTO> toiletlist;
+                        toiletlist = toiletParser.getList();
+                        dao.setData(toiletlist);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
                 }
                 /* planlist test
                 ArrayList<PlanListDTO> a = listdao.selectAll();

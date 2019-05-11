@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.os.Build;
 
 import java.net.MalformedURLException;
@@ -25,7 +26,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cau.seoulargogaja.ARActivity;
 import cau.seoulargogaja.PlanAdd;
+import cau.seoulargogaja.PlanEdit;
 import cau.seoulargogaja.R;
 import cau.seoulargogaja.SimpleDirectionActivity;
 import cau.seoulargogaja.data.PlanDTO;
@@ -68,11 +71,44 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         try {
             if (data.getdatatype() == 1) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
+
+                ImageView ar_image = (ImageView) view.findViewById(R.id.ar_image);
+                ar_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent ar_intent = new Intent(context, ARActivity.class);
+                        context.startActivity(ar_intent);
+                    }
+                });
+
+
+
                 TextView textView = (TextView) view.findViewById(R.id.nick_name);
                 TextView textView_memo = (TextView) view.findViewById(R.id.item_memo);
 
                 textView.setText(data.getContent());
                 textView.setPaintFlags(textView.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
+
+                LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.plan_item_linear);
+                linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //context.startActivity(new Intent(context, SimpleDirectionActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        Intent intent = new Intent(context, PlanEdit.class); // intent 되는 activty에 알맞은 data 출력
+
+                        intent.putExtra("id", data.getId());
+                        intent.putExtra("content", data.getContent());
+                        intent.putExtra("date", data.getdate());
+                        intent.putExtra("spotID", data.getspotID());
+                        intent.putExtra("customID", data.getcustomID());
+                        intent.putExtra("memo", data.getmemo());
+                        intent.putExtra("order", data.getOrder());
+                        intent.putExtra("datatype", data.getdatatype());
+                        intent.putExtra("planlistid", data.getplanlistid());
+
+                        context.startActivity(intent);
+                    }
+                });
 
                 textView_memo.setText(data.getmemo());
                 view.findViewById(R.id.vote_image)

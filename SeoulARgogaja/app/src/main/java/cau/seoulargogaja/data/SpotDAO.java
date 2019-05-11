@@ -36,7 +36,7 @@ public class SpotDAO {
                         + "ID integer PRIMARY KEY autoincrement,"
                         + "name text, " // 이름
                         + "theme text, "// 테마
-                        + "area text, " // 구역
+                        + "area text, " // 이미지
                         + "latitude real, "  // 위도
                         + "longitude real, " // 경도
                         + "address text, " // 주소
@@ -74,7 +74,7 @@ public class SpotDAO {
                             + "'" + dto.getAddress() + "',"
                             + "'" + dto.getPhone() + "',"
                             + "'" + dto.getWeb() + "',"
-                            + "'" + dto.getDescription() + "'"
+                            + "\"" + dto.getDescription() + "\""
                             + ")");
                 }
                 println("데이터를 추가했습니다.");
@@ -119,7 +119,6 @@ public class SpotDAO {
                     String phone = cursor.getString(7);
                     String web = cursor.getString(8);
                     String description = cursor.getString(9);
-
                     println("레코드 #" + i + " : " + id + ", " + name);
 
                     SpotDTO dto = new SpotDTO(id+"",name,theme,area,latitude,longitude,address,phone,web,description);

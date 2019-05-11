@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment {
         btn2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ThemeActivity.class);
+                Intent intent = new Intent(getActivity(), TemaActivity.class);
                 startActivity(intent);
             }
         });
@@ -42,6 +42,14 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btn3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CurrentPositionActivity.class);
                 startActivity(intent);
             }
         });
