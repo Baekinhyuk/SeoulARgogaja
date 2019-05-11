@@ -20,8 +20,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.MapboxDirections;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
@@ -29,17 +36,12 @@ import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
+//import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,6 +66,8 @@ public class LoadFragment extends Fragment {
     double start_longitude;
     double end_latitude;
     double end_longitude;
+
+    private GoogleMap gmap;
 
     LocationManager manager;
 
@@ -91,16 +95,13 @@ public class LoadFragment extends Fragment {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(MapboxMap mapboxMap) {
-                map = mapboxMap;
+            public void onMapReady(GoogleMap googleMap) {
+                gmap = googleMap;
 
-                // 카메라 위치 고정(내 gps 위치로 임의지정)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                        // 카메라는 반대의 값으로 적어줄 것
-                        // 뒤에 숫자 15은 카메라 확대 배수이다( 15가 적당 )
-                        new LatLng(37.500342, 126.867769), 15));
+                gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.52487, 126.92723),15));
             }
         });
+
 
         if ( Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -148,28 +149,15 @@ public class LoadFragment extends Fragment {
 
             mapView.getMapAsync(new OnMapReadyCallback() {
                 @Override
-                public void onMapReady(MapboxMap mapboxMap) {
-                    map = mapboxMap;
+                public void onMapReady(GoogleMap googleMap) {
+                    gmap = googleMap;
+                    MarkerOptions makerOptions = new MarkerOptions();
+                    makerOptions.position(new LatLng(start_latitude, start_longitude)).title("시작점");
+                    gmap.addMarker(makerOptions);
+                    makerOptions.position(new LatLng(end_latitude, end_longitude)).title("도착점");
+                    gmap.addMarker(makerOptions);
 
-                    // 카메라 위치 고정(내 gps 위치로 임의지정)
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                            // 카메라는 반대의 값으로 적어줄 것
-                            // 뒤에 숫자 15은 카메라 확대 배수이다( 15가 적당 )
-                            new LatLng(start_latitude, start_longitude), 15));
-
-                    // Add origin and destination to the map
-                    map.addMarker(new MarkerOptions()
-                            .position(new LatLng(start_latitude, start_longitude))
-                            // 타이틀은 상호명 건물명, snippet은 설명 그에 대한 설명이다
-                            // 출발지
-                            .title("출발지")
-                            .snippet("소우2"));
-                    map.addMarker(new MarkerOptions()
-                            // 목적지
-                            .position(new LatLng(end_latitude, end_longitude))
-                            .title("중간")
-                            .snippet("가비2"));
-                    // Get route from API
+                    gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(start_latitude, start_longitude),15));
                     getRoute(start, end);
                 }
             });
@@ -238,11 +226,13 @@ public class LoadFragment extends Fragment {
         }
 
         // Draw Points on MapView
+        gmap.addPolyline(new PolylineOptions().add(points).width(8).color(Color.BLACK));
 
-        map.addPolyline(new PolylineOptions()
+
+        /*map.addPolyline(new PolylineOptions()
                 .add(points)
                 .color(Color.parseColor("#009688"))
-                .width(5));
+                .width(5));*/
     }
 
     @Override

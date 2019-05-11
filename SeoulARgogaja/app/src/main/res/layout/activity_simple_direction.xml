@@ -37,16 +37,6 @@
         tools:layout_editor_absoluteX="197dp"
         tools:layout_editor_absoluteY="60dp" />
 
-    <ImageView
-        android:id="@+id/search"
-        android:layout_width="30dp"
-        android:layout_height="35dp"
-        android:layout_alignEnd="@+id/start"
-        android:layout_alignTop="@+id/start"
-        app:srcCompat="?android:attr/actionModeWebSearchDrawable"
-        tools:layout_editor_absoluteX="220dp"
-        tools:layout_editor_absoluteY="6dp" />
-
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
