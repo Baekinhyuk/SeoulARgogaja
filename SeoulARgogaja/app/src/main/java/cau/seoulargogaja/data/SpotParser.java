@@ -13,7 +13,7 @@ public class SpotParser extends Thread {
 
     private String url;
 
-    private ArrayList<String> id, name, theme,area, latitude, longitude, address, phone, web, description;
+    private ArrayList<String> id, name, theme,area, latitude, longitude, address, phone, web, description, image;
     private ArrayList<SpotDTO> list;
 
 
@@ -34,6 +34,7 @@ public class SpotParser extends Thread {
         phone = new ArrayList<String>();
         web = new ArrayList<String>();
         description= new ArrayList<String>();
+        image = new ArrayList<String>();
 
         list = new ArrayList<SpotDTO>();
 
@@ -52,7 +53,7 @@ public class SpotParser extends Thread {
             String tag;
 
 
-            boolean inTitle1 = false, inTitle2 = false, inTitle3 = false, inTitle4 = false, inTitle5 = false, inTitle6 = false, inTitle7 = false, inTitle8 = false,inTitle9 = false, inTitle10 = false;
+            boolean inTitle1 = false, inTitle2 = false, inTitle3 = false, inTitle4 = false, inTitle5 = false, inTitle6 = false, inTitle7 = false, inTitle8 = false,inTitle9 = false, inTitle10 = false,inTitle11 = false;
             while (parserEvent != XmlPullParser.END_DOCUMENT) { // xml 파일의 문서 끝인가?
                 switch (parserEvent) {
 
@@ -170,6 +171,7 @@ public class SpotParser extends Thread {
         Log.d("tour", "크기 8: " + phone.size());
         Log.d("tour", "크기 9: " + web.size());
         Log.d("tour", "크기 10: " + description.size());
+
 
         try {
             for (int i = 0; i < id.size(); i++) {  //사이즈 바꿔져야함!

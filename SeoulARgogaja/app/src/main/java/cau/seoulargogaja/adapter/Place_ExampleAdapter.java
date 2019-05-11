@@ -36,7 +36,7 @@ public class Place_ExampleAdapter extends RecyclerView.Adapter<Place_ExampleAdap
     @Override
     public void onBindViewHolder(ExampleViewHolder holder, final int position) {
         SpotDTO tour = mExampleList.get(position);
-        String imageUrl = "https://cauteam202.com/image/"+tour.getId()+".jpg";
+        String imageUrl = tour.getArea();
         String contentid = tour.getId();
         String creatorName = tour.getName();
         String address = tour.getAddress();
@@ -63,7 +63,6 @@ public class Place_ExampleAdapter extends RecyclerView.Adapter<Place_ExampleAdap
                 intent.putExtra("phone", ctour.getPhone());
                 intent.putExtra("web", ctour.getWeb());
                 intent.putExtra("description", ctour.getDescription());
-
                 mContext.startActivity(intent);
             }
         });

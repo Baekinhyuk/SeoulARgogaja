@@ -309,7 +309,6 @@ public class CurrentPositionActivity extends AppCompatActivity implements OnMapR
                 intent.putExtra("phone", tour.getPhone());
                 intent.putExtra("web", tour.getWeb());
                 intent.putExtra("description", tour.getDescription());
-
                 startActivityForResult(intent, 2001);
             }
 

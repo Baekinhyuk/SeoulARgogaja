@@ -34,13 +34,13 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import uk.co.appoly.arcorelocation.LocationMarker;
-import uk.co.appoly.arcorelocation.LocationScene;
-import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper;
+import cau.seoulargogaja.arcorelocation.LocationMarker;
+import cau.seoulargogaja.arcorelocation.LocationScene;
+import cau.seoulargogaja.arcorelocation.utils.ARLocationPermissionHelper;
 
 public class ARActivity extends AppCompatActivity implements View.OnClickListener{
 
-    double start_latitude;
+    double start_latitude ;
     double start_longitude;
     LocationManager manager;
     private boolean installRequested;
@@ -90,7 +90,8 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                         frameTime -> {
                             startLocationService();
                             if (locationScene == null) {
-                                locationScene = new LocationScene(this, this, arSceneView);
+                                locationScene = new LocationScene(this, arSceneView);
+                                locationScene.setAnchorRefreshInterval(60);
                                 /* 동네 테스트용
                                 locationScene.mLocationMarkers.add(
                                         new LocationMarker(
@@ -113,16 +114,98 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                                                 37.3766371,
                                                 getAndy(127.1311258, 37.3766371, "419동당촌초길가방향")));
                                  */
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                126.9573886,
-                                                37.5049253,
-                                                getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관")));
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                126.9563678,
-                                                37.5047367,
-                                                getAndy(126.9563678, 37.5047367, "중앙대학교 서라벌홀")));
+
+
+
+                                /*LocationMarker sangdo = new LocationMarker(
+                                        126.954132,
+                                        37.503398,
+                                        getAndy(126.954132, 37.503398, "상도아파트"));
+                                sangdo.setHeight(0);
+                                locationScene.mLocationMarkers.add(sangdo);
+
+                                LocationMarker sangdo2 = new LocationMarker(
+                                        126.954132,
+                                        37.503398,
+                                        getAndy(126.954132, 37.503398, "상도아파트50"));
+                                sangdo2.setHeight(50F);
+                                locationScene.mLocationMarkers.add(sangdo2);
+
+                                LocationMarker sangdo3 = new LocationMarker(
+                                        126.954132,
+                                        37.503398,
+                                        getAndy(126.954132, 37.503398, "상도아파트100"));
+                                sangdo3.setHeight(100F);
+                                locationScene.mLocationMarkers.add(sangdo3);
+
+                                LocationMarker sangdo4 = new LocationMarker(
+                                        126.954132,
+                                        37.503398,
+                                        getAndy(126.954132, 37.503398, "상도아파트200"));
+                                sangdo4.setHeight(200F);
+                                locationScene.mLocationMarkers.add(sangdo4);*/
+
+
+
+                                LocationMarker m = new LocationMarker(
+                                        126.9573886,
+                                        37.5049253,
+                                        getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관30f"));
+                                m.setHeight(30F);
+                                locationScene.mLocationMarkers.add(m);
+
+                                LocationMarker m2 = new LocationMarker(
+                                        126.9573886,
+                                        37.5049253,
+                                        getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관20f"));
+                                m2.setHeight(20F);
+                                locationScene.mLocationMarkers.add(m2);
+
+                                LocationMarker m3 = new LocationMarker(
+                                        126.9563678,
+                                        37.5047367,
+                                        getAndy(126.9563678, 37.5047367, "중앙대학교 서라벌홀 100f"));
+                                m3.setHeight(100F);
+                                locationScene.mLocationMarkers.add(m3);
+                                LocationMarker dragon = new LocationMarker(
+                                        126.957288,
+                                        37.505600,
+                                        getAndy(126.957288, 37.505600, "청룡호수1f"));
+                                dragon.setHeight(1F);
+                                locationScene.mLocationMarkers.add(dragon);
+                                LocationMarker dragon2 = new LocationMarker(
+                                        126.957288,
+                                        37.505600,
+                                        getAndy(126.957288, 37.505600, "청룡호수5f"));
+                                dragon2.setHeight(5F);
+                                locationScene.mLocationMarkers.add(dragon2);
+                                LocationMarker dragon3 = new LocationMarker(
+                                        126.957288,
+                                        37.505600,
+                                        getAndy(126.957288, 37.505600, "청룡호수10f"));
+                                dragon3.setHeight(10F);
+                                locationScene.mLocationMarkers.add(dragon3);
+                                LocationMarker dragon4 = new LocationMarker(
+                                        126.957288,
+                                        37.505600,
+                                        getAndy(126.957288, 37.505600, "청룡호수15f"));
+                                dragon4.setHeight(15F);
+                                locationScene.mLocationMarkers.add(dragon4);
+                                LocationMarker dragon5 = new LocationMarker(
+                                        126.957288,
+                                        37.505600,
+                                        getAndy(126.957288, 37.505600, "청룡호수0f"));
+
+                                locationScene.mLocationMarkers.add(dragon5);
+                                LocationMarker dragon6 = new LocationMarker(
+                                        126.957288,
+                                        37.505600,
+                                        getAndy(126.957288, 37.505600, "청룡호수20f"));
+                                dragon6.setHeight(20F);
+                                locationScene.mLocationMarkers.add(dragon6);
+
+
+                                /*
                                 locationScene.mLocationMarkers.add(
                                         new LocationMarker(
                                                 126.9546487,
@@ -138,6 +221,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                                                 126.9553197,
                                                 37.503636,
                                                 getAndy(126.9553197, 37.503636, "중앙대학교 대운동장")));
+                                                */
 
                             }
                             Frame frame = arSceneView.getArFrame();

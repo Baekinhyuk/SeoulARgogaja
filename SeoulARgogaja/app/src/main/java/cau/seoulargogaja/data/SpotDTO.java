@@ -15,6 +15,7 @@ public class SpotDTO {
     private String web;      //웹사이트 주소
     private String description; // 설명
 
+
     public SpotDTO() {
 
     }
@@ -30,6 +31,7 @@ public class SpotDTO {
         this.phone = phone;
         this.web = web;
         this.description = description;
+
     }
 
 
@@ -112,7 +114,6 @@ public class SpotDTO {
     public void setAddress(String address) {
         this.address = address;
     }
-
 
 
 
