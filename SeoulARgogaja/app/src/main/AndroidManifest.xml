@@ -68,6 +68,9 @@
             android:name=".WalletAdd"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
+            android:name=".WalletEdit"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
             android:name=".TemaActivity"/>
         <activity
             android:name=".ARActivity"

@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 import cau.seoulargogaja.R;
 import cau.seoulargogaja.WalletAdd;
+import cau.seoulargogaja.WalletEdit;
 import cau.seoulargogaja.data.WalletDAO;
 import cau.seoulargogaja.data.WalletDTO;
 
@@ -109,6 +111,26 @@ public interface Listener {
                 else if(data.getmain_image() ==5){
                     wallet_main_image.setImageResource(R.mipmap.ic_etc_black);
                 }
+
+                LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.wallet_item_linear);
+                linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //context.startActivity(new Intent(context, SimpleDirectionActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        Intent intent = new Intent(context, WalletEdit.class); // intent 되는 activty에 알맞은 data 출력
+                        intent.putExtra("id", data.getId());
+                        intent.putExtra("date", data.getdate());
+                        intent.putExtra("planlistid", data.getplanlistid());
+                        intent.putExtra("detail", data.getdetail());
+                        intent.putExtra("expend", data.getexpend());
+                        intent.putExtra("memo", data.getmemo());
+                        intent.putExtra("datatype", data.getdatatype());
+                        intent.putExtra("main_image", data.getmain_image());
+                        intent.putExtra("sub_image", data.getsub_image());
+                        intent.putExtra("order", data.getOrder());
+                        context.startActivity(intent);
+                    }
+                });
 
                 final RelativeLayout row2 = (RelativeLayout) view.findViewById(R.id.wallet_item_list1);
                 view.findViewById(R.id.drag_image_wallet)

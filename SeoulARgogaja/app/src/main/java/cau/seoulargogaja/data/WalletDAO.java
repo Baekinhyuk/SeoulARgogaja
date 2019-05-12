@@ -514,4 +514,84 @@ public class WalletDAO {
             return sum;
         }
     }
+
+    public void update_wallet(WalletDTO dto) {
+        try {
+            database.execSQL("UPDATE " + tableName + " SET date = \'" + dto.getdate() +"\'"
+                    + ", planlistid = " + dto.getplanlistid()
+                    + ", detail = \'" + dto.getdetail()+"\'"
+                    + ", expend = " + dto.getexpend()
+                    + ", memo = \'" + dto.getmemo() +"\'"
+                    + ", datatype = " + dto.getdatatype()
+                    + ", main_image = " + dto.getmain_image()
+                    + ", sub_image = " + dto.getsub_image()
+                    + ", color_type = " + dto.getcolor_type()
+                    + ", order_ = " + dto.getOrder()
+                    + " WHERE ID = " + dto.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("planlist", "[dao db] : planlist update 일어나지 않음", e);
+        }
+
+    }
+
+    public void delete_wallet(WalletDTO dto) {
+
+        try {
+            if (database != null) {
+                database.execSQL("delete from " + tableName + " where ID=" + dto.getId());
+                println("데이터를 모두삭제 했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Wallet", "[dao db] : 삭제 안됨. ", e);
+        }
+
+    }
+
+    public int[] sum_expend_cm(int planlist_id, ArrayList<String> dates) {  //planlistid에 해당하는 내용 test용
+        ArrayList<WalletDTO> list = new ArrayList<WalletDTO>();
+        int[] sum = new int[2];
+        int card = 0;
+        int money = 0;
+        try {
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ planlist_id +" ORDER BY "+tableName+".order_ ASC", null);
+
+                int count = cursor.getCount();
+                println("sum_expend_all 결과 레코드의 갯수 : " + count);
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    String date = cursor.getString(1);
+                    int expend = cursor.getInt(4);
+                    int sub_image = cursor.getInt(8);
+                    for(String date_ : dates) {
+                        if(date_.equals(date)) {
+                            if(sub_image == 0){
+                                card += expend;
+                            }
+                            else {
+                                money += expend;
+                            }
+                        }
+                    }
+                }
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+                println("데이터를 조회했습니다.");
+                sum[0] = card;
+                sum[1] = money;
+                return sum;
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+                return sum;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return sum;
+        }
+    }
 }
