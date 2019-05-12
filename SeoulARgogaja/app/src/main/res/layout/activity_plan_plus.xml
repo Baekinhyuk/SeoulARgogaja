@@ -110,15 +110,14 @@
             android:layout_gravity="center_vertical"
             android:background="@drawable/ic_location_on_black_24dp" />
 
-        <EditText
+        <TextView
             android:id="@+id/edit_plan_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:hint="여행 장소 위치"
+            android:text="여행 장소 위치 지정하기"
             android:textColorHint="#33000000"
-            android:textSize="16dp"
-            android:inputType="textPersonName" />
+            android:textSize="16dp" />
 
 
     </LinearLayout>

@@ -101,7 +101,7 @@ public class PlanDTO {
         return latitude;
     }
 
-    public void setLatitude(String x) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
@@ -109,7 +109,7 @@ public class PlanDTO {
         return longitude;
     }
 
-    public void setLongitude(String y) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 

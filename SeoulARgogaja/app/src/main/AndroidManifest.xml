@@ -62,6 +62,9 @@
             android:name=".PlanAdd"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
+            android:name=".PlanAddMap"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
             android:name=".PlanEdit"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity

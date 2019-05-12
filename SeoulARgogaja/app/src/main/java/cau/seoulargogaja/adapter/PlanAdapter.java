@@ -105,8 +105,8 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                         intent.putExtra("date", data.getdate());
                         intent.putExtra("spotID", data.getspotID());
                         intent.putExtra("stamp", data.getStamp());
-                        intent.putExtra("latitude ", data.getLatitude());
-                        intent.putExtra("longitude ", data.getLongitude());
+                        intent.putExtra("latitude", data.getLatitude());
+                        intent.putExtra("longitude", data.getLongitude());
                         intent.putExtra("memo", data.getmemo());
                         intent.putExtra("order", data.getOrder());
                         intent.putExtra("datatype", data.getdatatype());

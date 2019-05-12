@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -42,7 +43,7 @@ public class PlanEdit extends AppCompatActivity {
 
     private ImageView btnAdd, btnCancel, btnDelete; // add, cancel, delete 버튼
     private EditText editcontent, editmemo; // 장소명, 메모
-    private TextView editdate, edittitle;
+    private TextView editdate, edittitle,editlocation;
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog dialog;
     private Date sDate;
@@ -93,6 +94,18 @@ public class PlanEdit extends AppCompatActivity {
         edittitle.setText(edittitle.getText());
 
         edittitle.setPaintFlags(edittitle.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
+
+        editlocation = (TextView)findViewById(R.id.edit_edit_location);
+        editlocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //dialog.show(); 여기서 맵 호출후 맵정보 다시 받아와야함
+                Intent intent = new Intent(PlanEdit.this, PlanAddMap.class);
+                intent.putExtra("latitude", dto.getLatitude());
+                intent.putExtra("longitude", dto.getLongitude());
+                startActivityForResult(intent,0);
+            }
+        });
 
         btnAdd = (ImageView) findViewById(R.id.edit_edit_add);
         btnCancel = (ImageView) findViewById(R.id.edit_edit_cancel);
@@ -159,5 +172,18 @@ public class PlanEdit extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 0:
+                    latitude = data.getStringExtra("latitude");
+                    longitude = data.getStringExtra("longitude");
+                    break;
+            }
+        }
     }
 }

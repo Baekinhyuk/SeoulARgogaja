@@ -1,9 +1,11 @@
 package cau.seoulargogaja;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -30,13 +32,14 @@ public class PlanAdd extends AppCompatActivity {
 
     private ImageView btnAdd, btnCancel; // add, cancel 버튼
     private EditText editcontent, editmemo; // 장소명, 메모
-    private TextView editdate, edittitle;
+    private TextView editdate, edittitle, editlocation;
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog dialog;
     private Date sDate;
-    private long a,b;
+    private String latitude,longitude;
     private ArrayList<String> dates;
     private int date_length;
+    private boolean setlocation = false;
     PlanDTO dto;
 
     @Override
@@ -62,6 +65,19 @@ public class PlanAdd extends AppCompatActivity {
 
         editdate = (TextView)findViewById(R.id.edit_plan_date);
         date_length = editdate.getText().toString().length();
+
+        editlocation = (TextView)findViewById(R.id.edit_plan_location);
+        editlocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //dialog.show(); 여기서 맵 호출후 맵정보 다시 받아와야함
+                Intent intent = new Intent(PlanAdd.this, PlanAddMap.class);
+                startActivityForResult(intent,0);
+            }
+        });
+
+
+
 
         //startDate.setInputType(InputType.TYPE_NULL);
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd",Locale.KOREA);
@@ -104,14 +120,17 @@ public class PlanAdd extends AppCompatActivity {
                     Toast.makeText(PlanAdd.this, "날짜가 선택되지 않았습니다 선택해 주세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (!setlocation){
+                    Toast.makeText(PlanAdd.this, "여행 장소가 지정되지 않았습니다 선택해 주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 dto.setdatatype(1);
                 dto.setContent(String.valueOf(editcontent.getText()));
                 dto.setdate(editdate.getText().toString());
                 dto.setStamp(0);
-                //일단 test용
-                dto.setLatitude("0");
-                dto.setLongitude("0");
+                dto.setLatitude(latitude);
+                dto.setLongitude(longitude);
                 dto.setSpotID(0);
                 dto.setplanlistid(mainState.getplanlistId());
                 dto.setOrder(0);
@@ -121,7 +140,22 @@ public class PlanAdd extends AppCompatActivity {
             }
         });
 
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 0:
+                    latitude = data.getStringExtra("latitude");
+                    longitude = data.getStringExtra("longitude");
+                    editlocation = (TextView)findViewById(R.id.edit_plan_location);
+                    editlocation.setText("여행위치가 지정되었습니다.");
+                    setlocation = true;
+                    break;
+            }
+        }
     }
 
     private boolean check_date(String Date){
@@ -134,5 +168,6 @@ public class PlanAdd extends AppCompatActivity {
         return false;
 
     }
+
 
 }
