@@ -5,7 +5,9 @@ public class PlanDTO {
     private String content; // 내용
     private String date;     // 날짜
     private int spotID;     // spotID
-    private int customID; // customID
+    private int stamp; // stamp 0 = 기본 1 = OK
+    private String latitude; //위도 (37.xxxxxx)
+    private String longitude;//경도 (128.xxxxxx)
     private String memo; // 메모
     private int order; // 순서
     private int datatype; //날짜 , 내용 구별 0 = 날짜 , 1 = 내용, 2 = + 모양
@@ -33,14 +35,16 @@ public class PlanDTO {
     }
 
     //ListView 내용에 대해 저장 (datatype = 1)
-    public PlanDTO(int id,String content, String date, int spotID,int customID, String memo,int order,int planlistid) {
+    public PlanDTO(int id,String content, String date, int spotID,int stamp,String latitude,String longitude, String memo,int order,int planlistid) {
         this.id = id;
         this.content = content;
         this.date = date;
         this.planlistid = planlistid;
         this.order = order;
         this.spotID = spotID;
-        this.customID = customID;
+        this.stamp = stamp;
+        this.latitude =latitude;
+        this.longitude =longitude;
         this.memo = memo;
         datatype = 1;
     }
@@ -85,12 +89,28 @@ public class PlanDTO {
         this.spotID = spotID;
     }
 
-    public int getcustomID() {
-        return customID;
+    public int getStamp() {
+        return stamp;
     }
 
-    public void setcustomID(int customID) {
-        this.customID = customID;
+    public void setStamp(int stamp) {
+        this.stamp = stamp;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String x) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String y) {
+        this.longitude = longitude;
     }
 
     public String getmemo() {

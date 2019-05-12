@@ -108,7 +108,10 @@ public class PlanAdd extends AppCompatActivity {
                 dto.setdatatype(1);
                 dto.setContent(String.valueOf(editcontent.getText()));
                 dto.setdate(editdate.getText().toString());
-                dto.setcustomID(0);
+                dto.setStamp(0);
+                //일단 test용
+                dto.setLatitude("0");
+                dto.setLongitude("0");
                 dto.setSpotID(0);
                 dto.setplanlistid(mainState.getplanlistId());
                 dto.setOrder(0);

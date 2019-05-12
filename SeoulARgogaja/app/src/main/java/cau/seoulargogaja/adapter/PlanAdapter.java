@@ -73,6 +73,10 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_item, null);
 
                 ImageView ar_image = (ImageView) view.findViewById(R.id.ar_image);
+                if(data.getStamp() ==1){
+                    //change image AR스탬프
+                }
+
                 ar_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -100,7 +104,9 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                         intent.putExtra("content", data.getContent());
                         intent.putExtra("date", data.getdate());
                         intent.putExtra("spotID", data.getspotID());
-                        intent.putExtra("customID", data.getcustomID());
+                        intent.putExtra("stamp", data.getStamp());
+                        intent.putExtra("latitude ", data.getLatitude());
+                        intent.putExtra("longitude ", data.getLongitude());
                         intent.putExtra("memo", data.getmemo());
                         intent.putExtra("order", data.getOrder());
                         intent.putExtra("datatype", data.getdatatype());

@@ -32,7 +32,9 @@ public class PlanEdit extends AppCompatActivity {
     private String content; // 내용
     private String date;     // 날짜
     private int spotID;     // spotID
-    private int customID; // customID
+    private int stamp; // stamp 0 = 기본 1 = OK
+    private String latitude; //위도 (37.xxxxxx)
+    private String longitude;//경도 (128.xxxxxx)
     private String memo; // 메모
     private int order; // 순서
     private int datatype; //날짜 , 내용 구별 0 = 날짜 , 1 = 내용, 2 = + 모양
@@ -61,7 +63,9 @@ public class PlanEdit extends AppCompatActivity {
         content = intent.getExtras().getString("content"); /*String형*/
         date = intent.getExtras().getString("date"); /*String형*/
         spotID = intent.getExtras().getInt("spotID"); /*int형*/
-        customID = intent.getExtras().getInt("customID"); /*int형*/
+        stamp = intent.getExtras().getInt("stamp"); /*int형*/
+        latitude = intent.getExtras().getString("latitude"); /*String형*/
+        longitude = intent.getExtras().getString("longitude"); /*String형*/
         memo = intent.getExtras().getString("memo"); /*String형*/
         order = intent.getExtras().getInt("order"); /*int형*/
         datatype = intent.getExtras().getInt("datatype"); /*int형*/
@@ -77,7 +81,9 @@ public class PlanEdit extends AppCompatActivity {
         dto.setContent(content);
         dto.setdate(date);
         dto.setSpotID(spotID);
-        dto.setcustomID(customID);
+        dto.setStamp(stamp);
+        dto.setLatitude(latitude);
+        dto.setLongitude(longitude);
         dto.setmemo(memo);
         dto.setOrder(order);
         dto.setdatatype(datatype);
@@ -142,7 +148,9 @@ public class PlanEdit extends AppCompatActivity {
                 dto.setdatatype(datatype);
                 dto.setContent(String.valueOf(editcontent.getText()));
                 dto.setdate(editdate.getText().toString());
-                dto.setcustomID(customID);
+                dto.setStamp(stamp);
+                dto.setLatitude(latitude);
+                dto.setLongitude(longitude);
                 dto.setSpotID(spotID);
                 dto.setplanlistid(mainState.getplanlistId());
                 dto.setOrder(order);

@@ -36,7 +36,9 @@ public class PlanDAO {
                         + "content text, " // 내용
                         + "date text, " // 날짜
                         + "spotID integer, "  // spotID
-                        + "customID integer, "  // customID
+                        + "stamp integer, "  // stamp
+                        + "latitude real, "  // 위도
+                        + "longitude real, " // 경도
                         + "memo text, " // 메모
                         + "order_ integer,"  // 순서
                         + "datatype integer, " //데이터타입구별
@@ -61,13 +63,15 @@ public class PlanDAO {
 
                     PlanDTO dto = list.get(i);
 
-                    database.execSQL("INSERT INTO " + tableName + "(ID,content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+                    database.execSQL("INSERT INTO " + tableName + "(ID,content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
                             + "("
                             + "'" + dto.getId() + "',"
                             + "'" + dto.getContent() + "',"
                             + "'" + dto.getdate() + "',"
                             + "'" + dto.getspotID() + "',"
-                            + "'" + dto.getcustomID() + "',"
+                            + "'" + dto.getStamp() + "',"
+                            + "'" + dto.getLatitude() + "',"
+                            + "'" + dto.getLongitude() + "',"
                             + "'" + dto.getmemo() + "',"
                             + "'" + dto.getOrder() + "',"
                             + "'" + dto.getdatatype() + "',"
@@ -110,13 +114,15 @@ public class PlanDAO {
                     String content = cursor.getString(1);
                     String date = cursor.getString(2);
                     int spotID = cursor.getInt(3);
-                    int customID = cursor.getInt(4);
-                    String memo = cursor.getString(5);
-                    int order = cursor.getInt(6);
-                    int datatype = cursor.getInt(7);
-                    int planlistid = cursor.getInt(8);
+                    int stamp = cursor.getInt(4);
+                    String latitude = cursor.getString(5);
+                    String longitude = cursor.getString(6);
+                    String memo = cursor.getString(7);
+                    int order = cursor.getInt(8);
+                    int datatype = cursor.getInt(9);
+                    int planlistid = cursor.getInt(10);
 
-                    PlanDTO dto = new PlanDTO(id,content,date,spotID,customID,memo,order,planlistid);
+                    PlanDTO dto = new PlanDTO(id,content,date,spotID,stamp,latitude,longitude,memo,order,planlistid);
                     list.add(dto);
                 }
 
@@ -163,7 +169,6 @@ public class PlanDAO {
             int order = 0;
             int order2 = 0;
             try {
-                //Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ DESC", null);
                 Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid()+" ORDER BY "+tableName+".order_ DESC", null);
 
                 int count = cursor.getCount();
@@ -174,12 +179,11 @@ public class PlanDAO {
                     cursor.moveToNext();
                     String date = cursor.getString(2);
                     if(date.equals(dto.getdate())){
-                        order2 = cursor.getInt(6);
+                        order2 = cursor.getInt(8);
                         break;
                     }
                 }
                 database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >"+order2);
-                test_sql_order(0);
                 order = order2+1;
 
             }catch (Exception e) {
@@ -187,12 +191,14 @@ public class PlanDAO {
                 Log.e("plan", "[dao db] : 값이 안들어가짐 ", e);
             }
             Log.d("Insert_plan", "Insert_plan3 : "+ Integer.toString(order));
-            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
                     + "("
                     + "'" + dto.getContent() + "',"
                     + "'" + dto.getdate() + "',"
                     + "'" + dto.getspotID() + "',"
-                    + "'" + dto.getcustomID() + "',"
+                    + "'" + dto.getStamp() + "',"
+                    + "'" + dto.getLatitude() + "',"
+                    + "'" + dto.getLongitude() + "',"
                     + "'" + dto.getmemo() + "',"
                     + "'" + order + "',"
                     + "'" + dto.getdatatype() + "',"
@@ -219,12 +225,14 @@ public class PlanDAO {
                     Log.d("결과 레코드의 갯수 : ",Integer.toString(count));
 
                     if(count == 0){
-                        database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+                        database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
                                 + "("
                                 + "'" + dto.getContent() + "',"
                                 + "'" + dto.getdate() + "',"
                                 + "'" + dto.getspotID() + "',"
-                                + "'" + dto.getcustomID() + "',"
+                                + "'" + dto.getStamp() + "',"
+                                + "'" + dto.getLatitude() + "',"
+                                + "'" + dto.getLongitude() + "',"
                                 + "'" + dto.getmemo() + "',"
                                 + "'" + date_order + "',"
                                 + "'" + dto.getdatatype() + "',"
@@ -236,25 +244,21 @@ public class PlanDAO {
                         Log.d("all_date : ",Integer.toString(i));
                         cursor.moveToNext();
                         String c_date = cursor.getString(2);
-                        date_order = cursor.getInt(6);
-
-                        /*
-                        System.out.println(c_date);
-                        System.out.println(date_order);
-                        System.out.println("비교결과....."+dto.getdate().compareTo(c_date));
-                        */
+                        date_order = cursor.getInt(8);
 
                         if(dto.getdate().compareTo(c_date)==0){
                             break;
                         }
                         else if(dto.getdate().compareTo(c_date) < 0){
                             database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >="+date_order);
-                            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+                            database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
                                     + "("
                                     + "'" + dto.getContent() + "',"
                                     + "'" + dto.getdate() + "',"
                                     + "'" + dto.getspotID() + "',"
-                                    + "'" + dto.getcustomID() + "',"
+                                    + "'" + dto.getStamp() + "',"
+                                    + "'" + dto.getLatitude() + "',"
+                                    + "'" + dto.getLongitude() + "',"
                                     + "'" + dto.getmemo() + "',"
                                     + "'" + date_order + "',"
                                     + "'" + dto.getdatatype() + "',"
@@ -268,12 +272,14 @@ public class PlanDAO {
                                 cursor2.moveToFirst();
                                 date_order= cursor2.getInt(6);
                                 date_order +=1;
-                                database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,customID,memo,order_,datatype,planlistid) VALUES "
+                                database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
                                         + "("
                                         + "'" + dto.getContent() + "',"
                                         + "'" + dto.getdate() + "',"
                                         + "'" + dto.getspotID() + "',"
-                                        + "'" + dto.getcustomID() + "',"
+                                        + "'" + dto.getStamp() + "',"
+                                        + "'" + dto.getLatitude() + "',"
+                                        + "'" + dto.getLongitude() + "',"
                                         + "'" + dto.getmemo() + "',"
                                         + "'" + date_order + "',"
                                         + "'" + dto.getdatatype() + "',"
@@ -305,15 +311,6 @@ public class PlanDAO {
                 Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ planlist_id +" ORDER BY "+tableName+".order_ ASC", null);
 
                 int count = cursor.getCount();
-                println("결과 레코드의 갯수 : " + count);
-
-                /*startManagingCursor(cursor);
-                String[] columns = new String[] {"_id", "age", "mobile"};
-                int[] to = new int[] {R.id.editText3, R.id.editText4, R.id.editText5};
-                SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.customer_item, cursor, columns, to);
-                listView.setAdapter(adapter);
-                adapter.notifyDataSetChanged(); //리스트뷰가 업데이트 되는거.*/
-
 
                 for (int i = 0; i < count; i++) {
                     cursor.moveToNext();
@@ -321,17 +318,19 @@ public class PlanDAO {
                     String content = cursor.getString(1);
                     String date = cursor.getString(2);
                     int spotID = cursor.getInt(3);
-                    int customID = cursor.getInt(4);
-                    String memo = cursor.getString(5);
-                    int order = cursor.getInt(6);
-                    int datatype = cursor.getInt(7);
-                    int planlistid = cursor.getInt(8);
+                    int stamp = cursor.getInt(4);
+                    String latitude = cursor.getString(5);
+                    String longitude = cursor.getString(6);
+                    String memo = cursor.getString(7);
+                    int order = cursor.getInt(8);
+                    int datatype = cursor.getInt(9);
+                    int planlistid = cursor.getInt(10);
 
                     //날짜변경할수도 있으니 해당하는 날짜에 대한 정보만 보여주기 위해 date가 dates변경된 것을 넘겨주는것안에있을시만 작동
                     for(String date_ : dates) {
                         if(date_.equals(date)) {
                             if (datatype == 1) {
-                                PlanDTO dto = new PlanDTO(id, content, date, spotID, customID, memo, order, planlistid);
+                                PlanDTO dto = new PlanDTO(id, content, date, spotID, stamp,latitude,longitude, memo, order, planlistid);
                                 list.add(dto);
                                 break;
                             } else if (datatype == 0) {
@@ -377,16 +376,13 @@ public class PlanDAO {
             if(temp_datatype1 == temp_datatype2) {
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
                 database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
-                test_sql_order(dto1.getplanlistid());
             }
-            /*날짜에따른 date변경다시해야함..... Date 적용 오류.... 다른경우 dto1이 data고 dto2가 날짜인경우만 존재*/
             else{
                 if(temp_order1 < temp_order2) {
                     //아래로가는상황
                     database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
                     database.execSQL("UPDATE " + tableName + " SET date =\'" + temp_date2 + "\' WHERE ID=" + temp_id1);
                     database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
-                    test_sql_order(dto1.getplanlistid());
                 }
                 else{
                     //위로가는상황
@@ -398,7 +394,7 @@ public class PlanDAO {
                     for (int i = 0; i < count; i++) {
                         cursor_change.moveToNext();
                         String temp_date = cursor_change.getString(2);
-                        int temp_order = cursor_change.getInt(6);
+                        int temp_order = cursor_change.getInt(8);
                         if(temp_order2 > temp_order){
                             temp_date3 = temp_date;
                             break;
@@ -407,7 +403,6 @@ public class PlanDAO {
                     database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order2 + " WHERE ID=" + temp_id1);
                     database.execSQL("UPDATE " + tableName + " SET date =\'" + temp_date3 + "\' WHERE ID=" + temp_id1);
                     database.execSQL("UPDATE " + tableName + " SET order_ =" + temp_order1 + " WHERE ID=" + temp_id2);
-                    test_sql_order(dto1.getplanlistid());
                     cursor_change.close();
                 }
             }
@@ -477,7 +472,9 @@ public class PlanDAO {
             database.execSQL("UPDATE " + tableName + " SET content = \'" + dto.getContent() +"\'"
                     + ", date = \'" + dto.getdate() +"\'"
                     + ", spotID = " + dto.getspotID()
-                    + ", customID = " + dto.getcustomID()
+                    + ", stamp = " + dto.getStamp()
+                    + ", latitude = \'" + dto.getLatitude() +"\'"
+                    + ", longitude  = \'" + dto.getLongitude() +"\'"
                     + ", memo = \'" + dto.getmemo() +"\'"
                     + ", order_ = " + dto.getOrder()
                     + ", datatype = " + dto.getdatatype()
