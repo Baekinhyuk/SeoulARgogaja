@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import cau.seoulargogaja.data.IdDAO;
 import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanListDAO;
 import cau.seoulargogaja.data.PlanListDTO;
@@ -18,6 +19,8 @@ public class WalletPage1 extends Fragment
 {
     ViewGroup rootView;
     MainState mainState;
+    IdDAO iddao;
+    PlanListDAO listdao;
 
     public WalletPage1()
     {
@@ -31,9 +34,9 @@ public class WalletPage1 extends Fragment
     @Override
     public void onResume(){
         super.onResume();
-        ArrayList<PlanListDTO> planlist = getPlanList();
-        // PLANLIST DB에 첫번째를 mainstate로 설정
-        PlanListDTO mainPlan = planlist.get(0);
+        iddao = new IdDAO(this.getActivity());
+        listdao = new PlanListDAO(this.getActivity());
+        PlanListDTO mainPlan = listdao.select_one(iddao.select());
         mainState = new MainState(mainPlan);
         TextView textView = (TextView) rootView.findViewById(R.id.wallet_date_start);
         textView.setText(mainState.getStartDate());
@@ -48,8 +51,4 @@ public class WalletPage1 extends Fragment
         return rootView;
     }
 
-    public ArrayList<PlanListDTO> getPlanList() {
-        PlanListDAO dao = new PlanListDAO(this.getActivity());
-        return dao.selectAll();
-    }
 }

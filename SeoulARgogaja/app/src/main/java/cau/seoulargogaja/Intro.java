@@ -19,6 +19,7 @@ import java.util.Date;
 import cau.seoulargogaja.data.HospitalDAO;
 import cau.seoulargogaja.data.HospitalDTO;
 import cau.seoulargogaja.data.HospitalParser;
+import cau.seoulargogaja.data.IdDAO;
 import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
@@ -40,6 +41,7 @@ public class Intro extends AppCompatActivity{
     PlanDAO dao;
     PlanListDAO listdao;
     WalletDAO walletDAO;
+    IdDAO iddao;
     Activity activity = this;
     long mNow;
     Date mDate;
@@ -53,6 +55,7 @@ public class Intro extends AppCompatActivity{
         dao = new PlanDAO(activity);
         listdao = new PlanListDAO(activity);
         walletDAO = new WalletDAO(activity);
+        iddao = new IdDAO(activity);
         h.postDelayed(new Runnable(){
             public void run(){
                 //앱 최초 실행 시 db 생성
@@ -67,13 +70,19 @@ public class Intro extends AppCompatActivity{
                     dao.createTable();
                     listdao.createTable();
                     walletDAO.createTable();
+                    iddao.createTable();
                     PlanListDTO plddto = new PlanListDTO();
 
                     // 주의!! planlist insert시에는 오늘 날짜 입력하도록
                     plddto.setStartDate(getTime());
                     plddto.setEnddate(getTime());
+
                     listdao.insert(plddto);
 
+                    ArrayList<PlanListDTO> planlist = listdao.selectAll();
+                    PlanListDTO mainPlan = planlist.get(0);
+                    MainState mainState = new MainState(mainPlan);
+                    iddao.update(mainPlan.getId());
                     SpotParser parser = new SpotParser();
                     try {
                         parser.start();

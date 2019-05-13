@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import cau.seoulargogaja.data.IdDAO;
 import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanListDAO;
 import cau.seoulargogaja.data.PlanListDTO;
@@ -40,6 +41,7 @@ public class WalletPage3 extends Fragment
     int budget;
     int money;
     int card;
+    IdDAO iddao;
 
     public WalletPage3()
     {
@@ -48,9 +50,9 @@ public class WalletPage3 extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        ArrayList<PlanListDTO> planlist = getPlanList();
-        PlanListDTO mainPlan = planlist.get(0);
         listdao = new PlanListDAO(this.getActivity());
+        iddao = new IdDAO(this.getActivity());
+        PlanListDTO mainPlan = listdao.select_one(iddao.select());
         dao = new WalletDAO(this.getActivity());
         mainState = new MainState(mainPlan);
     }
@@ -101,12 +103,6 @@ public class WalletPage3 extends Fragment
         a = nFormat.format(money);
         money_t.setText(a);
 
-    }
-
-
-    public ArrayList<PlanListDTO> getPlanList() {
-        PlanListDAO dao = new PlanListDAO(this.getActivity());
-        return dao.selectAll();
     }
 
     public void all_Date(Date sDate,Date eDate){

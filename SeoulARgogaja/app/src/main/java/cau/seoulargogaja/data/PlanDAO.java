@@ -183,7 +183,7 @@ public class PlanDAO {
                         break;
                     }
                 }
-                database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >"+order2);
+                database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >"+order2 +" AND planlistid = "+dto.getplanlistid());
                 order = order2+1;
 
             }catch (Exception e) {
@@ -216,10 +216,10 @@ public class PlanDAO {
             for(String date : dates){
                 PlanDTO dto = new PlanDTO(date,planlistid);
                 Log.d("all_date 읽어온 날짜: ",date);
-                Log.d("새로만든 dto의 DataType : ",Integer.toString(dto.getdatatype()));
+                Log.d("새로만든 dto의 planlistid : ",Integer.toString(dto.getplanlistid()));
                 try {
 
-                    Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ ASC", null);
+                    Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid() +" ORDER BY "+tableName+".order_ ASC", null);
 
                     int count = cursor.getCount();
                     Log.d("결과 레코드의 갯수 : ",Integer.toString(count));
@@ -250,7 +250,7 @@ public class PlanDAO {
                             break;
                         }
                         else if(dto.getdate().compareTo(c_date) < 0){
-                            database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >="+date_order);
+                            database.execSQL("UPDATE " + tableName + " SET order_ = order_ +1 WHERE order_ >="+date_order+" AND planlistid = "+dto.getplanlistid());
                             database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
                                     + "("
                                     + "'" + dto.getContent() + "',"
@@ -268,7 +268,7 @@ public class PlanDAO {
                         }
                         else{
                             if(i == count-1) {
-                                Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ tableName +".planlistid ORDER BY "+tableName+".order_ DESC", null);
+                                Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid()+" ORDER BY "+tableName+".order_ DESC", null);
                                 cursor2.moveToFirst();
                                 date_order= cursor2.getInt(6);
                                 date_order +=1;
@@ -432,7 +432,7 @@ public class PlanDAO {
                     int order = cursor.getInt(6);
                     int datatype = cursor.getInt(7);
                     int planlistid = cursor.getInt(8);
-                    Log.d("TEST_SQL_RESULT","CONTENT = "+content+" DATE = "+date+" Order = "+order);
+                    Log.d("TEST_SQL_RESULT","CONTENT = "+content+" DATE = "+date+" Order = "+order+" Planlistid"+planlistid);
                 }
 
                 cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.

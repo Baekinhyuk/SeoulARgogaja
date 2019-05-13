@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import cau.seoulargogaja.adapter.WalletAdapter;
+import cau.seoulargogaja.data.IdDAO;
 import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanListDAO;
 import cau.seoulargogaja.data.PlanListDTO;
@@ -49,6 +50,7 @@ public class WalletFragment extends Fragment {
     Activity activity;
     WalletPageAdapter wallet_adapter;
     TabLayout tabLayout;
+    IdDAO iddao;
 
     @Override
     public void onResume(){
@@ -79,9 +81,9 @@ public class WalletFragment extends Fragment {
     }
 
     private void set_wallet(ViewGroup rootView){
-        ArrayList<PlanListDTO> planlist = getPlanList();
-        // PLANLIST DB에 첫번째를 mainstate로 설정
-        PlanListDTO mainPlan = planlist.get(0);
+        listdao = new PlanListDAO(this.getActivity());
+        iddao = new IdDAO(this.getActivity());
+        PlanListDTO mainPlan = listdao.select_one(iddao.select());
 
         mainState = new MainState(mainPlan);
 
@@ -136,11 +138,6 @@ public class WalletFragment extends Fragment {
             }
         });
 
-    }
-
-    public ArrayList<PlanListDTO> getPlanList() {
-        PlanListDAO dao = new PlanListDAO(this.getActivity());
-        return dao.selectAll();
     }
 
     public void all_Date(Date sDate,Date eDate){

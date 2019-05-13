@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import cau.seoulargogaja.adapter.PlanAdapter;
+import cau.seoulargogaja.data.IdDAO;
 import cau.seoulargogaja.data.MainState;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
@@ -69,6 +70,7 @@ public class PlanFragment extends Fragment {
     private int row_count;
     ArrayList<String> dates;
     Activity activity;
+    IdDAO iddao;
 
     @Override
     public void onResume(){
@@ -84,7 +86,7 @@ public class PlanFragment extends Fragment {
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_plan, container, false);
         dao = new PlanDAO(this.getActivity());
         listdao = new PlanListDAO(this.getActivity());
-
+        //iddao = new IdDAO(this.getActivity());
 
 
         set_plan_list(rootView);
@@ -95,12 +97,11 @@ public class PlanFragment extends Fragment {
 
     private void set_plan_list(ViewGroup rootView){
         //임시로 MainState만듬 0으로 planlistid set 해놓음 Splash추가후 거기서 DB에서 읽어오는것으로 해야할듯
-        ArrayList<PlanListDTO> planlist = getPlanList();
         // PLANLIST DB에 첫번째를 mainstate로 설정
-        PlanListDTO mainPlan = planlist.get(0);
-
+        listdao = new PlanListDAO(this.getActivity());
+        iddao = new IdDAO(this.getActivity());
+        PlanListDTO mainPlan = listdao.select_one(iddao.select());
         mainState = new MainState(mainPlan);
-
         editTitle = (TextView) rootView.findViewById(R.id.plan_title);
         editTitle.setText(mainState.getMainDto().getName());
 
@@ -159,29 +160,6 @@ public class PlanFragment extends Fragment {
             }
         });
 
-        /*
-        listView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        PlanDTO temp1 = list.get(position);
-                        Intent intent = new Intent(getActivity(), PlanEdit.class); // intent 되는 activty에 알맞은 data 출력
-
-                        intent.putExtra("id", temp1.getId());
-                        intent.putExtra("content", temp1.getContent());
-                        intent.putExtra("date", temp1.getdate());
-                        intent.putExtra("spotID", temp1.getspotID());
-                        intent.putExtra("customID", temp1.getcustomID());
-                        intent.putExtra("memo", temp1.getmemo());
-                        intent.putExtra("order", temp1.getOrder());
-                        intent.putExtra("datatype", temp1.getdatatype());
-                        intent.putExtra("planlistid", temp1.getplanlistid());
-
-                        startActivity(intent);
-                    }
-                });
-        */
-
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
 
@@ -200,6 +178,17 @@ public class PlanFragment extends Fragment {
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*TEST 새로운 planlist만들기*/
+                PlanListDTO newlist = new PlanListDTO();
+                newlist.setStartDate(getTime());
+                newlist.setEnddate(getTime());
+                newlist.setBudget(0);
+                listdao.insert(newlist);
+                int newlistid = listdao.last_id();
+                newlist.setId(newlistid);
+                iddao.update(newlistid);
+                MainState mainState = new MainState(newlist);
+                onResume();
                 anim();
             }
         });
@@ -383,6 +372,7 @@ public class PlanFragment extends Fragment {
     public void all_Date(Date sDate,Date eDate){
         dao = new PlanDAO(this.getActivity());
         listdao = new PlanListDAO(this.getActivity());
+
         final String DATE_PATTERN = "yyyy-MM-dd";
         Date currentDate = sDate;
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
@@ -425,6 +415,15 @@ public class PlanFragment extends Fragment {
     public ArrayList<PlanListDTO> getPlanList() {
         PlanListDAO dao = new PlanListDAO(this.getActivity());
         return dao.selectAll();
+    }
+
+    private String getTime(){
+        long mNow;
+        Date mDate;
+        SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+        mNow = System.currentTimeMillis();
+        mDate = new Date(mNow);
+        return mFormat.format(mDate);
     }
 }
 

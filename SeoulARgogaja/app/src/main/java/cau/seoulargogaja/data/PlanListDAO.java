@@ -172,6 +172,65 @@ public class PlanListDAO {
         }
     }
 
+    public PlanListDTO select_one(int id) {  //전부조회하기
+        PlanListDTO dto = new PlanListDTO();
+        try {
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE ID = "+ id, null);
+                int count = cursor.getCount();
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    int mainid = cursor.getInt(0);
+                    String name = cursor.getString(1);
+                    String startdate = cursor.getString(2);
+                    String enddate = cursor.getString(3);
+                    int budget = cursor.getInt(4);
+                    String code = cursor.getString(5);
+                    dto.setId(mainid);
+                    dto.setName(name);
+                    dto.setStartDate(startdate);
+                    dto.setEnddate(enddate);
+                    dto.setBudget(budget);
+                    dto.setCode(code);
+                }
+
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+
+                println("데이터를 조회했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Spot","[PlanListDAO] ",e);
+        }
+
+
+        return dto;
+    }
+
+    public int last_id() {  //전부조회하기
+        int mainid = 1;
+        try {
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " ORDER BY id DESC", null);
+                cursor.moveToNext();
+                mainid = cursor.getInt(0);
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+                println("데이터를 조회했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            Log.e("Spot","[PlanListDAO] ",e);
+        }
+        return mainid;
+    }
+
+
     public int getMainID() {return mainId;}
     public void setMainID(int id){
         mainId = id;
