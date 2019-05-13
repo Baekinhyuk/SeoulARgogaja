@@ -59,6 +59,9 @@
             android:name=".SimpleDirectionActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".SelectPlanlist"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
             android:name=".PlanAdd"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity

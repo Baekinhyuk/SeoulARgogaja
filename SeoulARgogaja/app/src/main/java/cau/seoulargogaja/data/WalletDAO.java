@@ -166,7 +166,7 @@ public class WalletDAO {
                 Log.d("Wallet 새로만든 dto의 DataType : ",Integer.toString(dto.getdatatype()));
                 try {
 
-                    Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+tableName+".planlistid" +" ORDER BY "+tableName+".order_ ASC", null);
+                    Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid() +" ORDER BY "+tableName+".order_ ASC", null);
 
                     int count = cursor.getCount();
                     Log.d(" Wallet 결과 레코드의 갯수  : ",Integer.toString(count));
@@ -215,7 +215,7 @@ public class WalletDAO {
                         }
                         else{
                             if(i == count-1) {
-                                Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ tableName +".planlistid ORDER BY "+tableName+".order_ DESC", null);
+                                Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid() +" ORDER BY "+tableName+".order_ DESC", null);
                                 cursor2.moveToFirst();
                                 date_order= cursor2.getInt(10);
                                 date_order +=1;

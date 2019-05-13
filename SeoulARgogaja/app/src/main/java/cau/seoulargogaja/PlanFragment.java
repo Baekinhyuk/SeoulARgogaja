@@ -50,7 +50,7 @@ public class PlanFragment extends Fragment {
     private FloatingActionButton fab, fab1, fab2;
     private TextView editTitle;
     private TextView startDate,endDate;
-    private ImageView startImage,endImage,addImage;
+    private ImageView startImage,endImage,menu_list;
     // datePicker 사용
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog dialog,dialog2;
@@ -188,6 +188,7 @@ public class PlanFragment extends Fragment {
                 newlist.setId(newlistid);
                 iddao.update(newlistid);
                 MainState mainState = new MainState(newlist);
+                Toast.makeText(getActivity(), "새로운 일정이 만들어졌습니다.", Toast.LENGTH_SHORT).show();
                 onResume();
                 anim();
             }
@@ -201,17 +202,17 @@ public class PlanFragment extends Fragment {
         });
 
 
-        /*
-        addImage = (ImageView) rootView.findViewById(R.id.add_plan_image);
+
+        menu_list = (ImageView) rootView.findViewById(R.id.menu_list);
         // add 버튼 누르면 plan 추가 화면으로 돌아감
-        addImage.setOnClickListener(new View.OnClickListener() {
+        menu_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PlanAdd.class);
+                Intent intent = new Intent(getActivity(), SelectPlanlist.class);
                 startActivity(intent);
             }
         });
-        */
+
 
         editTitle.setOnClickListener(new View.OnClickListener() {
             @Override
