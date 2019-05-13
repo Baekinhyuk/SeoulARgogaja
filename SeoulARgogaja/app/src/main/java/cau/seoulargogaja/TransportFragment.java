@@ -20,10 +20,15 @@ import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 
 public class TransportFragment extends Fragment {
     private TextView tv_data;
+    private TextView startingpoint;
+    private TextView destination;
+    private TextView path;
+
     private Context context;
     private ODsayService oDsayService;
     String start_latitude;
@@ -47,9 +52,15 @@ public class TransportFragment extends Fragment {
             end_latitude = getArguments().getString("end_lati");
             end_longitude = getArguments().getString("end_logi");
         }
+       // start_latitude = "37.654620";
+        //start_longitude = "127.060530";
 
         context = getActivity();
         tv_data = (TextView) view.findViewById(R.id.tv_data);
+        startingpoint = (TextView) view.findViewById(R.id.start);
+        destination = (TextView) view.findViewById(R.id.destination);
+        path = (TextView) view.findViewById(R.id.path);
+
 
         oDsayService = ODsayService.init(getActivity(), getString(R.string.odsay_key));
         oDsayService.setReadTimeout(5000);
@@ -68,6 +79,43 @@ public class TransportFragment extends Fragment {
                 if(api == API.SEARCH_PUB_TRANS_PATH) {
                     int k = oDsayData.getJson().getJSONObject("result").getJSONArray("path").length();
                     int sum=0;
+
+                    for (int l=0;l<k;l++){
+                        obj = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(l);
+                        w = obj.getJSONArray("subPath").length();
+                        bussub+=l+1+") ";
+
+                        int sectionTime2 = 0;
+                        for (int q = 0; q<w; q++) {
+                            trafficType = obj.getJSONArray("subPath").getJSONObject(q).getString("trafficType");
+                            sectionTime = obj.getJSONArray("subPath").getJSONObject(q).getString("sectionTime");
+
+
+                            if (trafficType.equals("1")) {
+                                subwayCode = obj.getJSONArray("subPath").getJSONObject(q).getJSONArray("lane").getJSONObject(0).getString("subwayCode");
+                                sectionTime2 += Integer.parseInt(sectionTime);
+                                if (subwayCode.equals("101")){
+                                    bussub += "공항철도 ";
+                                }else{
+                                    bussub += subwayCode+"호선 ";
+                                }
+
+                            } else if (trafficType.equals("2")) {
+                                busNo = obj.getJSONArray("subPath").getJSONObject(q).getJSONArray("lane").getJSONObject(0).getString("busNo");
+                                bussub += busNo + "번 ";
+                                sectionTime2 += Integer.parseInt(sectionTime);
+
+                            } else if (trafficType.equals("3")) {
+                                distance = obj.getJSONArray("subPath").getJSONObject(q).getString("distance");
+                                sum+=Integer.parseInt(distance);
+                                sectionTime2 += Integer.parseInt(sectionTime)*1.5;
+
+                            } else {
+                            }
+
+                        }
+                        bussub +=" ("+sectionTime2+"분)\n";
+                    }
 
 /*
 
@@ -112,7 +160,11 @@ public class TransportFragment extends Fragment {
                     String start_station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(0).getJSONObject("info").getString("firstStartStation");
                     String end_station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(0).getJSONObject("info").getString("lastEndStation");
                     String total_time = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(0).getJSONObject("info").getString("totalTime");
-                    tv_data.setText("출발 : "+start_station+"\n도착 : "+end_station+"\n총 시간 : "+total_time+"분");
+
+                    startingpoint.setText((start_station));
+                    destination.setText(end_station);
+                    path.setText(bussub);
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

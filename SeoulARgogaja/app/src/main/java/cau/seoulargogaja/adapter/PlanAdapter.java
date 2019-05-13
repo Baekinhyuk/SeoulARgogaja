@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.os.Build;
+import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.text.ParseException;
@@ -85,8 +86,6 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                     }
                 });
 
-
-
                 TextView textView = (TextView) view.findViewById(R.id.nick_name);
                 TextView textView_memo = (TextView) view.findViewById(R.id.item_memo);
 
@@ -125,6 +124,7 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                                 return false;
                             }
                         });
+
                 final RelativeLayout row = (RelativeLayout) view.findViewById(R.id.item_list1);
                 view.findViewById(R.id.drag_image)
                         .setOnTouchListener(new View.OnTouchListener() {
@@ -134,6 +134,14 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                                 return false;
                             }
                         });
+
+                view.findViewById(R.id.optimize)
+                        .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "???", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             else if (data.getdatatype() == 0) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
@@ -219,5 +227,39 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
     @Override
     public boolean hasStableIds() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    //순서 string 출력
+    public String[] greedy(double array[][]){
+        int n = array.length;
+        double best;
+        int temp = 0;
+        int i,k=0;
+        boolean[] check = new boolean[n]; // 이동 노드 체크
+        String[] optimize = new String[n]; // 최적화후 출력 값
+        optimize[0] = "0"; // 시작점 고정
+
+        for(i=0;i<n;i++) check[i]=false; // 이동 경로 확인
+
+        check[0] = true; // 첫번째 노드가 시작점
+
+        //grid 알고리즘
+        for(i=0;i<n-1;i++){
+            best = 999999999;
+            for(int j=0;j<n;j++){
+                if(check[j] == true) continue;
+                else {
+                    if(best > array[k][j] && array[k][j] != 0)  {
+                        best = array[k][j];
+                        Log.d("best :"," "+best);
+                        temp=j;
+                    }
+                }
+            }
+            k=temp;
+            check[k] = true;
+            optimize[i+1] = Integer.toString(k);
+        }
+        return optimize;
     }
 }
