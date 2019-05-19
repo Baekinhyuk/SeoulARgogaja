@@ -1,10 +1,12 @@
 package cau.seoulargogaja;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +32,8 @@ import cau.seoulargogaja.data.WalletDTO;
 public class QRreadActivity extends AppCompatActivity {
     //view Objects
     private Button buttonScan;
-    private TextView textViewName, textViewAddress, textViewResult;
+    private TextView edittitle;
+    private ImageView btnCancel;
 
     //qr code scanner object
     private IntentIntegrator qrScan;
@@ -40,20 +43,31 @@ public class QRreadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qrread);
 
+        edittitle = (TextView) findViewById(R.id.qr_read_title);
+        edittitle.setText(edittitle.getText());
+
+        edittitle.setPaintFlags(edittitle.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
+
         //View Objects
         buttonScan = (Button) findViewById(R.id.buttonScan);
-        textViewName = (TextView) findViewById(R.id.textViewName);
-        textViewAddress = (TextView) findViewById(R.id.textViewAddress);
-        textViewResult = (TextView)  findViewById(R.id.textViewResult);
 
         //intializing scan object
         qrScan = new IntentIntegrator(this);
+
+        btnCancel = (ImageView) findViewById(R.id.qrreadcancel);
+        // 취소 버튼 누르면 이전 화면으로 돌아감
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //button onClick
         buttonScan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //scan option
-                qrScan.setPrompt("Scanning...");
+                //qrScan.setPrompt("Scanning...");
                 //qrScan.setOrientationLocked(false);
                 qrScan.initiateScan();
             }
@@ -72,11 +86,11 @@ public class QRreadActivity extends AppCompatActivity {
             } else {
                 //qrcode 결과가 있으면
                 Toast.makeText(QRreadActivity.this, "스캔완료!", Toast.LENGTH_SHORT).show();
-                Toast.makeText(QRreadActivity.this, result.getContents(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(QRreadActivity.this, result.getContents(), Toast.LENGTH_SHORT).show();
                 try {
                     Phprequest request = new Phprequest();
                     String jsonresult = request.readURL(new URL(result.getContents().trim()));
-                    Toast.makeText(QRreadActivity.this, jsonresult, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(QRreadActivity.this, jsonresult, Toast.LENGTH_SHORT).show();
                     write_data(jsonresult);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
