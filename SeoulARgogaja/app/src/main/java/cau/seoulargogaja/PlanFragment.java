@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
 import cau.seoulargogaja.data.PlanListDAO;
 import cau.seoulargogaja.data.PlanListDTO;
+import cau.seoulargogaja.data.WalletDAO;
+import cau.seoulargogaja.data.WalletDTO;
 
 import static android.app.AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
 
@@ -47,7 +50,7 @@ public class PlanFragment extends Fragment {
 
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab, fab1, fab2;
+    private FloatingActionButton fab, fab1, fab2, fab3;
     private TextView editTitle;
     private TextView startDate,endDate;
     private ImageView startImage,endImage,menu_list;
@@ -166,6 +169,7 @@ public class PlanFragment extends Fragment {
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab1 = (FloatingActionButton) rootView.findViewById(R.id.fab1);
         fab2 = (FloatingActionButton) rootView.findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) rootView.findViewById(R.id.fab3);
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -197,6 +201,20 @@ public class PlanFragment extends Fragment {
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                regist_planlist();
+                regist_plan();
+                regist_wallet();
+                Intent intent = new Intent(getActivity(), QRmakeActivity.class);
+                startActivity(intent);
+                anim();
+            }
+        });
+
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), QRreadActivity.class);
+                startActivity(intent);
                 anim();
             }
         });
@@ -314,6 +332,46 @@ public class PlanFragment extends Fragment {
 
     }
 
+
+    public void regist_planlist(){
+        mainState = new MainState();
+        PlanListDTO planListDTO = mainState.getMainDto();
+        try {
+            Phprequest request = new Phprequest(Phprequest.BASE_URL + "regist_planlist.php");
+            request.regist_planlist(planListDTO.getId(),planListDTO.getName(),planListDTO.getStartDate(),planListDTO.getEndDate(),planListDTO.getBudget(),planListDTO.getCode());
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void regist_plan(){
+        mainState = new MainState();
+        PlanDAO dao = new PlanDAO(this.getActivity());
+        ArrayList<PlanDTO> plan_list = dao.select_planlistid(mainState.getplanlistId(),dates);
+        try {
+            for(PlanDTO item:plan_list) {
+                Phprequest request = new Phprequest(Phprequest.BASE_URL + "regist_plan.php");
+                request.regist_plan(item.getId(),item.getContent(),item.getdate(),item.getspotID(),item.getStamp(),item.getLatitude(),item.getLongitude(),item.getmemo(),item.getOrder(),item.getdatatype(),item.getplanlistid());
+            }
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void regist_wallet(){
+        mainState = new MainState();
+        WalletDAO dao = new WalletDAO(this.getActivity());
+        ArrayList<WalletDTO> wallet_list = dao.select_planlistid(mainState.getplanlistId(),dates);
+        try {
+            for(WalletDTO item:wallet_list) {
+                Phprequest request = new Phprequest(Phprequest.BASE_URL + "regist_wallet.php");
+                request.regist_wallet(item.getId(),item.getdate(),item.getplanlistid(),item.getdetail(),item.getexpend(),item.getmemo(),item.getdatatype(),item.getmain_image(),item.getsub_image(),item.getcolor_type(),item.getOrder());
+            }
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+    }
+
     public boolean check_Date_diff(Date sDate,Date eDate){
         if(sDate != null && eDate != null){
             if(eDate.compareTo(sDate) < 0){
@@ -400,15 +458,19 @@ public class PlanFragment extends Fragment {
             fab.setImageResource(R.drawable.ic_add_black_24dp);
             fab1.startAnimation(fab_close);
             fab2.startAnimation(fab_close);
+            fab3.startAnimation(fab_close);
             fab1.setClickable(false);
             fab2.setClickable(false);
+            fab3.setClickable(false);
             isFabOpen = false;
         } else {
             fab.setImageResource(R.drawable.ic_close_black_24dp);
             fab1.startAnimation(fab_open);
             fab2.startAnimation(fab_open);
+            fab3.startAnimation(fab_open);
             fab1.setClickable(true);
             fab2.setClickable(true);
+            fab3.setClickable(true);
             isFabOpen = true;
         }
     }
