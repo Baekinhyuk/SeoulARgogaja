@@ -594,4 +594,31 @@ public class WalletDAO {
             return sum;
         }
     }
+
+    public void insert(WalletDTO dto) {  //데이터 삽입하기
+        try {
+            if (database != null) {
+
+                database.execSQL("INSERT INTO " + tableName + "(date,planlistid,detail,expend,memo,datatype,main_image,sub_image,color_type,order_) VALUES "
+                        + "("
+                        + "'" + dto.getdate() + "',"
+                        + "'" + dto.getplanlistid() + "',"
+                        + "'" + dto.getdetail() + "',"
+                        + "'" + dto.getexpend() + "',"
+                        + "'" + dto.getmemo() + "',"
+                        + "'" + dto.getdatatype() + "',"
+                        + "'" + dto.getmain_image() + "',"
+                        + "'" + dto.getsub_image() + "',"
+                        + "'" + dto.getcolor_type() + "',"
+                        + "'" + dto.getOrder() + "'"
+                        + ")");
+                println("데이터를 추가했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("tour", "[dao db] : 초기값이 안들어가짐 ", e);
+        }
+    }
 }

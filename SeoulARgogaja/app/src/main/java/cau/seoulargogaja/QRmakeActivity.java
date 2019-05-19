@@ -48,7 +48,7 @@ public class QRmakeActivity extends AppCompatActivity {
                 inputValue = edtValue.getText().toString().trim();
                 if (inputValue.length() > 0) {
                     Phprequest phprequest = new Phprequest();
-                    readurl = phprequest.BASE_URL +"planlist_output?"+ phprequest.getResult_planlistid();
+                    readurl = phprequest.BASE_URL +"planlist_output.php?planlistid="+ phprequest.getResult_planlistid();
                     WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
                     Display display = manager.getDefaultDisplay();
                     Point point = new Point();

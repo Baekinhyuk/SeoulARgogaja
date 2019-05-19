@@ -486,4 +486,30 @@ public class PlanDAO {
         }
 
     }
+
+    public void insert(PlanDTO dto) {  //데이터 그냥 삽입하기
+        try {
+            if (database != null) {
+                database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
+                        + "("
+                        + "'" + dto.getContent() + "',"
+                        + "'" + dto.getdate() + "',"
+                        + "'" + dto.getspotID() + "',"
+                        + "'" + dto.getStamp() + "',"
+                        + "'" + dto.getLatitude() + "',"
+                        + "'" + dto.getLongitude() + "',"
+                        + "'" + dto.getmemo() + "',"
+                        + "'" + dto.getOrder() + "',"
+                        + "'" + dto.getdatatype() + "',"
+                        + "'" + dto.getplanlistid() + "'"
+                        + ")");
+                println("데이터를 추가했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("tour", "[dao db] : 초기값이 안들어가짐 ", e);
+        }
+    }
 }

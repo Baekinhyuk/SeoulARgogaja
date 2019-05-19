@@ -18,6 +18,8 @@ public class Phprequest {
     public static final String BASE_URL = "https://cauteam202.com/";
     private URL url;
     static private int result_planlistid;
+    static private String result_json;
+
 
     public Phprequest(){
     }
@@ -113,6 +115,34 @@ public class Phprequest {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public String readURL(URL newurl){
+        try {
+            Thread workingThread = new Thread() {
+                public void run() {
+                    try {
+                        HttpURLConnection conn = (HttpURLConnection)newurl.openConnection();
+                        //conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        //conn.setRequestMethod("GET");
+                        conn.setConnectTimeout(5000);
+                        conn.setDoInput(true);
+                        result_json = readStream(conn.getInputStream());
+                        conn.disconnect();
+                    }
+                    catch (Exception e) {
+                        Log.i("PHPRequest", "request was failed.");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            workingThread.start();
+            workingThread.join();
+        }
+        catch (Exception e) {
+            Log.i("PHPRequest", "request was failed.");
+        }
+        return result_json;
     }
 
 }
