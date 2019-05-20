@@ -1,10 +1,12 @@
 package cau.seoulargogaja;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -19,17 +21,19 @@ import cau.seoulargogaja.data.PlanListDTO;
 public class SelectPlanlist extends AppCompatActivity {
 
     private ListView listview;
+    private ImageView btnCancel,qrimage;
     ArrayList<PlanListDTO> list = new ArrayList<>();
     SelectListAdapter selectListAdapter;
     MainState mainState;
     IdDAO iddao;
     PlanListDAO listdao;
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_list);
-
+        activity = this;
         listdao = new PlanListDAO(this);
         iddao = new IdDAO(this);
         list = getPlanList();
@@ -49,6 +53,25 @@ public class SelectPlanlist extends AppCompatActivity {
                         finish();
                     }
                 });
+
+        btnCancel = (ImageView) findViewById(R.id.select_title_cancel);
+        // 취소 버튼 누르면 이전 화면으로 돌아감
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        qrimage = (ImageView) findViewById(R.id.select_qr_image);
+        qrimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, QRreadActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
 

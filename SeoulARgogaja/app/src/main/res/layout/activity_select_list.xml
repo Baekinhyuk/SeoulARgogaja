@@ -30,20 +30,26 @@
             android:textStyle="bold"
             android:textColor="#000000"
             android:singleLine="true"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="20sp"
-            android:autoSizeMaxTextSize="50dp"
             />
 
-        <ImageView
-            android:id="@+id/select_title_add"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_check_circle_black_24dp"/>
-
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/select_qr_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"
+        android:src="@drawable/qr_code"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="QR코드를 통해 여행일정을 공유 받을 수 있습니다."/>
 
     <TextView
         android:layout_width="match_parent"

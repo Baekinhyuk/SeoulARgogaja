@@ -18,6 +18,7 @@ import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
 import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -36,10 +37,8 @@ public class TransportFragment extends Fragment {
     String end_latitude;
     String end_longitude;
 
-    JSONObject obj;
-    String totalTime=null, pathType, sectionTime3;
-    int w;
-    String busNo, trafficType, bussub = "", subwayCode, sectionTime, distance;
+    TextView tv_text;
+    String transport = "";
 
     @Nullable
     @Override
@@ -52,14 +51,13 @@ public class TransportFragment extends Fragment {
             end_latitude = getArguments().getString("end_lati");
             end_longitude = getArguments().getString("end_logi");
         }
-       // start_latitude = "37.654620";
+        // start_latitude = "37.654620";
         //start_longitude = "127.060530";
 
         context = getActivity();
-        tv_data = (TextView) view.findViewById(R.id.tv_data);
+        tv_text = (TextView) view.findViewById(R.id.tv_text);
         startingpoint = (TextView) view.findViewById(R.id.start);
         destination = (TextView) view.findViewById(R.id.destination);
-        path = (TextView) view.findViewById(R.id.path);
 
 
         oDsayService = ODsayService.init(getActivity(), getString(R.string.odsay_key));
@@ -75,97 +73,82 @@ public class TransportFragment extends Fragment {
     private OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
         @Override
         public void onSuccess(ODsayData oDsayData, API api) {
+
             try {
-                if(api == API.SEARCH_PUB_TRANS_PATH) {
-                    int k = oDsayData.getJson().getJSONObject("result").getJSONArray("path").length();
-                    int sum=0;
+                int k = oDsayData.getJson().getJSONObject("result").getJSONArray("path").length();
 
-                    for (int l=0;l<k;l++){
-                        obj = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(l);
-                        w = obj.getJSONArray("subPath").length();
-                        bussub+=l+1+") ";
+                for(int j=0; j<k; j++) {
+                    transport +=j+1+")";
+                    JSONArray subPath = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(j).getJSONArray("subPath");
 
-                        int sectionTime2 = 0;
-                        for (int q = 0; q<w; q++) {
-                            trafficType = obj.getJSONArray("subPath").getJSONObject(q).getString("trafficType");
-                            sectionTime = obj.getJSONArray("subPath").getJSONObject(q).getString("sectionTime");
+                    for (int i = 0; i < subPath.length(); i++) {
+                        JSONObject SubPathObject = subPath.getJSONObject(i);
 
+                        if (SubPathObject.getString("trafficType").equals("1")) { // 지하철 일때
+                            JSONArray laneArray = SubPathObject.getJSONArray("lane");// 노선 들어있는 어레이
+                            JSONObject stopList = SubPathObject.getJSONObject("passStopList"); // 정류장 들어있는 오브젝트
+                            JSONArray stationList = stopList.getJSONArray("stations"); // 거쳐야할 정류장 리스트어레이.
 
-                            if (trafficType.equals("1")) {
-                                subwayCode = obj.getJSONArray("subPath").getJSONObject(q).getJSONArray("lane").getJSONObject(0).getString("subwayCode");
-                                sectionTime2 += Integer.parseInt(sectionTime);
-                                if (subwayCode.equals("101")){
-                                    bussub += "공항철도 ";
-                                }else{
-                                    bussub += subwayCode+"호선 ";
-                                }
+                            /*하위의 JsonArray[lane] 에 타야할 지하철 번호가 나옴
+                             * 하위의 JsonObject passStopList -> JsonArray[Jsonobject] stations ->에 해당 이동수단의 정류장  */
+                            String startname = SubPathObject.getString("startName") + "역 "; // 승차역 이름
+                            String subway_no = "("+subPath.getJSONObject(i).getJSONArray("lane").getJSONObject(0).getString("subwayCode")+"호선) 승차";
 
-                            } else if (trafficType.equals("2")) {
-                                busNo = obj.getJSONArray("subPath").getJSONObject(q).getJSONArray("lane").getJSONObject(0).getString("busNo");
-                                bussub += busNo + "번 ";
-                                sectionTime2 += Integer.parseInt(sectionTime);
+                            String lanewayname = startname + subway_no + " -> ";
 
-                            } else if (trafficType.equals("3")) {
-                                distance = obj.getJSONArray("subPath").getJSONObject(q).getString("distance");
-                                sum+=Integer.parseInt(distance);
-                                sectionTime2 += Integer.parseInt(sectionTime)*1.5;
-
-                            } else {
+                            String stationString = "";
+                            for (int v = 0; v < stationList.length(); v++) { // 정류장 리스트 뽑기
+                                stationString = stationString + stationList.getJSONObject(v).getString("stationName").toString() + "ᚔ"; // 정류장 번호
                             }
 
+
+                            String endname = SubPathObject.getString("endName"); // 하차역 이름
+                            int endid = SubPathObject.getInt("endID");
+
+                            if(endid != 426){
+                                endname = endname + "역 하차 ";
+                            }
+                            else endname = endname + " 하차 "; // 하차역 이름
+
+                            transport += lanewayname + endname;
+
+                        } else if (SubPathObject.getString("trafficType").equals("2")) { // 버스 일때
+                            JSONArray laneArray = SubPathObject.getJSONArray("lane");// 노선 들어있는 어레이
+                            JSONObject stopList = SubPathObject.getJSONObject("passStopList"); // 정류장 들어있는 오브젝트
+                            JSONArray stationList = stopList.getJSONArray("stations"); // 거쳐야할 정류장 리스트어레이.
+
+                            String startname = SubPathObject.getString("startName") + " 정류장"; // 승차역 이름
+                            String bus_no = "("+subPath.getJSONObject(i).getJSONArray("lane").getJSONObject(0).getString("busNo")+"번) 승차";
+
+
+                            String lanewayname = startname + bus_no +" -> ";
+
+                            String stationString = "";
+                            for (int v = 0; v < stationList.length(); v++) { // 정류장 리스트 뽑기
+                                stationString = stationString + stationList.getJSONObject(v).getString("stationName").toString() + "ᚔ"; // 정류장 번호
+                            }
+
+                            String endname = SubPathObject.getString("endName") + "정류장 하차 "; // 하차역 이름
+                            transport +=lanewayname + endname;
+
+                        } else if (SubPathObject.getString("trafficType").equals("3")) { // 도보 일때
+                            String footdistance = SubPathObject.getString("distance") + "m 도보 이동";
+                            double distance = SubPathObject.getDouble("distance");
+
+                            if(distance == 0 ) {
+                                continue;
+                            }
+                            else
+                                transport += footdistance +" ";
                         }
-                        bussub +=" ("+sectionTime2+"분)\n";
+
+                        if(i<subPath.length()-1)
+                            transport += "-> ";
                     }
-
-/*
-
-                    for (int l = 0; l < k; l++){
-                        obj = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(l);
-
-                        totalTime = obj.getJSONObject("info").getString("totalTime");
-                        w = obj.getJSONArray("subPath").length();
-                        int sectionTime2 = 0;
-
-                        for (int q = 0; q<w; q++) {
-                            trafficType = obj.getJSONArray("subPath").getJSONObject(q).getString("trafficType");
-                            sectionTime = obj.getJSONArray("subPath").getJSONObject(q).getString("sectionTime");
-
-                            if (trafficType.equals("1")) {
-                                subwayCode = obj.getJSONArray("subPath").getJSONObject(q).getJSONArray("lane").getJSONObject(0).getString("subwayCode");
-                                sectionTime2 += Integer.parseInt(sectionTime);
-                                if (subwayCode.equals("101")){
-                                    bussub += "공항철도 ";
-                                }else{
-                                    bussub += subwayCode+"호선 ";
-                                }
-
-                            } else if (trafficType.equals("2")) {
-                                busNo = obj.getJSONArray("subPath").getJSONObject(q).getJSONArray("lane").getJSONObject(0).getString("busNo");
-                                bussub += busNo + "번 ";
-                                sectionTime2 += Integer.parseInt(sectionTime);
-
-                            } else if (trafficType.equals("3")) {
-                                distance = obj.getJSONArray("subPath").getJSONObject(q).getString("distance");
-                                sum+=Integer.parseInt(distance);
-                                sectionTime2 += Integer.parseInt(sectionTime)*1.5;
-
-                            } else {
-                            }
-                            tv_data.setText(bussub+"total time : "+totalTime+"\n");
-                        }
-
-                        sectionTime3 = Integer.toString(sectionTime2);
-
-                    }*/
-                    String start_station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(0).getJSONObject("info").getString("firstStartStation");
-                    String end_station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(0).getJSONObject("info").getString("lastEndStation");
-                    String total_time = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(0).getJSONObject("info").getString("totalTime");
-
-                    startingpoint.setText((start_station));
-                    destination.setText(end_station);
-                    path.setText(bussub);
-
+                    transport += "\n";
                 }
+
+                tv_text.setText(transport);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -173,7 +156,7 @@ public class TransportFragment extends Fragment {
 
         @Override
         public void onError(int i, String errorMessage, API api) {
-            tv_data.setText("API : " + api.name() + "\n" + errorMessage);
+            tv_text.setText("API : " + api.name() + "\n" + errorMessage);
         }
     };
 
