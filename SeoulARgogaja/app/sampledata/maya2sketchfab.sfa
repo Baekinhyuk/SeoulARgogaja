@@ -1,0 +1,74 @@
+{
+  animations: [
+    {
+      clips: [
+        {
+          name: 'Take 001',
+          runtime_name: 'maya2sketchfab',
+        },
+      ],
+      path: 'sampledata/maya2sketchfab.fbx',
+    },
+  ],
+  materials: [
+    {
+      name: 'aiStandardSurface3',
+      parameters: [
+        {
+          baseColor: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          baseColorMap: '8e33fa90c71e445c9ce287acc0eea64e',
+        },
+        {
+          normalMap: null,
+        },
+        {
+          interpolatedColor: null,
+        },
+        {
+          metallic: 0,
+        },
+        {
+          metallicMap: null,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          roughnessMap: null,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/fbx_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'TexCoord',
+      'Orientation',
+      'BoneIndices',
+      'BoneWeights',
+    ],
+    collision: {},
+    file: 'sampledata/maya2sketchfab.fbx',
+    name: 'maya2sketchfab',
+    recenter: 'root',
+  },
+  samplers: [
+    {
+      file: 'sampledata\\maya2sketchfab.fbm\\8e33fa90c71e445c9ce287acc0eea64e.jpg',
+      name: '8e33fa90c71e445c9ce287acc0eea64e',
+      pipeline_name: 'maya2sketchfab.fbm\\8e33fa90c71e445c9ce287acc0eea64e.jpg',
+    },
+  ],
+  version: '0.54:2',
+}

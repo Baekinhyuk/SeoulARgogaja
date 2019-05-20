@@ -86,7 +86,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
         arSceneView
                 .getScene()
-                .setOnUpdateListener(
+                .addOnUpdateListener(
                         frameTime -> {
                             startLocationService();
                             if (locationScene == null) {
@@ -147,7 +147,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
 
 
-                                LocationMarker m = new LocationMarker(
+                                /*LocationMarker m = new LocationMarker(
                                         126.9573886,
                                         37.5049253,
                                         getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관20f"));
@@ -203,10 +203,10 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
                                 locationScene.mLocationMarkers.add(dragon5);*/
                                 LocationMarker dragon6 = new LocationMarker(
-                                        126.957288,
-                                        37.505600,
-                                        getAndy(126.957288, 37.505600, "청룡호수10f"));
-                                dragon6.setHeight(10F);
+                                        126.9575776,
+                                        37.5058302,
+                                        getAndy(126.9575776, 37.5058302, "청룡호수5f"));
+                                dragon6.setHeight(5F);
                                 locationScene.mLocationMarkers.add(dragon6);
 
 
@@ -375,9 +375,9 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
         VectorCalc dist = new VectorCalc();
         base.setOnTapListener((v, event) -> {
             double vector = VectorCalc.distance(latitude, longitude, start_latitude,start_longitude, "k") * 1000;
-            if(vector < 10.0){
+            if(vector < 50.0){
                 Toast.makeText(
-                        c, "거리 : " + String.format("%.0f", vector) + "m Name : " + name + "도착했다", Toast.LENGTH_LONG)
+                        c, "도착했습니다.", Toast.LENGTH_LONG)
                         .show();
                 Intent intent = new Intent();
                 setResult(1, intent);
@@ -386,7 +386,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
             }else {
 
                 Toast.makeText(
-                        c, "거리 : " + String.format("%.0f", vector) + "m Name : " + name + " longitude : " + start_longitude + "  latitude : " + start_latitude, Toast.LENGTH_LONG)
+                        c, String.format("%.0f", vector) + "m 남았습니다.", Toast.LENGTH_LONG)
                         .show();
             }
         });
