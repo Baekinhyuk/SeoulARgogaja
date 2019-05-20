@@ -38,7 +38,7 @@ import cau.seoulargogaja.arcorelocation.LocationMarker;
 import cau.seoulargogaja.arcorelocation.LocationScene;
 import cau.seoulargogaja.arcorelocation.utils.ARLocationPermissionHelper;
 
-public class ARActivity extends AppCompatActivity implements View.OnClickListener{
+public class ARActivity extends AppCompatActivity implements View.OnClickListener {
 
     double start_latitude ;
     double start_longitude;
@@ -150,29 +150,34 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                                 LocationMarker m = new LocationMarker(
                                         126.9573886,
                                         37.5049253,
-                                        getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관30f"));
-                                m.setHeight(30F);
+                                        getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관20f"));
+                                m.setHeight(12F);
                                 locationScene.mLocationMarkers.add(m);
 
                                 LocationMarker m2 = new LocationMarker(
-                                        126.9573886,
-                                        37.5049253,
-                                        getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관20f"));
-                                m2.setHeight(20F);
+                                        126.9551718,
+                                        37.504685,
+                                        getAndy(126.9551718, 37.504685, "법학관 12F"));
+                                m2.setHeight(12F);
                                 locationScene.mLocationMarkers.add(m2);
 
                                 LocationMarker m3 = new LocationMarker(
-                                        126.9563678,
-                                        37.5047367,
-                                        getAndy(126.9563678, 37.5047367, "중앙대학교 서라벌홀 100f"));
-                                m3.setHeight(100F);
+                                        126.9582718,
+                                        37.506441,
+                                        getAndy(126.9582718, 37.506441, "RnD 10f"));
+                                m3.setHeight(10F);
                                 locationScene.mLocationMarkers.add(m3);
+
+
+
+
                                 LocationMarker dragon = new LocationMarker(
-                                        126.957288,
-                                        37.505600,
-                                        getAndy(126.957288, 37.505600, "청룡호수1f"));
+                                        126.9567465,
+                                        37.5062303,
+                                        getAndy(126.9567465, 37.5062303, "집근처"));
                                 dragon.setHeight(1F);
                                 locationScene.mLocationMarkers.add(dragon);
+                                /*
                                 LocationMarker dragon2 = new LocationMarker(
                                         126.957288,
                                         37.505600,
@@ -196,12 +201,12 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                                         37.505600,
                                         getAndy(126.957288, 37.505600, "청룡호수0f"));
 
-                                locationScene.mLocationMarkers.add(dragon5);
+                                locationScene.mLocationMarkers.add(dragon5);*/
                                 LocationMarker dragon6 = new LocationMarker(
                                         126.957288,
                                         37.505600,
-                                        getAndy(126.957288, 37.505600, "청룡호수20f"));
-                                dragon6.setHeight(20F);
+                                        getAndy(126.957288, 37.505600, "청룡호수10f"));
+                                dragon6.setHeight(10F);
                                 locationScene.mLocationMarkers.add(dragon6);
 
 
@@ -338,7 +343,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                         "Detecting Plane/Surface",
                         Snackbar.LENGTH_INDEFINITE);
         loadingMessageSnackbar.getView().setBackgroundColor(0xbf323232);
-        loadingMessageSnackbar.show();
+        //loadingMessageSnackbar.show();
     }
 
     private void hideLoadingMessage() {
@@ -352,17 +357,15 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-            /*
-            if (v.getId() == R.id.mapButton){
+
+            /*if (v.getId() == R.id.mapButton){
                 Intent mapIntent = new Intent(this, MapActivity.class);
                 mapIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(mapIntent);
-            }
-            */
-            //테스트용 현재위치 파악
-        Toast.makeText(this, "현재위치 longitude : "+start_longitude+" latitude : "+start_latitude, Toast.LENGTH_SHORT).show();
-        VectorCalc dist = new VectorCalc();
-        Toast.makeText(this, "거리계산결과 : " +Boolean.toString(dist.distance(37.3768711,127.1308388,start_latitude,start_longitude,"k")<=5), Toast.LENGTH_SHORT).show();
+            }*/
+
+        //테스트용 현재위치 파악
+        Toast.makeText(this, "현재위치 longitude : " + start_longitude + " latitude : " + start_latitude, Toast.LENGTH_SHORT).show();
     }
 
     private Node getAndy(double longitude,double latitude,String name) {
@@ -371,9 +374,21 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
         Context c = this;
         VectorCalc dist = new VectorCalc();
         base.setOnTapListener((v, event) -> {
-            Toast.makeText(
-                    c, "거리 : "+        String.format("%.2f", dist.distance(latitude,longitude,start_latitude,start_longitude,"m")) +"m Name : "+name +" longitude : "+longitude+"  latitude : "+latitude, Toast.LENGTH_LONG)
-                    .show();
+            double vector = VectorCalc.distance(latitude, longitude, start_latitude,start_longitude, "k") * 1000;
+            if(vector < 10.0){
+                Toast.makeText(
+                        c, "거리 : " + String.format("%.0f", vector) + "m Name : " + name + "도착했다", Toast.LENGTH_LONG)
+                        .show();
+                Intent intent = new Intent();
+                setResult(1, intent);
+                finish();
+
+            }else {
+
+                Toast.makeText(
+                        c, "거리 : " + String.format("%.0f", vector) + "m Name : " + name + " longitude : " + start_longitude + "  latitude : " + start_latitude, Toast.LENGTH_LONG)
+                        .show();
+            }
         });
         return base;
     }

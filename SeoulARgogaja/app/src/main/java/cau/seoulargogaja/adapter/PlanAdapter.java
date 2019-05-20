@@ -1,5 +1,6 @@
 package cau.seoulargogaja.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -32,6 +33,7 @@ import cau.seoulargogaja.PlanAdd;
 import cau.seoulargogaja.PlanEdit;
 import cau.seoulargogaja.R;
 import cau.seoulargogaja.SimpleDirectionActivity;
+import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
 
 public class PlanAdapter extends ArrayAdapter<PlanDTO> {
@@ -43,9 +45,10 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
 
     final Listener listener;
     final Map<PlanDTO, Integer> mIdMap = new HashMap<>();
-
+    final Context mContext;
     public PlanAdapter(Context context, List<PlanDTO> list, Listener listener) {
         super(context, 0, list);
+        mContext = context;
         this.listener = listener;
         for (int i = 0; i < list.size(); ++i) {
             mIdMap.put(list.get(i), i);
@@ -76,13 +79,16 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                 ImageView ar_image = (ImageView) view.findViewById(R.id.ar_image);
                 if(data.getStamp() ==1){
                     //change image AR스탬프
+                    Log.d("PlanAdapter","stamp");
+                    ar_image.setImageResource(R.drawable.stampcheck);
                 }
 
                 ar_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent ar_intent = new Intent(context, ARActivity.class);
-                        context.startActivity(ar_intent);
+                        ((Activity) mContext).startActivityForResult(ar_intent, position);
+
                     }
                 });
 
@@ -212,6 +218,19 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         }
 
         return view;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("PlanAdapter", "onActivityResult");
+        if(resultCode == 1){ // 1 == result 정상
+            Log.d("PlanAdapter", "정상 requestcode = "+requestCode);
+            PlanDTO item = getItem(requestCode); // requestCode == listview position
+            item.setStamp(1);
+            PlanDAO dao = new PlanDAO((Activity)mContext);
+            dao.update_plan(item);
+        }
+        Log.d("PlanAdapter", "비정상?");
+
     }
 
     @Override
