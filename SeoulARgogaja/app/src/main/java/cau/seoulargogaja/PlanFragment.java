@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.otto.Subscribe;
+
 
 import java.net.MalformedURLException;
 import java.text.ParseException;
@@ -74,10 +78,12 @@ public class PlanFragment extends Fragment {
     ArrayList<String> dates;
     Activity activity;
     IdDAO iddao;
+    PlanAdapter adapter;
 
     @Override
     public void onResume(){
         super.onResume();
+        Log.d("PlanFragment","hi");
         set_plan_list(rootView);
         activity = getActivity();
     }
@@ -133,7 +139,7 @@ public class PlanFragment extends Fragment {
         row_count = list.size()-1;//0부터 시작하니 마지막위치는 -1
 
         final CustomListView listView = (CustomListView)rootView.findViewById(R.id.listView1);
-        PlanAdapter adapter = new PlanAdapter(getActivity(), list, new PlanAdapter.Listener() {
+        adapter = new PlanAdapter(getActivity(), list, new PlanAdapter.Listener() {
             @Override
             public void onGrab(int position, RelativeLayout row) {
                 listView.onGrab(position, row);
@@ -488,6 +494,37 @@ public class PlanFragment extends Fragment {
         mDate = new Date(mNow);
         return mFormat.format(mDate);
     }
+
+    /**
+     * NestedFragment에서 startactivityForresult실행시 fragment에 들어오지 않는 문제
+     *
+     * @param activityResultEvent
+     */
+
+    @Subscribe
+    public void onActivityResult(ActivityResultEvent activityResultEvent) {
+        adapter.onActivityResult(activityResultEvent.getRequestCode(), activityResultEvent.getResultCode(), activityResultEvent.getData());
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        BusProvider.getInstance().unregister(this);
+        super.onDestroyView();
+
+    }
+
+
+
+
+
+
+
 }
 
 
