@@ -46,6 +46,8 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
     final Listener listener;
     final Map<PlanDTO, Integer> mIdMap = new HashMap<>();
     final Context mContext;
+
+
     public PlanAdapter(Context context, List<PlanDTO> list, Listener listener) {
         super(context, 0, list);
         mContext = context;
@@ -140,24 +142,21 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                                 return false;
                             }
                         });
-
-                view.findViewById(R.id.optimize)
-                        .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, "???", Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
             else if (data.getdatatype() == 0) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
                 TextView plandate = (TextView) view.findViewById(R.id.plan_date);
 
+                PlanDAO planDAO = new PlanDAO((Activity)mContext);
                 String day = data.getdate();
                 String a_year = day.substring(0,4);
                 String b_month = day.substring(5,7);
                 String c_day = day.substring(8,10);
                 String sum_day = a_year + b_month + c_day;
+
+                //test
+                planDAO.day_plan(data.getplanlistid(),day);
+                planDAO.select_stamp(data.getplanlistid());
 
                 SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
                 Date date = null;
@@ -200,6 +199,14 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                 }
                 String last = b_month +"월"+ c_day +"일("+ day_kr+")";
                 plandate.setText(last);
+
+                view.findViewById(R.id.optimize)
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(context, "???", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
             else if(data.getdatatype() == 2){
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_plus, null);

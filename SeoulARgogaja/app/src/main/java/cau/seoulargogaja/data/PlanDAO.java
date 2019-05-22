@@ -270,7 +270,7 @@ public class PlanDAO {
                             if(i == count-1) {
                                 Cursor cursor2 = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+dto.getplanlistid()+" ORDER BY "+tableName+".order_ DESC", null);
                                 cursor2.moveToFirst();
-                                date_order= cursor2.getInt(6);
+                                date_order= cursor2.getInt(8);
                                 date_order +=1;
                                 database.execSQL("INSERT INTO " + tableName + "(content,date,spotID,stamp,latitude,longitude,memo,order_,datatype,planlistid) VALUES "
                                         + "("
@@ -427,11 +427,13 @@ public class PlanDAO {
                     String content = cursor.getString(1);
                     String date = cursor.getString(2);
                     int spotID = cursor.getInt(3);
-                    int customID = cursor.getInt(4);
-                    String memo = cursor.getString(5);
-                    int order = cursor.getInt(6);
-                    int datatype = cursor.getInt(7);
-                    int planlistid = cursor.getInt(8);
+                    int stamp = cursor.getInt(4);
+                    String latitude = cursor.getString(5);
+                    String longitude = cursor.getString(6);
+                    String memo = cursor.getString(7);
+                    int order = cursor.getInt(8);
+                    int datatype = cursor.getInt(9);
+                    int planlistid = cursor.getInt(10);
                     Log.d("TEST_SQL_RESULT","CONTENT = "+content+" DATE = "+date+" Order = "+order+" Planlistid"+planlistid);
                 }
 
@@ -511,5 +513,96 @@ public class PlanDAO {
             e.printStackTrace();
             Log.e("tour", "[dao db] : 초기값이 안들어가짐 ", e);
         }
+    }
+
+    public ArrayList<PlanDTO> select_stamp(int planlist_id) {  //planlistid에서 Stamp가 1인 내용만 조회하기
+        ArrayList<PlanDTO> list = new ArrayList<PlanDTO>();
+        try {
+
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ planlist_id +" AND stamp = "+1+" ORDER BY "+tableName+".order_ ASC", null);
+
+                int count = cursor.getCount();
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    int id = cursor.getInt(0);
+                    String content = cursor.getString(1);
+                    String date = cursor.getString(2);
+                    int spotID = cursor.getInt(3);
+                    int stamp = cursor.getInt(4);
+                    String latitude = cursor.getString(5);
+                    String longitude = cursor.getString(6);
+                    String memo = cursor.getString(7);
+                    int order = cursor.getInt(8);
+                    int datatype = cursor.getInt(9);
+                    int planlistid = cursor.getInt(10);
+                    PlanDTO dto = new PlanDTO(id, content, date, spotID, stamp,latitude,longitude, memo, order, planlistid);
+                    list.add(dto);
+                    Log.d("TEST_STAMP","CONTENT = "+content+" DATE = "+date+" Order = "+order+" Planlistid"+planlistid+" Stamp"+stamp);
+                }
+
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+
+                println("데이터를 조회했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Plan","[PlanDAO] ",e);
+        }
+
+
+        return list;
+    }
+
+    public ArrayList<PlanDTO> day_plan(int planlist_id,String day) {  //day에 따른 list
+        /*
+        * PlanDAO dao = new PlanDAO(this); 한 뒤
+        * dao.day_plan(mainState.getplanlistId(),날짜);
+        * 하면 리턴값으로 ArryList받음
+        * 여기 원소 한개에 PlanDTO.latitude나 PlanDTO.longitude사용하면됨
+        *
+        * */
+        ArrayList<PlanDTO> list = new ArrayList<PlanDTO>();
+        try {
+
+            if (database != null) {
+                Cursor cursor = database.rawQuery("SELECT * FROM " + tableName + " WHERE planlistid = "+ planlist_id +" AND date = \'"+day+"\' AND datatype =" + 1 +" ORDER BY "+tableName+".order_ ASC", null);
+
+                int count = cursor.getCount();
+
+                for (int i = 0; i < count; i++) {
+                    cursor.moveToNext();
+                    int id = cursor.getInt(0);
+                    String content = cursor.getString(1);
+                    String date = cursor.getString(2);
+                    int spotID = cursor.getInt(3);
+                    int stamp = cursor.getInt(4);
+                    String latitude = cursor.getString(5);
+                    String longitude = cursor.getString(6);
+                    String memo = cursor.getString(7);
+                    int order = cursor.getInt(8);
+                    int datatype = cursor.getInt(9);
+                    int planlistid = cursor.getInt(10);
+                    PlanDTO dto = new PlanDTO(id, content, date, spotID, stamp, latitude, longitude, memo, order, planlistid);
+                    list.add(dto);
+                    Log.d("TEST_STAMP_day_plan","CONTENT = "+content+" DATE = "+date+" Order = "+order+" Planlistid"+planlistid+" Stamp"+stamp);
+                }
+
+                cursor.close();  //커서어댑터를 사용해서 리스트뷰에 보여질려면 클로즈를 닫아주어야함.
+
+                println("데이터를 조회했습니다.");
+            } else {
+                println("데이터베이스를 먼저 열어야 합니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Plan","[PlanDAO] ",e);
+        }
+        return list;
     }
 }
