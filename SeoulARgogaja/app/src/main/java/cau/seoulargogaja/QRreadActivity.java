@@ -97,7 +97,13 @@ public class QRreadActivity extends AppCompatActivity {
                         String value = et.getText().toString();
                         try {
                             Phprequest request = new Phprequest(Phprequest.BASE_URL + "read_code.php");
-                            request.read_code(Integer.parseInt(value));
+                            try {
+                                request.read_code(Integer.parseInt(value));
+                            }catch (Exception e){
+                                Toast.makeText(activity,"정해진 코드를 입력해주세요", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();     //닫기
+                                return;
+                            }
                             //Toast.makeText(QRreadActivity.this, Integer.toString(request.getResult_planlistid()), Toast.LENGTH_SHORT).show();
                             if(request.getResult_planlistid() == -1){
                                 Toast.makeText(activity,"코드가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
