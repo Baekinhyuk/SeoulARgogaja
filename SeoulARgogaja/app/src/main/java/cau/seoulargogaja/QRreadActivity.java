@@ -1,11 +1,15 @@
 package cau.seoulargogaja;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,18 +35,19 @@ import cau.seoulargogaja.data.WalletDTO;
 
 public class QRreadActivity extends AppCompatActivity {
     //view Objects
-    private Button buttonScan;
+    private Button buttonScan,codeScan;
     private TextView edittitle;
     private ImageView btnCancel;
-
+    Activity activity;
     //qr code scanner object
+    String readurl;
     private IntentIntegrator qrScan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qrread);
-
+        activity = this;
         edittitle = (TextView) findViewById(R.id.qr_read_title);
         edittitle.setText(edittitle.getText());
 
@@ -50,6 +55,7 @@ public class QRreadActivity extends AppCompatActivity {
 
         //View Objects
         buttonScan = (Button) findViewById(R.id.buttonScan);
+        codeScan = (Button)findViewById(R.id.codeScan);
 
         //intializing scan object
         qrScan = new IntentIntegrator(this);
@@ -70,6 +76,56 @@ public class QRreadActivity extends AppCompatActivity {
                 //qrScan.setPrompt("Scanning...");
                 //qrScan.setOrientationLocked(false);
                 qrScan.initiateScan();
+            }
+        });
+
+        //button onClick
+        codeScan.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                AlertDialog.Builder ad = new AlertDialog.Builder(activity);
+
+                ad.setTitle("코드를 입력해 주세요");       // 코드 입력
+
+                // EditText 삽입하기
+                final EditText et = new EditText(activity);
+                ad.setView(et);
+
+                // 확인 버튼 설정
+                ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String value = et.getText().toString();
+                        try {
+                            Phprequest request = new Phprequest(Phprequest.BASE_URL + "read_code.php");
+                            request.read_code(Integer.parseInt(value));
+                            //Toast.makeText(QRreadActivity.this, Integer.toString(request.getResult_planlistid()), Toast.LENGTH_SHORT).show();
+                            if(request.getResult_planlistid() == -1){
+                                Toast.makeText(activity,"코드가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                readurl = request.BASE_URL +"planlist_output.php?planlistid="+ request.getResult_planlistid();
+                                String jsonresult = request.readURL(new URL(readurl.trim()));
+                                write_data(jsonresult);
+                            }
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();     //닫기
+                        finish();
+                        // Event
+                    }
+                });
+                // 취소 버튼 설정
+                ad.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();     //닫기
+                        // Event
+                    }
+                });
+
+                // 창 띄우기
+                ad.show();
             }
         });
     }

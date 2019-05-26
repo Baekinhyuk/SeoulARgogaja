@@ -58,7 +58,23 @@
             android:layout_height="wrap_content"
             android:text="QR코드생성" />
 
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/generalstart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="일반코드생성" />
+
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_centerInParent="true"
+        android:id="@+id/code_Image"
+        android:paddingTop="10dp"
+        android:singleLine="true"/>
 
     <ImageView
         android:id="@+id/QR_Image"

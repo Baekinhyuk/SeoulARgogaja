@@ -10,8 +10,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 
 public class Phprequest {
@@ -19,7 +21,6 @@ public class Phprequest {
     private URL url;
     static private int result_planlistid;
     static private String result_json;
-
 
     public Phprequest(){
     }
@@ -82,6 +83,43 @@ public class Phprequest {
             Thread workingThread = new Thread() {
                 public void run() {
                     accept(postData);
+                }
+            };
+            workingThread.start();
+            workingThread.join();
+        }
+        catch (Exception e) {
+            Log.i("PHPRequest", "request was failed.");
+        }
+    }
+
+    public void regist_code(final int ID, final int planlistid) {
+        try {
+            String postData = "ID=" + ID + "&" + "planlistid=" + planlistid;
+            Thread workingThread = new Thread() {
+                public void run() {
+                    accept(postData);
+                }
+            };
+            workingThread.start();
+            workingThread.join();
+        }
+        catch (Exception e) {
+            Log.i("PHPRequest", "request was failed.");
+        }
+    }
+
+    public void read_code(final int ID) {
+        try {
+            String postData = "ID=" + ID;
+            Thread workingThread = new Thread() {
+                public void run() {
+                    String result = accept(postData);
+                    try {
+                        result_planlistid = Integer.parseInt(result);
+                    }catch (Exception e) {
+                        result_planlistid = -1;
+                    }
                 }
             };
             workingThread.start();
