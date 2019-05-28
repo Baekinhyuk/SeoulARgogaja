@@ -91,6 +91,8 @@ public class PlanAddMap extends FragmentActivity implements OnMapReadyCallback {
         }
         catch(Exception e){
             // Add a marker in Sydney and move the camera
+            latitude = 37.5050923;
+            longitude = 126.9549072;
             LatLng startpoint = new LatLng(37.5050923, 126.9549072);
             mMap.addMarker(new MarkerOptions().position(startpoint).title("중앙대학교"));
 

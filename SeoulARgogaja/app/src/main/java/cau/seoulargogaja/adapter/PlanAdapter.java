@@ -1,6 +1,9 @@
 package cau.seoulargogaja.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -27,6 +30,7 @@ import com.mapbox.geojson.Point;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,6 +61,7 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
     final Listener listener;
     final Map<PlanDTO, Integer> mIdMap = new HashMap<>();
     final Context mContext;
+
 
 
     public PlanAdapter(Context context, List<PlanDTO> list, Listener listener) {
@@ -218,7 +223,25 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(context, "???", Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder alertdialog = new AlertDialog.Builder((Activity)mContext);
+                                alertdialog.setMessage("최적화시키겠습니까?");
+
+                                // 확인버튼
+                                alertdialog.setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        optimize_(data.getplanlistid(),day,planDAO);
+                                    }
+                                });
+                                // 취소버튼
+                                alertdialog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+                                // 메인 다이얼로그 생성
+                                AlertDialog alert = alertdialog.create();
+                                alert.show();
                             }
                         });
             }
@@ -269,8 +292,63 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
 
+    public void optimize_(int planlist_id,String day,PlanDAO planDAO){
+        ArrayList<PlanDTO> list;
+        list = planDAO.day_plan(planlist_id,day);
+        int n = list.size();
+        double[] latitude = new double[n];
+        double[] longitude = new double[n];
+        double[][] distance = new double[n][n];
+        Distance dist = new Distance();
+        dist.setDistance(distance);
+        for(int i =0;i<n;i++){
+            latitude[i] = Double.parseDouble(list.get(i).getLatitude());
+            longitude[i] = Double.parseDouble(list.get(i).getLongitude());
+        }
+        get_distace(latitude,longitude,dist);
+        /*
+        try {
+            Thread workingThread = new Thread() {
+                public void run() {
+                    get_distace(latitude,longitude,dist);
+                }
+            };
+            workingThread.start();
+            workingThread.join();
+        }
+        catch (Exception e) {
+            Log.i("get_distace", "get_distace was failed.");
+        }*/
+        Handler h= new Handler();
+        ProgressDialog mProgressDialog = ProgressDialog.show((Activity)mContext,"", "잠시만 기다려 주세요.",true);
+
+        h.postDelayed(new Runnable(){
+            public void run(){
+                String[] opt_order = new String[n]; // 최적화후 출력 값
+                int[] opt_real_order = new int[n]; // 최적화후 출력 값
+                opt_order =orderfunction(dist.distance);
+
+                for(int i =0;i<n;i++){
+                    Log.d("opt_order","result"+Integer.toString(i)+" result : "+opt_order[i]);
+                    opt_real_order[i] = list.get(Integer.parseInt(opt_order[i])-1).getOrder();
+                    Log.d("opt_order","result"+Integer.toString(i)+" result_real_order : "+opt_real_order[i]);
+                }
+
+                for(int i =0;i<n;i++){
+                    PlanDTO planDTO = list.get(i);
+                    planDTO.setOrder(opt_real_order[i]);
+                    planDAO.update_plan(planDTO);
+                }
+                mProgressDialog.dismiss();
+                ((Activity) mContext).recreate();
+            }
+        },6000);
+        //opt_order =orderfunction(dist.distance);
+
+    }
+
     //거리 구하기 주어진 좌표값들로 거리 구하기 저장된 latitude, longitude를 기반으로 거리 계산
-    public void get_distace(double[] latitude, double[] longitude){
+    public void get_distace(double[] latitude, double[] longitude,Distance dist){
         Point start;
         Point end ;
 
@@ -278,12 +356,12 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
             for(int j=0;j<latitude.length;j++){
                 start = Point.fromLngLat(longitude[i],latitude[i]);
                 end = Point.fromLngLat(longitude[j],latitude[j]);
-                getRoute(start, end,i,j);
+                getRoute(start, end,i,j,dist);
             }
         }
     }
 
-    private void getRoute(Point origin, Point destination, int i, int j) {
+    private void getRoute(Point origin, Point destination, int i, int j,Distance dist) {
         final int a =i;
         final int b =j;
 
@@ -314,7 +392,7 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                 Log.d("success","Distance : "+currentRoute.distance());
 
                 //실제 거리값 저장
-                // distance[a][b] = currentRoute.distance();
+                dist.distance[a][b] = currentRoute.distance();
             }
 
             @Override
@@ -414,6 +492,14 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         }
 
         return optimize;
+    }
+
+    class Distance{
+        double[][] distance;
+
+        public void setDistance(double[][] distance){
+            this.distance = distance;
+        }
     }
 
 }
