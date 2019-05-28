@@ -42,6 +42,8 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
     double start_latitude ;
     double start_longitude;
+    double end_latitude, end_longitude;
+    String content;
     LocationManager manager;
     private boolean installRequested;
     private boolean hasFinishedLoading = false;
@@ -60,6 +62,12 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.activity_ar);
         arSceneView = findViewById(R.id.ar_scene_view);
 
+        Intent intent = getIntent();
+
+
+        end_latitude = Double.parseDouble(intent.getStringExtra("latitude"));
+        end_longitude = Double.parseDouble(intent.getStringExtra("longitude"));
+        content = intent.getStringExtra("content");
         //test add
         CompletableFuture<ModelRenderable> andy = ModelRenderable.builder()
                 .setSource(this, R.raw.andy)
@@ -92,6 +100,19 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                             if (locationScene == null) {
                                 locationScene = new LocationScene(this, arSceneView);
                                 locationScene.setAnchorRefreshInterval(60);
+
+                                LocationMarker marker = new LocationMarker(
+                                        end_longitude,
+                                        end_latitude,
+                                        getAndy(end_longitude, end_latitude, content));
+                                marker.setHeight(0);
+                                locationScene.mLocationMarkers.add(marker);
+
+
+
+
+
+
                                 /* 동네 테스트용
                                 locationScene.mLocationMarkers.add(
                                         new LocationMarker(
@@ -117,13 +138,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
 
 
-                                /*LocationMarker sangdo = new LocationMarker(
-                                        126.954132,
-                                        37.503398,
-                                        getAndy(126.954132, 37.503398, "상도아파트"));
-                                sangdo.setHeight(0);
-                                locationScene.mLocationMarkers.add(sangdo);
-
+                                /*
                                 LocationMarker sangdo2 = new LocationMarker(
                                         126.954132,
                                         37.503398,
@@ -201,14 +216,14 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                                         37.505600,
                                         getAndy(126.957288, 37.505600, "청룡호수0f"));
 
-                                locationScene.mLocationMarkers.add(dragon5);*/
+                                locationScene.mLocationMarkers.add(dragon5);
                                 LocationMarker dragon6 = new LocationMarker(
                                         126.9575776,
                                         37.5058302,
                                         getAndy(126.9575776, 37.5058302, "청룡호수5f"));
                                 dragon6.setHeight(5F);
                                 locationScene.mLocationMarkers.add(dragon6);
-
+                                */
 
                                 /*
                                 locationScene.mLocationMarkers.add(

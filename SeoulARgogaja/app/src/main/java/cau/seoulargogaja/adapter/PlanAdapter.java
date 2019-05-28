@@ -87,6 +87,9 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                     @Override
                     public void onClick(View v) {
                         Intent ar_intent = new Intent(context, ARActivity.class);
+                        ar_intent.putExtra("latitude", data.getLatitude());
+                        ar_intent.putExtra("longitude", data.getLongitude());
+                        ar_intent.putExtra("content",data.getContent());
                         ((Activity) mContext).startActivityForResult(ar_intent, position);
 
                     }
