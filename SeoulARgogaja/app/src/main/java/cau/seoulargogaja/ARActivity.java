@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.ar.core.Frame;
@@ -94,12 +95,13 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
         arSceneView
                 .getScene()
-                .addOnUpdateListener(
+                .setOnUpdateListener(
                         frameTime -> {
                             startLocationService();
                             if (locationScene == null) {
                                 locationScene = new LocationScene(this, arSceneView);
                                 locationScene.setAnchorRefreshInterval(60);
+
 
                                 LocationMarker marker = new LocationMarker(
                                         end_longitude,
@@ -112,106 +114,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
 
 
-
-                                /* 동네 테스트용
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                127.1308388,
-                                                37.3768711,
-                                                getAndy(127.1308388, 37.3768711, "419동중앙")));
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                127.1312358,
-                                                37.3770951,
-                                                getAndy(127.1312358, 37.3770951, "420동방향")));
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                127.1305038,
-                                                37.3766561,
-                                                getAndy(127.1305038, 37.3766561, "418동방향")));
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                127.1311258,
-                                                37.3766371,
-                                                getAndy(127.1311258, 37.3766371, "419동당촌초길가방향")));
-                                 */
-
-
-
-                                /*
-                                LocationMarker sangdo2 = new LocationMarker(
-                                        126.954132,
-                                        37.503398,
-                                        getAndy(126.954132, 37.503398, "상도아파트50"));
-                                sangdo2.setHeight(50F);
-                                locationScene.mLocationMarkers.add(sangdo2);
-
-                                LocationMarker sangdo3 = new LocationMarker(
-                                        126.954132,
-                                        37.503398,
-                                        getAndy(126.954132, 37.503398, "상도아파트100"));
-                                sangdo3.setHeight(100F);
-                                locationScene.mLocationMarkers.add(sangdo3);
-
-                                LocationMarker sangdo4 = new LocationMarker(
-                                        126.954132,
-                                        37.503398,
-                                        getAndy(126.954132, 37.503398, "상도아파트200"));
-                                sangdo4.setHeight(200F);
-                                locationScene.mLocationMarkers.add(sangdo4);*/
-
-
-
-                                /*LocationMarker m = new LocationMarker(
-                                        126.9573886,
-                                        37.5049253,
-                                        getAndy(126.9573886, 37.5049253, "중앙대학교 중앙도서관20f"));
-                                m.setHeight(12F);
-                                locationScene.mLocationMarkers.add(m);
-
-                                LocationMarker m2 = new LocationMarker(
-                                        126.9551718,
-                                        37.504685,
-                                        getAndy(126.9551718, 37.504685, "법학관 12F"));
-                                m2.setHeight(12F);
-                                locationScene.mLocationMarkers.add(m2);
-
-                                LocationMarker m3 = new LocationMarker(
-                                        126.9582718,
-                                        37.506441,
-                                        getAndy(126.9582718, 37.506441, "RnD 10f"));
-                                m3.setHeight(10F);
-                                locationScene.mLocationMarkers.add(m3);
-
-
-
-
-                                LocationMarker dragon = new LocationMarker(
-                                        126.9567465,
-                                        37.5062303,
-                                        getAndy(126.9567465, 37.5062303, "집근처"));
-                                dragon.setHeight(1F);
-                                locationScene.mLocationMarkers.add(dragon);
-                                /*
-                                LocationMarker dragon2 = new LocationMarker(
-                                        126.957288,
-                                        37.505600,
-                                        getAndy(126.957288, 37.505600, "청룡호수5f"));
-                                dragon2.setHeight(5F);
-                                locationScene.mLocationMarkers.add(dragon2);
-                                LocationMarker dragon3 = new LocationMarker(
-                                        126.957288,
-                                        37.505600,
-                                        getAndy(126.957288, 37.505600, "청룡호수10f"));
-                                dragon3.setHeight(10F);
-                                locationScene.mLocationMarkers.add(dragon3);
-                                LocationMarker dragon4 = new LocationMarker(
-                                        126.957288,
-                                        37.505600,
-                                        getAndy(126.957288, 37.505600, "청룡호수15f"));
-                                dragon4.setHeight(15F);
-                                locationScene.mLocationMarkers.add(dragon4);
-                                LocationMarker dragon5 = new LocationMarker(
+                                /*LocationMarker dragon5 = new LocationMarker(
                                         126.957288,
                                         37.505600,
                                         getAndy(126.957288, 37.505600, "청룡호수0f"));
@@ -251,6 +154,9 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                         });
 
         ARLocationPermissionHelper.requestPermission(this);
+
+        Button b = findViewById(R.id.mapButton);
+        b.setText(content);
 
         findViewById(R.id.mapButton).setOnClickListener(this::onClick);
 
@@ -380,7 +286,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
             }*/
 
         //테스트용 현재위치 파악
-        Toast.makeText(this, "현재위치 longitude : " + start_longitude + " latitude : " + start_latitude, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "목적지 longitude : " + end_longitude + " latitude : " + end_latitude, Toast.LENGTH_SHORT).show();
     }
 
     private Node getAndy(double longitude,double latitude,String name) {

@@ -34,8 +34,8 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.google.ar:core:1.8.0'
     implementation 'com.android.support:cardview-v7:28.0.0-rc01'
-    implementation "com.google.ar.sceneform:core:1.8.0"
-    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.8.0"
+    implementation "com.google.ar.sceneform:core:1.3.0"
+    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.3.0"
     implementation 'com.github.appoly:ARCore-Location:1.1.1'
     implementation project(':SDK_release_v1.0')
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:3.1.0'
@@ -59,12 +59,4 @@ apply plugin: 'com.google.ar.sceneform.plugin'
 
 
 
-sceneform.asset('sampledata/box_fbx.FBX',
-        'default',
-        'sampledata/box_fbx.sfa',
-        'src/main/assets/box_fbx')
 
-sceneform.asset('sampledata/maya2sketchfab.fbx',
-        'default',
-        'sampledata/maya2sketchfab.sfa',
-        'src/main/assets/maya2sketchfab')
