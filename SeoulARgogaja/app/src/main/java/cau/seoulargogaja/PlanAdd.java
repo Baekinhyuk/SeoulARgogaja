@@ -40,6 +40,7 @@ public class PlanAdd extends AppCompatActivity {
     private ArrayList<String> dates;
     private int date_length;
     private boolean setlocation = false;
+    private int spotadd = 0;
     PlanDTO dto;
 
     @Override
@@ -67,17 +68,44 @@ public class PlanAdd extends AppCompatActivity {
         date_length = editdate.getText().toString().length();
 
         editlocation = (TextView)findViewById(R.id.edit_plan_location);
+
+        /*기본 값 설정 넘김*/
+        latitude = Double.toString(37.5050923);
+        longitude = Double.toString(126.9549072);
+        try{
+            Intent intent = getIntent();
+            spotadd = intent.getIntExtra("spot",0);
+            Log.d("spotadd",Integer.toString(spotadd));
+            if(spotadd == 1){
+                String pname,platitude,plongitude,paddress,pphone,pdescription,pmemo;
+                pname = intent.getStringExtra("name");
+                platitude = intent.getStringExtra("latitude");
+                plongitude = intent.getStringExtra("longitude");
+                paddress = intent.getStringExtra("address");
+                pphone = intent.getStringExtra("phone");
+                pdescription = intent.getStringExtra("description");
+                //pmemo = paddress + "\n" + pphone + "\n"+ pdescription;
+                pmemo = paddress + "\n" + pphone;
+                editcontent.setText(pname);
+                latitude = platitude;
+                longitude = plongitude;
+                editmemo.setText(pmemo);
+                setlocation = true;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
         editlocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //dialog.show(); 여기서 맵 호출후 맵정보 다시 받아와야함
                 Intent intent = new Intent(PlanAdd.this, PlanAddMap.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
                 startActivityForResult(intent,0);
             }
         });
-
-
-
 
         //startDate.setInputType(InputType.TYPE_NULL);
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd",Locale.KOREA);
@@ -136,6 +164,7 @@ public class PlanAdd extends AppCompatActivity {
                 dto.setOrder(0);
                 dto.setmemo(String.valueOf(editmemo.getText()));
                 dao.insert_plan(dto);
+                dao.test_sql_order(dto.getplanlistid());
                 finish();
             }
         });

@@ -18,6 +18,12 @@ import android.widget.LinearLayout;
 import android.os.Build;
 import android.widget.Toast;
 
+import com.mapbox.api.directions.v5.DirectionsCriteria;
+import com.mapbox.api.directions.v5.MapboxDirections;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.Point;
+
 import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,8 +41,13 @@ import cau.seoulargogaja.R;
 import cau.seoulargogaja.SimpleDirectionActivity;
 import cau.seoulargogaja.data.PlanDAO;
 import cau.seoulargogaja.data.PlanDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PlanAdapter extends ArrayAdapter<PlanDTO> {
+    private DirectionsRoute currentRoute;
+    private MapboxDirections client;
 
     final int INVALID_ID = -1;
     public interface Listener {
@@ -46,6 +57,8 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
     final Listener listener;
     final Map<PlanDTO, Integer> mIdMap = new HashMap<>();
     final Context mContext;
+
+
     public PlanAdapter(Context context, List<PlanDTO> list, Listener listener) {
         super(context, 0, list);
         mContext = context;
@@ -143,24 +156,21 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                                 return false;
                             }
                         });
-
-                view.findViewById(R.id.optimize)
-                        .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, "???", Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
             else if (data.getdatatype() == 0) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_date, null);
                 TextView plandate = (TextView) view.findViewById(R.id.plan_date);
 
+                PlanDAO planDAO = new PlanDAO((Activity)mContext);
                 String day = data.getdate();
                 String a_year = day.substring(0,4);
                 String b_month = day.substring(5,7);
                 String c_day = day.substring(8,10);
                 String sum_day = a_year + b_month + c_day;
+
+                //test
+                planDAO.day_plan(data.getplanlistid(),day);
+                planDAO.select_stamp(data.getplanlistid());
 
                 SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
                 Date date = null;
@@ -203,6 +213,14 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                 }
                 String last = b_month +"월"+ c_day +"일("+ day_kr+")";
                 plandate.setText(last);
+
+                view.findViewById(R.id.optimize)
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(context, "???", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
             else if(data.getdatatype() == 2){
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_plan_plus, null);
@@ -251,37 +269,151 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
 
-    //순서 string 출력
-    public String[] greedy(double array[][]){
+    //거리 구하기 주어진 좌표값들로 거리 구하기 저장된 latitude, longitude를 기반으로 거리 계산
+    public void get_distace(double[] latitude, double[] longitude){
+        Point start;
+        Point end ;
+
+        for(int i=0;i<latitude.length;i++){
+            for(int j=0;j<latitude.length;j++){
+                start = Point.fromLngLat(longitude[i],latitude[i]);
+                end = Point.fromLngLat(longitude[j],latitude[j]);
+                getRoute(start, end,i,j);
+            }
+        }
+    }
+
+    private void getRoute(Point origin, Point destination, int i, int j) {
+        final int a =i;
+        final int b =j;
+
+        client = MapboxDirections.builder()
+                .origin(origin)
+                .destination(destination)
+                .overview(DirectionsCriteria.OVERVIEW_FULL)
+                .profile(DirectionsCriteria.PROFILE_CYCLING)
+                .accessToken("pk.eyJ1IjoiY2tuY2tuMjAwNiIsImEiOiJjanYxc2Jqd2owZXBnM3pxY280bGN2bjZyIn0.YwgAxVf8SLbzu6V4Epi4KA")
+                .build();
+
+        client.enqueueCall(new Callback<DirectionsResponse>() {
+
+            @Override
+            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                System.out.println(call.request().url().toString());
+
+                // You can get the generic HTTP info about the response
+                if (response.body() == null) {
+                    return;
+                } else if (response.body().routes().size() < 1) {
+                    return;
+                }
+                // Print some info about the route
+                currentRoute = response.body().routes().get(0);
+
+                //거리
+                Log.d("success","Distance : "+currentRoute.distance());
+
+                //실제 거리값 저장
+                // distance[a][b] = currentRoute.distance();
+            }
+
+            @Override
+            public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
+
+            }
+        });
+    }
+
+    //최적화 함수 각 노드마다 계산한 거리를 double형 이중 array로 받아서 가장 짧은 순서로 return
+    private String[] orderfunction(double[][] array) {
+
         int n = array.length;
         double best;
         int temp = 0;
-        int i,k=0;
+        int i, j, k = 0;
         boolean[] check = new boolean[n]; // 이동 노드 체크
         String[] optimize = new String[n]; // 최적화후 출력 값
+        double sum = 0;
+        int[] order = new int[n];
+        int[] temp_order = new int[n];
+
+        order[0] = 0;
         optimize[0] = "0"; // 시작점 고정
 
-        for(i=0;i<n;i++) check[i]=false; // 이동 경로 확인
+
+        for (i = 0; i < n; i++) check[i] = false; // 이동 경로 확인
 
         check[0] = true; // 첫번째 노드가 시작점
 
-        //grid 알고리즘
-        for(i=0;i<n-1;i++){
+        //그리디
+        for (i = 1; i < n; i++) {
             best = 999999999;
-            for(int j=0;j<n;j++){
-                if(check[j] == true) continue;
+            for (j = 0; j < n; j++) {
+                if (check[j] == true) continue;
                 else {
-                    if(best > array[k][j] && array[k][j] != 0)  {
+                    if (best > array[k][j] && array[k][j] != 0) {
                         best = array[k][j];
-                        Log.d("best :"," "+best);
-                        temp=j;
+                        Log.d("best :", " " + best);
+                        temp = j;
+                    }
+                }
+                Log.d("distinguish","\n");
+            }
+            k = temp;
+            sum += best;
+            check[k] = true;
+            order[i] = k;
+        }
+
+
+        //2opt
+        int temp_sum = 0;
+        int count =0;
+
+        for(int p=0;p<order.length;p++){
+            temp_order[p] = order[p];
+        }
+
+        while (true) {
+            for (i = 1; i < n; i++) {
+                for (j = i + 1; j < n; j++) {
+                    temp = temp_order[i];
+                    temp_order[i] = temp_order[j];
+                    temp_order[j] = temp;
+
+                    for (int o = 0; o < n - 1; o++)
+                        temp_sum += array[temp_order[o]][temp_order[o + 1]];
+
+                    Log.d("temp_sum : "," "+temp_sum +" vs sum : "+sum);
+
+                    if (temp_sum < sum) {
+                        for(int p=0;p<order.length;p++){
+                            order[p] = temp_order[p];
+                        }
+                        sum = temp_sum;
+                        count = 1;
+                        break;
+                    }
+                    else {
+                        for(int p=0;p<order.length;p++){
+                            temp_order[p] = order[p];
+                        }
+                        temp_sum = 0;
                     }
                 }
             }
-            k=temp;
-            check[k] = true;
-            optimize[i+1] = Integer.toString(k);
+
+            if(count != 1)
+                break;
+            else count = 0;
         }
+
+
+        for(i=0;i<n;i++) {
+            optimize[i] = Integer.toString(order[i] + 1);
+        }
+
         return optimize;
     }
+
 }

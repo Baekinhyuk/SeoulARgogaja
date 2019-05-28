@@ -98,7 +98,15 @@ public class DetailActivity extends AppCompatActivity {
 
     // 여기에 일정 추가하는 코드 작성해야함
     public void onAddButtonClick(View view) {   //추가
-
+        Intent intent = new Intent(this, PlanAdd.class);
+        intent.putExtra("name", name);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        intent.putExtra("address", address);
+        intent.putExtra("phone", phone);
+        intent.putExtra("description", description);
+        intent.putExtra("spot",1);
+        startActivity(intent);
         Toast.makeText(this, "추가한 관광지에 추가되었습니다.", Toast.LENGTH_SHORT).show();
     }
 

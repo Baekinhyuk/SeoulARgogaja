@@ -17,6 +17,9 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 
+import java.net.MalformedURLException;
+import java.util.Random;
+
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
@@ -24,8 +27,9 @@ public class QRmakeActivity extends AppCompatActivity {
 
     String TAG = "GenerateQRCode";
     EditText edtValue;
+    TextView code_Image;
     ImageView qrImage, btnCancel;
-    Button start;
+    Button start,generalstart;
     String inputValue;
     String savePath = Environment.getExternalStorageDirectory().getPath() + "/QRCode/";
     Bitmap bitmap;
@@ -45,6 +49,8 @@ public class QRmakeActivity extends AppCompatActivity {
 
         qrImage = (ImageView) findViewById(R.id.QR_Image);
         start = (Button) findViewById(R.id.start);
+        generalstart = (Button)findViewById(R.id.generalstart);
+        code_Image = (TextView)findViewById(R.id.code_Image);
 
         btnCancel = (ImageView) findViewById(R.id.qrmakecancel);
         // 취소 버튼 누르면 이전 화면으로 돌아감
@@ -82,5 +88,30 @@ public class QRmakeActivity extends AppCompatActivity {
             }
         });
 
+        generalstart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Phprequest phprequest = new Phprequest();
+                regist_wallet(phprequest.getResult_planlistid());
+            }
+        });
+
+    }
+
+    public void regist_wallet(int planlistid){
+        try {
+            Phprequest request = new Phprequest(Phprequest.BASE_URL + "regist_code.php");
+            int minimumValue = 100000000;
+            int maximumValue = 999999999;
+
+            Random random = new Random();
+            int randomValue = random.nextInt(maximumValue - minimumValue + 1) + minimumValue;
+
+            request.regist_code(randomValue,planlistid);
+            code_Image.setText(Integer.toString(randomValue));
+
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }
     }
 }
