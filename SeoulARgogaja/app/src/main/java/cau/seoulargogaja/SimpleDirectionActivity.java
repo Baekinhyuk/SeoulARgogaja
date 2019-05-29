@@ -4,6 +4,7 @@ package cau.seoulargogaja;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -35,10 +37,13 @@ public class SimpleDirectionActivity extends AppCompatActivity {
     TransportFragment fragment2;
     LocationManager manager;
 
+    String start_content;
     double start_latitude;
     double start_longitude;
-    double end_latitude = 37.509193;
-    double end_longitude = 126.963477;
+
+    String end_content;
+    double end_latitude;
+    double end_longitude;
 
 
 
@@ -46,13 +51,48 @@ public class SimpleDirectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_direction);
 
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    0 );
+        TextView start = (TextView) findViewById(R.id.start);
+        TextView destination = (TextView)findViewById(R.id.destination);
+
+        Intent intent = getIntent(); /*데이터 수신*/
+        int position = intent.getExtras().getInt("data2_type");
+        Log.d("position"," "+position);
+
+        if(position == 1){
+            start_latitude = Double.parseDouble(intent.getExtras().getString("s_latitude")); /*String형*/
+            start_longitude = Double.parseDouble(intent.getExtras().getString("s_longitude")); /*String형*/
+
+            end_latitude = Double.parseDouble(intent.getExtras().getString("e_latitude")); /*String형*/
+            end_longitude = Double.parseDouble(intent.getExtras().getString("e_longitude")); /*String형*/
+
+            start_content = intent.getExtras().getString("s_content");
+            end_content = intent.getExtras().getString("e_content");
+
+            start.setText(start_content);
+            destination.setText(end_content);
+
+            Log.d("s_lati",""+start_latitude);
+            Log.d("s_long",""+start_longitude);
+            Log.d("e_lati",""+end_latitude);
+            Log.d("e_long",""+end_longitude);
         }
-        else {
-            startLocationService();
+        else{
+            end_latitude = Double.parseDouble(intent.getExtras().getString("e_latitude")); /*String형*/
+            end_longitude = Double.parseDouble(intent.getExtras().getString("e_longitude")); /*String형*/
+            start_content = "현재위치";
+            end_content = intent.getExtras().getString("e_content");
+
+            start.setText(start_content);
+            destination.setText(end_content);
+
+            if ( Build.VERSION.SDK_INT >= 23 &&
+                    ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+                ActivityCompat.requestPermissions(this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                        0 );
+            }
+            else {
+                startLocationService();
+            }
         }
 
         handler = new Handler();
@@ -62,14 +102,10 @@ public class SimpleDirectionActivity extends AppCompatActivity {
         fragment1 = new LoadFragment();
         fragment2 = new TransportFragment();
 
-
-
         ImageView load = (ImageView)findViewById(R.id.load);
         load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startLocationService();
-
                 Bundle bundle = new Bundle();
                 bundle.putDouble("start_lati", start_latitude);
                 bundle.putDouble("start_logi", start_longitude);
@@ -87,7 +123,6 @@ public class SimpleDirectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 handler.sendEmptyMessage(0);
-                startLocationService();
                 handler.removeMessages(0);
 
                 Bundle bundle = new Bundle();

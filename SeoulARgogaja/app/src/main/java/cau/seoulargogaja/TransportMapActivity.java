@@ -29,6 +29,7 @@ public class TransportMapActivity extends AppCompatActivity {
     int path;
     String transport;
     TextView tv_text;
+    boolean walk = false;
 
     private GoogleMap gmap;
     private MapView mapView2;
@@ -98,7 +99,7 @@ public class TransportMapActivity extends AppCompatActivity {
                     if (SubPathObject.getString("trafficType").equals("1")){
                         JSONArray laneArray = SubPathObject.getJSONArray("lane");// 노선 들어있는 어레이
                         JSONObject stopList = SubPathObject.getJSONObject("passStopList"); // 정류장 들어있는 오브젝트
-                        JSONArray stationList = stopList.getJSONArray("stations"); // 거쳐야할 정류장 리스트어레이.
+                        JSONArray stationList = stopList.getJSONArray("stations"); // 거쳐야할 정류장 리스트어레이
 
                         /*하위의 JsonArray[lane] 에 타야할 지하철 번호가 나옴
                          * 하위의 JsonObject passStopList -> JsonArray[Jsonobject] stations ->에 해당 이동수단의 정류장  */
@@ -107,14 +108,36 @@ public class TransportMapActivity extends AppCompatActivity {
 
                         String lanewayname = startname + subway_no + " -> ";
 
-                        for (int v = 0; v < stationList.length(); v++) { // 정류장 리스트 뽑기
-                            //여기서 맵을 그려버리자
-                            double c_long =  Double.parseDouble(stationList.getJSONObject(v).getString("x")); //longitude
-                            double c_lati =  Double.parseDouble(stationList.getJSONObject(v).getString("y")); //longitude
-                            //   stationList.getJSONObject(v).getString("y"); // latitude
-                            LatLng current = new LatLng(c_lati,c_long);
-                            gmap.addPolyline(new PolylineOptions().add(before,current).width(8).color(Color.BLUE));
+
+                        if(walk == true && i == 0){
+                            LatLng start_point = new LatLng(s_lati,s_long);
+                            double c_long =  Double.parseDouble(stationList.getJSONObject(0).getString("x")); //longitude
+                            double c_lati =  Double.parseDouble(stationList.getJSONObject(0).getString("y")); //longitude
                             before = new LatLng(c_lati,c_long);
+                            gmap.addPolyline(new PolylineOptions().add(start_point, before).width(8).color(Color.GRAY));
+                        }
+                        else if (walk == true && i != 0){
+                            LatLng start_point = before;
+                            double c_long =  Double.parseDouble(stationList.getJSONObject(0).getString("x")); //longitude
+                            double c_lati =  Double.parseDouble(stationList.getJSONObject(0).getString("y")); //longitude
+                            before = new LatLng(c_lati,c_long);
+                            gmap.addPolyline(new PolylineOptions().add(start_point, before).width(8).color(Color.GRAY));
+                        }
+
+                        double c_long =  Double.parseDouble(stationList.getJSONObject(0).getString("x")); //longitude
+                        double c_lati =  Double.parseDouble(stationList.getJSONObject(0).getString("y")); //longitude
+                        before = new LatLng(c_lati,c_long);
+
+                        gmap.addMarker(new MarkerOptions().position(before).title(subPath.getJSONObject(i).getJSONArray("lane").getJSONObject(0).getString("subwayCode")+"호선 승차"));
+
+                        for (int v = 1; v < stationList.length(); v++) { // 정류장 리스트 뽑기
+                            //여기서 맵을 그려버리자
+                            c_long =  Double.parseDouble(stationList.getJSONObject(v).getString("x")); //longitude
+                            c_lati =  Double.parseDouble(stationList.getJSONObject(v).getString("y")); //longitude
+                            LatLng current = new LatLng(c_lati,c_long);
+
+                            gmap.addPolyline(new PolylineOptions().add(before, current).width(8).color(Color.BLUE));
+                            before = new LatLng(c_lati, c_long);
                         }
 
                         String endname = SubPathObject.getString("endName"); // 하차역 이름
@@ -125,9 +148,10 @@ public class TransportMapActivity extends AppCompatActivity {
                         }
                         else endname = endname + " 하차 "; // 하차역 이름
 
+                        gmap.addMarker(new MarkerOptions().position(before).title(endname));
+
                         transport += lanewayname + endname;
-
-
+                        walk = false;
                     }
                     else if (SubPathObject.getString("trafficType").equals("2")) { // 버스 일때
                         JSONArray laneArray = SubPathObject.getJSONArray("lane");// 노선 들어있는 어레이
@@ -139,19 +163,49 @@ public class TransportMapActivity extends AppCompatActivity {
 
                         String lanewayname = startname + bus_no +" -> ";
 
-                        for (int v = 0; v < stationList.length(); v++) { // 정류장 리스트 뽑기
+                        if(walk == true && i == 0){
+                            LatLng start_point = new LatLng(s_lati,s_long);
+                            double c_long =  Double.parseDouble(stationList.getJSONObject(0).getString("x")); //longitude
+                            double c_lati =  Double.parseDouble(stationList.getJSONObject(0).getString("y")); //longitude
+                            before = new LatLng(c_lati,c_long);
+                            gmap.addPolyline(new PolylineOptions().add(start_point, before).width(8).color(Color.GRAY));
+                        }
+                        else if (walk == true && i != 0){
+                            LatLng start_point = before;
+                            double c_long =  Double.parseDouble(stationList.getJSONObject(0).getString("x")); //longitude
+                            double c_lati =  Double.parseDouble(stationList.getJSONObject(0).getString("y")); //longitude
+                            before = new LatLng(c_lati,c_long);
+                            gmap.addPolyline(new PolylineOptions().add(start_point, before).width(8).color(Color.GRAY));
+                        }
+
+                        double c_long =  Double.parseDouble(stationList.getJSONObject(0).getString("x")); //longitude
+                        double c_lati =  Double.parseDouble(stationList.getJSONObject(0).getString("y")); //longitude
+                        before = new LatLng(c_lati,c_long);
+
+                        gmap.addMarker(new MarkerOptions().position(before).title(subPath.getJSONObject(i).getJSONArray("lane").getJSONObject(0).getString("busNo")+"번 승차"));
+
+                        for (int v = 1; v < stationList.length(); v++) { // 정류장 리스트 뽑기
                             //   여기서 맵을 그려버리자
-                            double c_long =  Double.parseDouble(stationList.getJSONObject(v).getString("x")); //longitude
-                            double c_lati =  Double.parseDouble(stationList.getJSONObject(v).getString("y")); //longitude
+                            c_long =  Double.parseDouble(stationList.getJSONObject(v).getString("x")); //longitude
+                            c_lati =  Double.parseDouble(stationList.getJSONObject(v).getString("y")); //longitude
                             //   stationList.getJSONObject(v).getString("y"); // latitude
                             LatLng current = new LatLng(c_lati,c_long);
-                            gmap.addPolyline(new PolylineOptions().add(before,current).width(8).color(Color.GREEN));
-                            before = new LatLng(c_lati,c_long);
+                            gmap.addPolyline(new PolylineOptions().add(before, current).width(8).color(Color.GREEN));
+                            before = new LatLng(c_lati, c_long);
                         }
 
                         String endname = SubPathObject.getString("endName") + "정류장 하차 "; // 하차역 이름
+
+                        gmap.addMarker(new MarkerOptions().position(before).title(endname));
+
                         transport +=lanewayname + endname;
+                        walk = false;
                     } else if(SubPathObject.getString("trafficType").equals("3")){
+                        walk = true;
+                        if(i == subPath.length()-1) {
+                            LatLng end_position = new LatLng(e_lati,e_long);
+                            gmap.addPolyline(new PolylineOptions().add(before, end_position).width(8).color(Color.GRAY));
+                        }
                         continue;
                     }
 

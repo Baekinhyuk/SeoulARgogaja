@@ -63,7 +63,6 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
     final Context mContext;
 
 
-
     public PlanAdapter(Context context, List<PlanDTO> list, Listener listener) {
         super(context, 0, list);
         mContext = context;
@@ -147,7 +146,30 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
                         .setOnTouchListener(new View.OnTouchListener() {
                             @Override
                             public boolean onTouch(View v, MotionEvent event) {
-                                context.startActivity(new Intent(context, SimpleDirectionActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                Intent intent = new Intent(context, SimpleDirectionActivity.class);
+
+                                if(position != 0){
+                                    final PlanDTO data2 = getItem(position-1);
+                                    if(data2.getdatatype() == 1){
+                                        intent.putExtra("data2_type", data2.getdatatype());
+                                        intent.putExtra("s_latitude", data2.getLatitude());
+                                        intent.putExtra("s_longitude", data2.getLongitude());
+                                        intent.putExtra("s_content",data2.getContent());
+
+                                        intent.putExtra("e_latitude", data.getLatitude());
+                                        intent.putExtra("e_longitude", data.getLongitude());
+                                        intent.putExtra("e_content",data.getContent());
+
+                                    }
+                                    else{
+                                        intent.putExtra("position", position);
+                                        intent.putExtra("e_latitude", data.getLatitude());
+                                        intent.putExtra("e_longitude", data.getLongitude());
+                                        intent.putExtra("e_content",data.getContent());
+                                    }
+                                }
+
+                                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                                 return false;
                             }
                         });
