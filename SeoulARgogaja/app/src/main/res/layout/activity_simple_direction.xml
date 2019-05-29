@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <EditText
+    <TextView
         android:id="@+id/start"
         android:layout_width="230dp"
         android:layout_height="30dp"
@@ -51,7 +51,7 @@
             android:layout_height="match_parent" />-->
     </FrameLayout>
 
-    <EditText
+    <TextView
         android:id="@+id/destination"
         android:layout_width="230dp"
         android:layout_height="30dp"

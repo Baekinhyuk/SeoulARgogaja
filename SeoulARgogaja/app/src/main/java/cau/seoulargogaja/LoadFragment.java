@@ -60,8 +60,6 @@ public class LoadFragment extends Fragment {
     private MapboxMap map;
     private DirectionsRoute currentRoute;
     private MapboxDirections client;
-    double destination_long; // longitude
-    double destination_lati; // latitude
     double start_latitude;
     double start_longitude;
     double end_latitude;
@@ -69,7 +67,6 @@ public class LoadFragment extends Fragment {
 
     private GoogleMap gmap;
 
-    LocationManager manager;
 
     @Nullable
     @Override
@@ -83,6 +80,14 @@ public class LoadFragment extends Fragment {
             end_longitude = getArguments().getDouble("end_logi");
         }
 
+        Log.d("l_s_lati",""+start_latitude);
+        Log.d("l_s_long",""+start_longitude);
+        Log.d("l_e_lati",""+end_latitude);
+        Log.d("l_e_long",""+end_longitude);
+
+
+        final Point start = Point.fromLngLat(start_longitude, start_latitude);
+        final Point end = Point.fromLngLat(end_longitude, end_latitude);
 
         // 맵박스 사용하기 위한 접근 토큰 지정
         Mapbox mapbox = Mapbox.getInstance(getActivity(), getString(R.string.access_token));
@@ -97,88 +102,19 @@ public class LoadFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 gmap = googleMap;
+                MarkerOptions makerOptions = new MarkerOptions();
+                makerOptions.position(new LatLng(start_latitude, start_longitude)).title("시작점");
+                gmap.addMarker(makerOptions);
+                makerOptions.position(new LatLng(end_latitude, end_longitude)).title("도착점");
+                gmap.addMarker(makerOptions);
 
-                gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.52487, 126.92723),15));
+                gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(start_latitude, start_longitude),15));
+                getRoute(start, end);
             }
         });
 
-
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( getActivity(), new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    0 );
-        }
-        else {
-            startLocationService();
-        }
-
         return view;
     }
-
-    public void startLocationService() {
-        manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("current","116");
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Log.d("current","126");
-        manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, gpsListener);
-        Log.d("current","128");
-    }
-
-    private final LocationListener gpsListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            final double latitude = location.getLatitude();
-            final double longitude = location.getLongitude();
-
-            final Point start = Point.fromLngLat(start_longitude, start_latitude);
-            final Point end = Point.fromLngLat(end_longitude, end_latitude);
-
-            Log.d("latitude"," : "+latitude);
-            Log.d("longitude"," : "+longitude);
-
-            mapView.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    gmap = googleMap;
-                    MarkerOptions makerOptions = new MarkerOptions();
-                    makerOptions.position(new LatLng(start_latitude, start_longitude)).title("시작점");
-                    gmap.addMarker(makerOptions);
-                    makerOptions.position(new LatLng(end_latitude, end_longitude)).title("도착점");
-                    gmap.addMarker(makerOptions);
-
-                    gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(start_latitude, start_longitude),15));
-                    getRoute(start, end);
-                }
-            });
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.d("error","1");
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            Log.d("error","2");
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            Log.d("error","3");
-        }
-    };
 
     private void getRoute(Point origin, Point destination) {
         client = MapboxDirections.builder()
@@ -279,22 +215,6 @@ public class LoadFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
-    }
-
-    // 목적지 주소값을 통해 목적지 위도 경도를 얻어오는 구문
-
-    public void getPointFromGeoCoder(String addr) {
-        String destinationAddr = addr;
-        Geocoder geocoder = new Geocoder(getActivity());
-        List<Address> listAddress = null;
-        try {
-            listAddress = geocoder.getFromLocationName(destinationAddr, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        destination_long = listAddress.get(0).getLongitude();
-        destination_lati = listAddress.get(0).getLatitude();
-        System.out.println(addr + "'s Destination x, y = " + destination_long + ", " + destination_lati);
     }
 
 }
