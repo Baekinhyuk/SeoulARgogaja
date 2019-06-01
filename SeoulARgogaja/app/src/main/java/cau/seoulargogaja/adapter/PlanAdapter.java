@@ -321,6 +321,12 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         double[] latitude = new double[n];
         double[] longitude = new double[n];
         double[][] distance = new double[n][n];
+        String[] pre_order = new String[n];
+
+        for(int i=0;i<n;i++){
+            pre_order[i] = String.valueOf(i+1);
+        }
+
         Distance dist = new Distance();
         dist.setDistance(distance);
         for(int i =0;i<n;i++){
@@ -347,8 +353,20 @@ public class PlanAdapter extends ArrayAdapter<PlanDTO> {
         h.postDelayed(new Runnable(){
             public void run(){
                 String[] opt_order = new String[n]; // 최적화후 출력 값
+                String[] temp_order = new String[n];
                 int[] opt_real_order = new int[n]; // 최적화후 출력 값
                 opt_order =orderfunction(dist.distance);
+
+                for(int i=0;i<n;i++){
+                    for(int j=0;j<n;j++){
+                        if(pre_order[i] == opt_order[j]) {
+                            Log.d("i"," "+i);
+                            Log.d("j"," "+j);
+                            temp_order[i] = String.valueOf(j+1);
+                        }
+                    }
+                }
+                opt_order = temp_order;
 
                 for(int i =0;i<n;i++){
                     Log.d("opt_order","result"+Integer.toString(i)+" result : "+opt_order[i]);
