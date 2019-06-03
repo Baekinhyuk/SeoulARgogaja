@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,13 @@ public class TransportFragment extends Fragment {
             end_latitude = getArguments().getString("end_lati");
             end_longitude = getArguments().getString("end_logi");
         }
+
+        Log.d("f_s_lati",""+start_latitude);
+        Log.d("f_s_long",""+start_longitude);
+        Log.d("f_e_lati",""+end_latitude);
+        Log.d("f_e_long",""+end_longitude);
+
+
         ListView listview = (ListView) view.findViewById(R.id.ListView);
 
         oDsayService = ODsayService.init(getActivity(), getString(R.string.odsay_key));

@@ -50,7 +50,7 @@ public class PlanAddMap extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.509193,126.963477),15));
         // 맵 터치 이벤트 구현 //
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
             @Override
@@ -91,6 +91,8 @@ public class PlanAddMap extends FragmentActivity implements OnMapReadyCallback {
         }
         catch(Exception e){
             // Add a marker in Sydney and move the camera
+            latitude = 37.5050923;
+            longitude = 126.9549072;
             LatLng startpoint = new LatLng(37.5050923, 126.9549072);
             mMap.addMarker(new MarkerOptions().position(startpoint).title("중앙대학교"));
 
