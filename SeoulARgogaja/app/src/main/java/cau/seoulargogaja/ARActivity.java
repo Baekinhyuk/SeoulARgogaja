@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.ar.core.Frame;
@@ -37,6 +39,8 @@ import java.util.concurrent.ExecutionException;
 
 import cau.seoulargogaja.arcorelocation.LocationMarker;
 import cau.seoulargogaja.arcorelocation.LocationScene;
+import cau.seoulargogaja.arcorelocation.rendering.LocationNode;
+import cau.seoulargogaja.arcorelocation.rendering.LocationNodeRender;
 import cau.seoulargogaja.arcorelocation.utils.ARLocationPermissionHelper;
 
 public class ARActivity extends AppCompatActivity implements View.OnClickListener {
@@ -56,6 +60,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
     private LocationScene locationScene;
 
     private ModelRenderable andyRenderable;
+    private ViewRenderable exampleLayoutRenderable;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,12 +74,18 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
         end_latitude = Double.parseDouble(intent.getStringExtra("latitude"));
         end_longitude = Double.parseDouble(intent.getStringExtra("longitude"));
         content = intent.getStringExtra("content");
+
+        CompletableFuture<ViewRenderable> exampleLayout =
+                ViewRenderable.builder()
+                        .setView(this, R.layout.example_layout)
+                        .build();
+
         //test add
         CompletableFuture<ModelRenderable> andy = ModelRenderable.builder()
                 .setSource(this, R.raw.andy)
                 .build();
 
-        CompletableFuture.allOf(andy)
+        CompletableFuture.allOf(exampleLayout, andy)
                 .handle(
                         (notUsed, throwable) ->
                         {
@@ -84,7 +95,9 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                             }
 
                             try {
+                                exampleLayoutRenderable = exampleLayout.get();
                                 andyRenderable = andy.get();
+                                //hasFinishedLoading = true;
 
                             } catch (InterruptedException | ExecutionException ex) {
                                 DemoUtils.displayError(this, "Unable to load renderables", ex);
@@ -103,12 +116,37 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                                 locationScene.setAnchorRefreshInterval(60);
 
 
-                                LocationMarker marker = new LocationMarker(
+                                /*LocationMarker marker = new LocationMarker(
                                         end_longitude,
                                         end_latitude,
                                         getAndy(end_longitude, end_latitude, content));
                                 marker.setHeight(0);
                                 locationScene.mLocationMarkers.add(marker);
+                                */
+                                LocationMarker layoutLocationMarker = new LocationMarker(
+                                        end_longitude,
+                                        end_latitude,
+                                        getExampleView(end_longitude, end_latitude)
+                                );
+                                layoutLocationMarker.setHeight(-5);
+
+                                layoutLocationMarker.setRenderEvent(new LocationNodeRender() {
+                                    @Override
+                                    public void render(LocationNode node) {
+                                        View eView = exampleLayoutRenderable.getView();
+                                        ImageView distanceTextView = eView.findViewById(R.id.textView2);
+                                        android.view.ViewGroup.LayoutParams layoutParams = distanceTextView.getLayoutParams();
+                                        int length = 1024 - node.getDistance() * 5;
+                                        if(length < 150)
+                                            length = 150;
+                                        layoutParams.width = length;
+                                        layoutParams.height = length;
+                                        distanceTextView.setLayoutParams(layoutParams);
+
+                                        }
+                                });
+                                // Adding the marker
+                                locationScene.mLocationMarkers.add(layoutLocationMarker);
 
 
 
@@ -151,6 +189,14 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
                             if (locationScene != null) {
                                 locationScene.processFrame(frame);
                             }
+
+                            if (frame.getCamera().getTrackingState() != TrackingState.TRACKING) {
+                                return;
+                            }
+
+                            if (locationScene != null) {
+                                locationScene.processFrame(frame);
+                            }
                         });
 
         ARLocationPermissionHelper.requestPermission(this);
@@ -160,6 +206,35 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
 
         findViewById(R.id.mapButton).setOnClickListener(this::onClick);
 
+    }
+
+    private Node getExampleView(double longitude,double latitude) {
+        Node base = new Node();
+        base.setRenderable(exampleLayoutRenderable);
+        Context c = this;
+        // Add  listeners etc here
+        View eView = exampleLayoutRenderable.getView();
+        VectorCalc dist = new VectorCalc();
+        base.setOnTapListener((v, event) -> {
+            double vector = VectorCalc.distance(latitude, longitude, start_latitude,start_longitude, "k") * 1000;
+            base.
+            if(vector < 50.0){
+                Toast.makeText(
+                        c, "도착했습니다.", Toast.LENGTH_LONG)
+                        .show();
+                Intent intent = new Intent();
+                setResult(1, intent);
+                finish();
+
+            }else {
+
+                Toast.makeText(
+                        c, String.format("%.0f", vector) + "m 남았습니다.", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+
+        return base;
     }
 
     @Override
@@ -286,7 +361,7 @@ public class ARActivity extends AppCompatActivity implements View.OnClickListene
             }*/
 
         //테스트용 현재위치 파악
-        Toast.makeText(this, "목적지 longitude : " + end_longitude + " latitude : " + end_latitude, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "현재위치 longitude : " + start_longitude + " latitude : " + start_latitude, Toast.LENGTH_SHORT).show();
     }
 
     private Node getAndy(double longitude,double latitude,String name) {
